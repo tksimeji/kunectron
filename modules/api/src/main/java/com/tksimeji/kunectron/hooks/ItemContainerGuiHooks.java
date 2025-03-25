@@ -1,28 +1,49 @@
 package com.tksimeji.kunectron.hooks;
 
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 public interface ItemContainerGuiHooks extends ContainerGuiHooks {
-    @NotNull ItemSlotPolicy usePolicy(final int index);
+    default @NotNull ItemSlotPolicy usePolicy(final int index) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    @NotNull ItemSlotPolicy usePolicy(final int index, final boolean player);
+    default @NotNull ItemSlotPolicy usePolicy(final int index, final boolean player) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    void usePolicy(final int index, final @NotNull ItemSlotPolicy policy);
+    default void usePolicy(final int index, final @NotNull ItemSlotPolicy policy) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    void usePolicy(final int index, final @NotNull ItemSlotPolicy policy, final boolean player);
+    default void usePolicy(final int index, final @NotNull ItemSlotPolicy policy, final boolean player) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    @NotNull ItemSlotPolicy useDefaultPolicy();
+    default @NotNull ItemSlotPolicy useDefaultPolicy() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    void useDefaultPolicy(final @NotNull ItemSlotPolicy defaultPolicy);
+    default void useDefaultPolicy(final @NotNull ItemSlotPolicy defaultPolicy) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    @NotNull ItemSlotPolicy usePlayerDefaultPolicy();
+    default @NotNull ItemSlotPolicy usePlayerDefaultPolicy() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    void usePlayerDefaultPolicy(final @NotNull ItemSlotPolicy playerDefaultPolicy);
+    default void usePlayerDefaultPolicy(final @NotNull ItemSlotPolicy playerDefaultPolicy) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    @NotNull Locale useLocale();
+    default @NotNull Locale useLocale() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 
-    boolean useIsEmpty();
+    default boolean useIsEmpty() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 }
