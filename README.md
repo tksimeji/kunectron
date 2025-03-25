@@ -2,7 +2,7 @@
 
 A Minecraft GUI framework
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.1-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.0--beta.2-blue?style=flat-square)
 ![Adapter](https://img.shields.io/badge/adapter-1.21.1--1.21.4-blue?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue?style=flat-square)
 
