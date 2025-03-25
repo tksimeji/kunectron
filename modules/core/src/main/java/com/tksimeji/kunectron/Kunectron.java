@@ -111,7 +111,7 @@ public final class Kunectron extends JavaPlugin {
     }
 
     public static void deleteGuiController(final @NotNull GuiController controller) {
-        if (new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
+        if (!new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
             return;
         }
 

@@ -82,7 +82,7 @@ public abstract class GuiControllerImpl implements GuiController {
     public boolean callEvent(final @NotNull GuiEvent event) {
         List<Method> handlers = this.handlers.stream().filter(handler -> handler.getParameterTypes()[0].isAssignableFrom(event.getClass())).toList();
 
-        if (new KunectronGuiEventCallEvent(event, this).callEvent()) {
+        if (!new KunectronGuiEventCallEvent(event, this).callEvent()) {
             if (event instanceof CancellableEvent cancellableEvent) {
                 return cancellableEvent.isCancelled();
             }
