@@ -2,9 +2,13 @@
 
 A Minecraft GUI framework
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.3-blue?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.0--beta.4-blue?style=flat-square)
 ![Adapter](https://img.shields.io/badge/adapter-1.21.1--1.21.4-blue?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue?style=flat-square)
+
+> [!WARNING]
+> Currently in beta stage,
+> unexpected issues may occur.
 
 ## Get started
 
