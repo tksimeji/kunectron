@@ -46,7 +46,7 @@ dependencies {
 
 ### Plugin YML
 
-Define a dependency on kunectron in your Plugin YML.
+Define a dependency on Kunectron in your Plugin YML.
 
 #### Bukkit Plugin YML
 
