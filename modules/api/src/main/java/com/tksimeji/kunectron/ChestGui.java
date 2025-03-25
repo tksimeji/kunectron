@@ -26,14 +26,14 @@ public @interface ChestGui {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface Element {
-        int[] value() default {};
+        int[] index() default {};
         IndexGroup[] groups() default {};
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface Policy {
-        int[] value() default {};
+        int[] index() default {};
         boolean player() default false;
         IndexGroup[] groups() default {};
     }

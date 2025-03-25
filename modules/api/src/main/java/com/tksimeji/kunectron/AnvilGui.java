@@ -23,7 +23,7 @@ public @interface AnvilGui {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface Policy {
-        int[] value() default {};
+        int[] index() default {};
         boolean player() default false;
         IndexGroup[] groups() default {};
     }

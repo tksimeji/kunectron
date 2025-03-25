@@ -86,11 +86,11 @@ public final class ChestGuiControllerImpl extends ItemContainerGuiControllerImpl
 
     @ApiStatus.Internal
     private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Element annotation) {
-        return parseIndexGroup(annotation.value(), annotation.groups());
+        return parseIndexGroup(annotation.index(), annotation.groups());
     }
 
     @ApiStatus.Internal
     private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Policy annotation) {
-        return parseIndexGroup(annotation.value(), annotation.groups(), annotation.player());
+        return parseIndexGroup(annotation.index(), annotation.groups(), annotation.player());
     }
 }
