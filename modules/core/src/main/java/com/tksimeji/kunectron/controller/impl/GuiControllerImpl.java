@@ -3,9 +3,11 @@ package com.tksimeji.kunectron.controller.impl;
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.controller.GuiController;
+import com.tksimeji.kunectron.event.CancellableEvent;
 import com.tksimeji.kunectron.event.GuiEvent;
 import com.tksimeji.kunectron.event.GuiHandler;
-import com.tksimeji.kunectron.event.KunectronEvent;
+import com.tksimeji.kunectron.event.bukkit.KunectronGuiEventCallEvent;
+import com.tksimeji.kunectron.event.bukkit.KunectronGuiEventCalledEvent;
 import com.tksimeji.kunectron.markupextension.context.Context;
 import com.tksimeji.kunectron.markupextension.context.MutableContext;
 import com.tksimeji.kunectron.util.Classes;
@@ -80,6 +82,14 @@ public abstract class GuiControllerImpl implements GuiController {
     public boolean callEvent(final @NotNull GuiEvent event) {
         List<Method> handlers = this.handlers.stream().filter(handler -> handler.getParameterTypes()[0].isAssignableFrom(event.getClass())).toList();
 
+        if (new KunectronGuiEventCallEvent(event, this).callEvent()) {
+            if (event instanceof CancellableEvent cancellableEvent) {
+                return cancellableEvent.isCancelled();
+            }
+
+            return false;
+        }
+
         for (Method handler : handlers) {
             GuiHandler annotation = handler.getAnnotation(GuiHandler.class);
 
@@ -106,7 +116,7 @@ public abstract class GuiControllerImpl implements GuiController {
             }
         }
 
-        new KunectronEvent(event).callEvent();
+        new KunectronGuiEventCalledEvent(event, this).callEvent();
 
         return event instanceof Cancellable && ((Cancellable) event).isCancelled();
     }

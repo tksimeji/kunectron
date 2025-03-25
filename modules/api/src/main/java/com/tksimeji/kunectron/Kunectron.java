@@ -45,7 +45,7 @@ public final class Kunectron {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
-    public static void removeGuiController(final @NotNull GuiController controller) {
+    public static void deleteGuiController(final @NotNull GuiController controller) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 

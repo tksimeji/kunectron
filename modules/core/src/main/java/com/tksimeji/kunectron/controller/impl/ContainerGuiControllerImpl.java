@@ -13,7 +13,7 @@ public abstract class ContainerGuiControllerImpl<I extends Inventory> extends Gu
 
     @Override
     public void close() {
-        Kunectron.removeGuiController(this);
+        Kunectron.deleteGuiController(this);
 
         if (getPlayer().getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING &&
                 Kunectron.getGuiControllers().stream().noneMatch(controller -> controller instanceof ContainerGuiController && ((ContainerGuiController) controller).getPlayer() == getPlayer())) {

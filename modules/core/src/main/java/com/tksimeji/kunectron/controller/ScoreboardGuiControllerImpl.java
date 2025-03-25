@@ -195,7 +195,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
 
     @Override
     public void close() {
-        Kunectron.removeGuiController(this);
+        Kunectron.deleteGuiController(this);
         objective.unregister();
         for (Player player : getPlayers()) {
             removePlayer(player);

@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.adapter.Adapter;
 import com.tksimeji.kunectron.adapter.V1_21_1;
 import com.tksimeji.kunectron.adapter.V1_21_3;
+import com.tksimeji.kunectron.event.bukkit.KunectronGuiCreateEvent;
+import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
 import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextension.MarkupExtensionParser;
@@ -73,6 +75,7 @@ public final class Kunectron extends JavaPlugin {
         GuiController controller = type.createController(gui, gui.getClass().getAnnotation(annotation));
         controllers.add(controller);
         controller.init();
+        new KunectronGuiCreateEvent(gui, controller).callEvent();
         return gui;
     }
 
@@ -107,7 +110,11 @@ public final class Kunectron extends JavaPlugin {
         return new HashSet<>(controllers);
     }
 
-    public static void removeGuiController(final @NotNull GuiController controller) {
+    public static void deleteGuiController(final @NotNull GuiController controller) {
+        if (new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
+            return;
+        }
+
         controllers.remove(controller);
     }
 
