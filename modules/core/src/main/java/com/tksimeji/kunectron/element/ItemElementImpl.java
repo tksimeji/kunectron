@@ -28,22 +28,22 @@ import org.jetbrains.annotations.Range;
 import java.util.*;
 
 public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
-    private @NotNull ItemStack itemStack;
+    protected @NotNull ItemStack itemStack;
 
-    private @Nullable Component title;
-    private @NotNull List<Component> lore = List.of();
+    protected @Nullable Component title;
+    protected @NotNull List<Component> lore = List.of();
 
-    private @Nullable ItemSlotPolicy policy;
+    protected @Nullable ItemSlotPolicy policy;
 
-    private @Nullable Sound sound;
-    private float soundVolume = 1.0F;
-    private float soundPitch = 1.0F;
+    protected @Nullable Sound sound;
+    protected float soundVolume = 1.0F;
+    protected float soundPitch = 1.0F;
 
-    private @Nullable Handler handler;
+    protected @Nullable Handler handler;
 
-    private final boolean itemStackMode;
+    protected final boolean itemStackMode;
 
-    private @Nullable Context<?> markupExtensionContext;
+    protected @Nullable Context<?> markupExtensionContext;
 
     public ItemElementImpl(final @NotNull ItemType type) {
         this(type.createItemStack(), false);
@@ -352,16 +352,27 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull ItemElement createCopy() {
-        ItemElementImpl copy = new ItemElementImpl(itemStack.clone(), itemStackMode);
-        copy.title = title;
-        copy.lore = lore;
-        copy.policy = policy;
-        copy.sound = sound;
-        copy.soundVolume = soundVolume;
-        copy.soundPitch = soundPitch;
-        copy.handler = handler;
+        return createCopy(new ItemElementImpl(itemStack.clone(), itemStackMode));
+    }
 
-        copy.markupExtensionContext = markupExtensionContext;
-        return copy;
+    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T to) {
+        return createCopy(to, null);
+    }
+
+    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T to, final @Nullable ItemStack itemStack) {
+        if (itemStack != null) {
+            to.itemStack = itemStack;
+        }
+
+        to.title = title;
+        to.lore = lore;
+        to.policy = policy;
+        to.sound = sound;
+        to.soundVolume = soundVolume;
+        to.soundPitch = soundPitch;
+        to.handler = handler;
+
+        to.markupExtensionContext = markupExtensionContext;
+        return to;
     }
 }

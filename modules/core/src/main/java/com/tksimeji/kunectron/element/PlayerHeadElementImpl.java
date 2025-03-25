@@ -1,5 +1,6 @@
 package com.tksimeji.kunectron.element;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import com.google.common.base.Preconditions;
 import com.tksimeji.mojango.Mojango;
 import com.tksimeji.mojango.texture.Skin;
@@ -8,15 +9,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerTextures;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHeadElement {
     private static final Map<String, UUID> UUID_CACHE = new HashMap<>();
@@ -109,6 +110,32 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
             Preconditions.checkArgument(url.getHost().equalsIgnoreCase("textures.minecraft.net"), "No servers other then 'texture.minecraft.net' are allowed.");
             this.url = url;
         }
+
+        final SkullMeta itemMeta = (SkullMeta) itemStack.getItemMeta();
+
+        if (this.url == null) {
+            itemMeta.setPlayerProfile(null);
+            itemStack.setItemMeta(itemMeta);
+            return this;
+        }
+
+        final UUID uuid = UUID_CACHE.getOrDefault(this.url.toString(), UUID.randomUUID());
+        UUID_CACHE.put(this.url.toString(), uuid);
+
+        PlayerProfile profile = Bukkit.createProfile(uuid);
+        PlayerTextures textures = profile.getTextures();
+
+        textures.setSkin(this.url);
+        profile.setTextures(textures);
+        itemMeta.setPlayerProfile(profile);
+        itemStack.setItemMeta(itemMeta);
         return this;
+    }
+
+    @Override
+    public @NotNull ItemElement createCopy() {
+        PlayerHeadElementImpl copy = createCopy(new PlayerHeadElementImpl(), itemStack);
+        copy.url = url;
+        return copy;
     }
 }
