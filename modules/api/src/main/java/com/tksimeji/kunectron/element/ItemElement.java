@@ -44,9 +44,6 @@ public interface ItemElement extends Element<ItemStack> {
     @NotNull ItemElement lore(final @NotNull Collection<Component> components);
 
     @Contract("_ -> this")
-    @NotNull ItemElement lore(final @NotNull List<ComponentLike> components);
-
-    @Contract("_ -> this")
     @NotNull ItemElement lore(final @NotNull ComponentLike... components);
 
     @Contract("_ -> this")

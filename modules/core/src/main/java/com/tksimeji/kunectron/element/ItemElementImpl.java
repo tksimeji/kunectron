@@ -152,12 +152,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
     @Override
     public @NotNull ItemElement lore(final @NotNull Collection<Component> components) {
         Preconditions.checkArgument(components != null, "Components cannot be null.");
-        return lore(components.stream().map(component -> (ComponentLike) component).toList());
-    }
-
-    @Override
-    public @NotNull ItemElement lore(final @NotNull List<ComponentLike> components) {
-        Preconditions.checkArgument(components != null, "Components cannot be null.");
 
         if (!itemStack.hasItemMeta()) {
             return this;
@@ -169,8 +163,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.lore(lore);
-        itemMeta.setHideTooltip(!itemStackMode && this.title == null && this.lore.isEmpty());
-
+        itemMeta.setHideTooltip(!itemStackMode && title == null && lore.isEmpty());
         itemStack.setItemMeta(itemMeta);
         return this;
     }
@@ -178,13 +171,13 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
     @Override
     public @NotNull ItemElement lore(final @NotNull ComponentLike... components) {
         Preconditions.checkArgument(components != null, "Components cannot be null.");
-        return lore(Arrays.stream(components).toList());
+        return lore(Arrays.stream(components).map(ComponentLike::asComponent).toList());
     }
 
     @Override
     public @NotNull ItemElement lore(final @NotNull String... strings) {
         Preconditions.checkArgument(strings != null, "Strings cannot be null.");
-        return lore(Arrays.stream(strings).map(string -> (ComponentLike) Component.text(string)).toList());
+        return lore(Arrays.stream(strings).map(Component::text).map(Component::asComponent).toList());
     }
 
     @Override
