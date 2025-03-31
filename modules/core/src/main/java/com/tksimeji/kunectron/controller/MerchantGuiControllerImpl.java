@@ -36,10 +36,10 @@ public final class MerchantGuiControllerImpl extends ContainerGuiControllerImpl<
         update();
         update = 0;
 
-        Map<Integer, TradeElement> elementMap = new TreeMap<>();
-        List<TradeElement> elementList = new ArrayList<>();
+        final Map<Integer, TradeElement> elementMap = new TreeMap<>();
+        final List<TradeElement> elementList = new ArrayList<>();
 
-        for (Pair<TradeElement, MerchantGui.Element> declaration : getDeclarations(gui, MerchantGui.Element.class, TradeElement.class)) {
+        for (final Pair<TradeElement, MerchantGui.Element> declaration : getDeclarations(gui, MerchantGui.Element.class, TradeElement.class)) {
             MerchantGui.Element annotation = declaration.getRight();
             if (annotation.index() != -1) {
                 elementMap.put(annotation.index(), declaration.getLeft());
@@ -48,11 +48,11 @@ public final class MerchantGuiControllerImpl extends ContainerGuiControllerImpl<
             }
         }
 
-        for (Map.Entry<Integer, TradeElement> element : elementMap.entrySet()) {
+        for (final Map.Entry<Integer, TradeElement> element : elementMap.entrySet()) {
             setElement(element.getKey(), element.getValue());
         }
 
-        for (TradeElement element : elementList) {
+        for (final TradeElement element : elementList) {
             addElement(element);
         }
     }
@@ -138,7 +138,7 @@ public final class MerchantGuiControllerImpl extends ContainerGuiControllerImpl<
 
     @Override
     public boolean select(final int index) {
-        TradeElement element = elements.get(index);
+        final TradeElement element = elements.get(index);
         if (!element.canSelect()) {
             return true;
         }
@@ -147,7 +147,7 @@ public final class MerchantGuiControllerImpl extends ContainerGuiControllerImpl<
 
     @Override
     public boolean purchase(final int index) {
-        TradeElement element = elements.get(index);
+        final TradeElement element = elements.get(index);
         if (!element.canPurchase()) {
             return true;
         }

@@ -104,7 +104,7 @@ public interface ChestGuiHooks extends IChestGuiHooks {
     }
 
     private @NotNull ChestGuiController controller() {
-        GuiController controller = Kunectron.getGuiController(this);
+        final GuiController controller = Kunectron.getGuiController(this);
 
         if (!(controller instanceof ChestGuiController)) {
             throw new IllegalStateException("No gui controller found.");

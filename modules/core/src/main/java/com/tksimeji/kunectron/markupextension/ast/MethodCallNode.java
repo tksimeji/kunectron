@@ -20,7 +20,7 @@ public final class MethodCallNode implements AstNode<Object> {
 
     @Override
     public @NotNull Object evaluate(final @NotNull Context<?> ctx) {
-        Object[] args = this.args.stream().map(argument -> argument.evaluateDeep(ctx)).toArray();
+        final Object[] args = this.args.stream().map(argument -> argument.evaluateDeep(ctx)).toArray();
         return Optional.ofNullable(ctx.getFunction(name, args)).orElse("null");
     }
 }

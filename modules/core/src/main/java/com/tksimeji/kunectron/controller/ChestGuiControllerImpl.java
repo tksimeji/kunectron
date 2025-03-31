@@ -46,13 +46,13 @@ public final class ChestGuiControllerImpl extends ItemContainerGuiControllerImpl
         });
 
         for (Pair<ItemElement, ChestGui.Element> declaration : getDeclarations(gui, ChestGui.Element.class, ItemElement.class)) {
-            for (int index : parseAnnotation(declaration.getRight())) {
+            for (final int index : parseAnnotation(declaration.getRight())) {
                 setElement(index, declaration.getLeft());
             }
         }
 
         for (Pair<ItemSlotPolicy, ChestGui.Policy> declaration : getDeclarations(gui, ChestGui.Policy.class, ItemSlotPolicy.class)) {
-            for (int index : parseAnnotation(declaration.getRight())) {
+            for (final int index : parseAnnotation(declaration.getRight())) {
                 setPolicy(index, declaration.getLeft());
             }
         }

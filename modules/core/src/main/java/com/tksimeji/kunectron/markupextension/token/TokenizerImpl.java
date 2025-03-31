@@ -19,7 +19,7 @@ final class TokenizerImpl implements Tokenizer {
     private @NotNull TokenFactory factory;
 
     public TokenizerImpl() {
-        this(TokenFactory.create());
+        this(TokenFactory.tokenFactory());
     }
 
     public TokenizerImpl(final @NotNull TokenFactory factory) {
@@ -38,12 +38,12 @@ final class TokenizerImpl implements Tokenizer {
 
     @Override
     public @NotNull List<Token> tokenize(final @NotNull String input) {
-        TokenizeInfo info = new TokenizeInfo(input);
+        final TokenizeInfo info = new TokenizeInfo(input);
 
-        List<Token> tokens = new ArrayList<>();
+        final List<Token> tokens = new ArrayList<>();
 
         while (info.position < input.length()) {
-            char c = input.charAt(info.position);
+            final char c = input.charAt(info.position);
 
             if (Character.isWhitespace(c)) {
                 info.position++;
@@ -92,7 +92,7 @@ final class TokenizerImpl implements Tokenizer {
             } else if (c == '\'') {
                 tokens.add(factory.createString(parseString(info)));
             } else if (Character.isLetter(c) || c == '_') {
-                String identifier = parseIdentifier(info);
+                final String identifier = parseIdentifier(info);
                 if (identifier.equals("true") || identifier.equals("false")) {
                     tokens.add(factory.createBoolean(identifier));
                 } else if (identifier.equals("null")) {
@@ -109,7 +109,7 @@ final class TokenizerImpl implements Tokenizer {
     }
 
     private @NotNull String parseNumber(final @NotNull TokenizeInfo info) {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         while (info.position < info.input.length() && (Character.isDigit(info.input.charAt(info.position)) || info.input.charAt(info.position) == '.')) {
             builder.append(info.input.charAt(info.position++));
         }
@@ -117,7 +117,7 @@ final class TokenizerImpl implements Tokenizer {
     }
 
     private @NotNull String parseString(final @NotNull TokenizeInfo info) {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         info.position++;
         while (info.position < info.input.length() && info.input.charAt(info.position) != '\'') {
             builder.append(info.input.charAt(info.position++));
@@ -127,7 +127,7 @@ final class TokenizerImpl implements Tokenizer {
     }
 
     private @NotNull String parseIdentifier(final @NotNull TokenizeInfo info) {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         while (info.position < info.input.length() && (Character.isLetterOrDigit(info.input.charAt(info.position)) || info.input.charAt(info.position) == '_')) {
             builder.append(info.input.charAt(info.position++));
         }

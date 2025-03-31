@@ -62,7 +62,7 @@ public interface MerchantGuiHooks extends IMerchantGuiHooks {
     }
 
     private @NotNull MerchantGuiController controller() {
-        GuiController controller = Kunectron.getGuiController(this);
+        final GuiController controller = Kunectron.getGuiController(this);
 
         if (!(controller instanceof MerchantGuiController)) {
             throw new IllegalStateException("No gui controller found.");

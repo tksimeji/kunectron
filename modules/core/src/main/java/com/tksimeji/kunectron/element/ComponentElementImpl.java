@@ -50,7 +50,7 @@ public class ComponentElementImpl implements ComponentElement, MarkupExtensionSu
 
     @Override
     public @NotNull ComponentElement createCopy() {
-        ComponentElementImpl copy = new ComponentElementImpl(source);
+        final ComponentElementImpl copy = new ComponentElementImpl(source);
         copy.markupExtensionContext = markupExtensionContext;
         return copy;
     }

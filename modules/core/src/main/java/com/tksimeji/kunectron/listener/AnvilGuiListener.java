@@ -20,12 +20,12 @@ public final class AnvilGuiListener implements Listener {
                 .stream()
                 .filter(controller -> controller.getInventory() == event.getInventory())
                 .findFirst().ifPresent(controller -> {
-                    ItemStack itemStack = event.getResult();
+                    final ItemStack itemStack = event.getResult();
 
                     if (itemStack != null && itemStack.hasItemMeta()) {
-                        ItemMeta itemMeta = itemStack.getItemMeta();
-                        Component component = itemMeta.hasDisplayName() ? itemMeta.displayName() : Component.empty();
-                        String text = PlainTextComponentSerializer.plainText().serialize(component);
+                        final ItemMeta itemMeta = itemStack.getItemMeta();
+                        final Component component = itemMeta.hasDisplayName() ? itemMeta.displayName() : Component.empty();
+                        final String text = PlainTextComponentSerializer.plainText().serialize(component);
 
                         if (!controller.getText().equals(text)) {
                             controller.callEvent(new AnvilGuiTextChangeEventImpl(controller.getGui(), text));

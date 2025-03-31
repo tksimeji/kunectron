@@ -38,7 +38,7 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
 
     @Override
     public @NotNull AstNode<?> parse(final @NotNull String input) {
-        return parse(input, Tokenizer.create());
+        return parse(input, Tokenizer.tokenizer());
     }
 
     @Override
@@ -47,15 +47,15 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
     }
 
     public @NotNull AstNode<?> parse(final @NotNull Collection<Token> tokens) {
-        ParseInfo info = new ParseInfo(tokens);
+        final ParseInfo info = new ParseInfo(tokens);
         return parseOr(info);
     }
 
     private @NotNull AstNode<?> parseOr(final @NotNull ParseInfo info) {
         AstNode<?> leftNode = parseAnd(info);
         while (info.position < info.tokens.size() && info.tokens.get(info.position).isBinaryOperator() && info.tokens.get(info.position).getValue().equals("||")) {
-            String operator = info.tokens.get(info.position++).getValue();
-            AstNode<?> rightNode = parseAnd(info);
+            final String operator = info.tokens.get(info.position++).getValue();
+            final AstNode<?> rightNode = parseAnd(info);
             leftNode = new BinaryOpNode(leftNode, binaryOperators.get(operator), rightNode);
         }
         return leftNode;
@@ -64,8 +64,8 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
     private @NotNull AstNode<?> parseAnd(final @NotNull ParseInfo info) {
         AstNode<?> leftNode = parseEquality(info);
         while (info.position < info.tokens.size() && info.tokens.get(info.position).isBinaryOperator() && info.tokens.get(info.position).getValue().equals("&&")) {
-            String operator = info.tokens.get(info.position++).getValue();
-            AstNode<?> rightNode = parseExpression(info);
+            final String operator = info.tokens.get(info.position++).getValue();
+            final AstNode<?> rightNode = parseExpression(info);
             leftNode = new BinaryOpNode(leftNode, binaryOperators.get(operator), rightNode);
         }
         return leftNode;
@@ -74,8 +74,8 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
     private @NotNull AstNode<?> parseEquality(final @NotNull ParseInfo info) {
         AstNode<?> leftNode = parseExpression(info);
         while (info.position < info.tokens.size() && info.tokens.get(info.position).isBinaryOperator() && (info.tokens.get(info.position).getValue().equals("==") || info.tokens.get(info.position).getValue().equals("!=") || info.tokens.get(info.position).getValue().equals("===") || info.tokens.get(info.position).getValue().equals("!=="))) {
-            String operator = info.tokens.get(info.position++).getValue();
-            AstNode<?> rightNode = parseExpression(info);
+            final String operator = info.tokens.get(info.position++).getValue();
+            final AstNode<?> rightNode = parseExpression(info);
             leftNode = new BinaryOpNode(leftNode, binaryOperators.get(operator), rightNode);
         }
         return leftNode;
@@ -84,8 +84,8 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
     private @NotNull AstNode<?> parseExpression(final @NotNull ParseInfo info) {
         AstNode<?> leftNode = parseTerm(info);
         while (info.position < info.tokens.size() && info.tokens.get(info.position).isBinaryOperator() && (info.tokens.get(info.position).getValue().equals("+") || info.tokens.get(info.position).getValue().equals("-"))) {
-            String operator = info.tokens.get(info.position++).getValue();
-            AstNode<?> rightNode = parseTerm(info);
+            final String operator = info.tokens.get(info.position++).getValue();
+            final AstNode<?> rightNode = parseTerm(info);
             leftNode = new BinaryOpNode(leftNode, binaryOperators.get(operator), rightNode);
         }
         return leftNode;
@@ -94,20 +94,20 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
     private @NotNull AstNode<?> parseTerm(final @NotNull ParseInfo info) {
         AstNode<?> leftNode = parseFactor(info);
         while (info.position < info.tokens.size() && info.tokens.get(info.position).isBinaryOperator() && (info.tokens.get(info.position).getValue().equals("*") || info.tokens.get(info.position).getValue().equals("/"))) {
-            String operator = info.tokens.get(info.position++).getValue();
-            AstNode<?> rightNode = parseFactor(info);
+            final String operator = info.tokens.get(info.position++).getValue();
+            final AstNode<?> rightNode = parseFactor(info);
             leftNode = new BinaryOpNode(leftNode, binaryOperators.get(operator), rightNode);
         }
         return leftNode;
     }
 
     private @NotNull AstNode<?> parseFactor(final @NotNull ParseInfo info) {
-        Token token = info.tokens.get(info.position);
-        String tokenValue = token.getValue();
+        final Token token = info.tokens.get(info.position);
+        final String tokenValue = token.getValue();
 
         if (token.isUnaryOperator()) {
             info.position++;
-            AstNode<?> operand = parseFactor(info);
+            final AstNode<?> operand = parseFactor(info);
             return new UnaryOpNode(unaryOperators.get("!"), operand);
         }
 
@@ -131,7 +131,7 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
 
         if (token.isIdentifier() && info.position < info.tokens.size() && info.tokens.get(info.position).isLeftParen()) {
             info.position++;
-            List<AstNode<?>> args = new ArrayList<>();
+            final List<AstNode<?>> args = new ArrayList<>();
 
             if (!info.tokens.get(info.position).isRightParen()) {
                 args.add(parseOr(info));
@@ -142,11 +142,11 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
             }
 
             info.position++;
-            AstNode<?> methodCallNode = new MethodCallNode(token.getValue(), args);
+            final AstNode<?> methodCallNode = new MethodCallNode(token.getValue(), args);
 
             if (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
                 info.position++;
-                String member = info.tokens.get(info.position++).getValue();
+                final String member = info.tokens.get(info.position++).getValue();
                 return new MemberAccessNode(methodCallNode, member);
             }
 
@@ -154,11 +154,11 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
         }
 
         if (token.isIdentifier()) {
-            AstNode<?> identifierNode = new IdentifierNode(token.getValue());
+            final AstNode<?> identifierNode = new IdentifierNode(token.getValue());
 
             if (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
                 info.position++;
-                String member = info.tokens.get(info.position++).getValue();
+                final String member = info.tokens.get(info.position++).getValue();
                 return new MemberAccessNode(identifierNode, member);
             }
 
@@ -166,7 +166,7 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
         }
 
         if (token.isLeftParen()) {
-            AstNode<?> orNode = parseOr(info);
+            final AstNode<?> orNode = parseOr(info);
             info.position++;
             return orNode;
         }

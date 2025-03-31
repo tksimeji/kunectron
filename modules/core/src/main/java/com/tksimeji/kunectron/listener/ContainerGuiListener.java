@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public final class ContainerGuiListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(final @NotNull InventoryCloseEvent event) {
-        ContainerGuiController<?> controller = controller(event.getInventory());
+        final ContainerGuiController<?> controller = controller(event.getInventory());
 
         if (controller != null) {
             controller.close();

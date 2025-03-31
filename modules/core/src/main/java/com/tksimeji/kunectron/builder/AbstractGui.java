@@ -18,12 +18,12 @@ abstract class AbstractGui<H extends Hooks> {
 
     @GuiHandler
     public <E extends GuiEvent> void onEvent(final @NotNull E event) {
-        List<IGuiBuilderImpl.HandlerInfo> handlers = this.handlers.stream()
+        final List<IGuiBuilderImpl.HandlerInfo> handlers = this.handlers.stream()
                 .filter(handler -> handler.event().isAssignableFrom(event.getClass()))
                 .toList();
 
-        for (IGuiBuilderImpl.HandlerInfo handler : handlers) {
-            IGuiBuilder.HandlerFunction function = handler.function();
+        for (final IGuiBuilderImpl.HandlerInfo handler : handlers) {
+            final IGuiBuilder.HandlerFunction function = handler.function();
 
             if (handler.async()) {
                 Bukkit.getScheduler().runTaskAsynchronously(Kunectron.plugin(), () -> {

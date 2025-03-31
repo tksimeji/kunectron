@@ -112,7 +112,7 @@ public interface ScoreboardGuiHooks extends IScoreboardGuiHooks {
     }
 
     private @NotNull ScoreboardGuiController controller() {
-        GuiController controller = Kunectron.getGuiController(this);
+        final GuiController controller = Kunectron.getGuiController(this);
 
         if (!(controller instanceof ScoreboardGuiController)) {
             throw new IllegalStateException("No gui controller found.");

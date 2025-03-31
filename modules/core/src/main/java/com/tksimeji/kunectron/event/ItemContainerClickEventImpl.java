@@ -22,7 +22,7 @@ public abstract class ItemContainerClickEventImpl extends GuiEventImpl implement
         this.action = action;
         this.mouse = mouse;
 
-        ItemElement.Handler handler = element != null ? element.handler() : null;
+        final ItemElement.Handler handler = element != null ? element.handler() : null;
 
         if (handler instanceof ItemElement.Handler1 handler1) {
             handler1.onClick();

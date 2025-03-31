@@ -50,8 +50,8 @@ public final class Components {
             return false;
         }
 
-        String text = plainText(component);
-        Matcher matcher = markupExtensionPattern.matcher(text);
+        final String text = plainText(component);
+        final Matcher matcher = markupExtensionPattern.matcher(text);
         return matcher.find();
     }
 }

@@ -28,7 +28,7 @@ public final class ItemContainerGuiListener implements Listener {
             return;
         }
 
-        ItemContainerGuiController<?> controller = controller(event.getInventory());
+        final ItemContainerGuiController<?> controller = controller(event.getInventory());
 
         if (controller == null) {
             return;
@@ -36,8 +36,8 @@ public final class ItemContainerGuiListener implements Listener {
 
         event.setCancelled(true);
 
-        int index = event.getRawSlot();
-        ItemSlotPolicy policy = index >= 0 ? controller.getPolicy(index) : Policy.itemSlot(true);
+        final int index = event.getRawSlot();
+        final ItemSlotPolicy policy = index >= 0 ? controller.getPolicy(index) : Policy.itemSlot(true);
 
         if (controller.isValidIndex(index)) {
             Action action = event.getClick() == ClickType.DOUBLE_CLICK ? Action.DOUBLE_CLICK : event.isShiftClick() ? Action.SHIFT_CLICK : Action.SINGLE_CLICK;
@@ -49,7 +49,7 @@ public final class ItemContainerGuiListener implements Listener {
             return;
         }
 
-        ClickProcessor processor = new ClickProcessor(event, controller, player);
+        final ClickProcessor processor = new ClickProcessor(event, controller, player);
 
         switch (event.getAction()) {
             case CLONE_STACK, DROP_ALL_CURSOR, DROP_ONE_CURSOR -> event.setCancelled(false);
@@ -72,7 +72,7 @@ public final class ItemContainerGuiListener implements Listener {
             return;
         }
 
-        ItemContainerGuiController<?> controller = controller(event.getInventory());
+        final ItemContainerGuiController<?> controller = controller(event.getInventory());
 
         if (controller == null) {
             return;
@@ -108,7 +108,7 @@ public final class ItemContainerGuiListener implements Listener {
             event.setCancelled(false);
 
             if (controller.isValidIndex(index)) {
-                ItemStack itemStack = event.getCurrentItem();
+                final ItemStack itemStack = event.getCurrentItem();
                 controller.setElement(index, null);
                 event.setCurrentItem(itemStack);
             }
@@ -117,7 +117,7 @@ public final class ItemContainerGuiListener implements Listener {
         public void dropOneSlot() {
             event.setCancelled(false);
 
-            ItemElement element = controller.getElement(event.getRawSlot());
+            final ItemElement element = controller.getElement(event.getRawSlot());
 
             if (element != null) {
                 if (element.amount() >= 2) {
@@ -131,15 +131,15 @@ public final class ItemContainerGuiListener implements Listener {
         public void hotbarSwap() {
             event.setCancelled(false);
 
-            ItemStack itemStack = event.getCurrentItem();
-            ItemStack hotbarItemStack = player.getInventory().getItem(event.getHotbarButton());
+            final ItemStack itemStack = event.getCurrentItem();
+            final ItemStack hotbarItemStack = player.getInventory().getItem(event.getHotbarButton());
 
             controller.setElement(event.getRawSlot(), hotbarItemStack != null ? Element.item(hotbarItemStack) : null);
             event.setCurrentItem(itemStack);
         }
 
         public void moveToOtherInventory() {
-            ItemStack itemStack = event.getCurrentItem();
+            final ItemStack itemStack = event.getCurrentItem();
 
             if (itemStack == null) {
                 return;
@@ -159,8 +159,8 @@ public final class ItemContainerGuiListener implements Listener {
                     break;
                 }
 
-                ItemElement element = controller.getElement(i);
-                ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
+                final ItemElement element = controller.getElement(i);
+                final ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
 
                 if (controller.getPolicy(i).isFixation() || (elementItemStack != null && !elementItemStack.isSimilar(itemStack))) {
                     continue;
@@ -172,7 +172,7 @@ public final class ItemContainerGuiListener implements Listener {
                     break;
                 }
 
-                int amount = Math.min(remaining, elementItemStack.getMaxStackSize() - element.amount());
+                final int amount = Math.min(remaining, elementItemStack.getMaxStackSize() - element.amount());
                 element.amount(element.amount() + amount);
                 remaining -= amount;
             }
@@ -189,7 +189,7 @@ public final class ItemContainerGuiListener implements Listener {
             event.setCancelled(false);
 
             if (controller.isValidIndex(index)) {
-                ItemStack itemStack = event.getCurrentItem();
+                final ItemStack itemStack = event.getCurrentItem();
                 controller.setElement(index, null);
                 event.setCurrentItem(itemStack);
             }
@@ -197,17 +197,17 @@ public final class ItemContainerGuiListener implements Listener {
 
         public void pickupHalf() {
             event.setCancelled(false);
-            ItemStack itemStack = event.getCurrentItem();
+            final ItemStack itemStack = event.getCurrentItem();
 
             if (itemStack == null) {
                 return;
             }
 
             if (controller.isValidIndex(index)) {
-                ItemElement element = controller.getElement(index);
+                final ItemElement element = controller.getElement(index);
 
                 if (element != null) {
-                    int remaining = element.amount() / 2;
+                    final int remaining = element.amount() / 2;
                     if (remaining > 0) {
                         element.amount(remaining);
                     } else {
@@ -220,11 +220,11 @@ public final class ItemContainerGuiListener implements Listener {
 
         public void placeAll() {
             event.setCancelled(false);
-            ItemStack itemStack = event.getCurrentItem();
-            ItemStack cursor = event.getCursor();
+            final ItemStack itemStack = event.getCurrentItem();
+            final ItemStack cursor = event.getCursor();
 
             if (controller.isValidIndex(index)) {
-                ItemElement element = controller.getElement(index);
+                final ItemElement element = controller.getElement(index);
 
                 if (element == null) {
                     controller.setElement(index, Element.item(cursor));
@@ -240,12 +240,12 @@ public final class ItemContainerGuiListener implements Listener {
             event.setCancelled(false);
 
             if (controller.isValidIndex(index)) {
-                ItemElement element = controller.getElement(index);
+                final ItemElement element = controller.getElement(index);
 
                 if (element != null) {
                     element.amount(element.amount() + 1);
                 } else {
-                    ItemStack itemStack = event.getCursor().clone();
+                    final ItemStack itemStack = event.getCursor().clone();
                     itemStack.setAmount(1);
                     controller.setElement(index, Element.item(itemStack));
                 }
@@ -254,15 +254,15 @@ public final class ItemContainerGuiListener implements Listener {
 
         public void placeSome() {
             event.setCancelled(false);
-            ItemElement element = controller.getElement(index);
-            ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
+            final ItemElement element = controller.getElement(index);
+            final ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
 
             if (!controller.isValidIndex(index) || elementItemStack == null) {
                 return;
             }
 
-            ItemStack cursorItemStack = event.getCursor();
-            int amount = Math.min(elementItemStack.getMaxStackSize(), element.amount() + cursorItemStack.getAmount());
+            final ItemStack cursorItemStack = event.getCursor();
+            final int amount = Math.min(elementItemStack.getMaxStackSize(), element.amount() + cursorItemStack.getAmount());
             element.amount(amount);
         }
 
@@ -270,8 +270,8 @@ public final class ItemContainerGuiListener implements Listener {
             event.setCancelled(false);
 
             if (controller.isValidIndex(index)) {
-                ItemStack itemStack = event.getCurrentItem();
-                ItemStack cursor = event.getCursor();
+                final ItemStack itemStack = event.getCurrentItem();
+                final ItemStack cursor = event.getCursor();
                 controller.setElement(index, Element.item(cursor));
                 event.setCurrentItem(itemStack);
             }

@@ -39,9 +39,7 @@ public final class AnvilGuiBuilderImpl extends ItemContainerGuiBuilderImpl<Anvil
     @Override
     public @NotNull AnvilGuiHooks build(@NotNull Player player) {
         Preconditions.checkArgument(player != null, "Player cannot be null.");
-        Gui gui = new Gui(player, title, elements.get(0), elements.get(1), elements.get(2), defaultPolicy, playerDefaultPolicy, policies, handlers);
-        Kunectron.create(gui, AnvilGui.class);
-        return gui;
+        return Kunectron.create(new Gui(player, title, elements.get(0), elements.get(1), elements.get(2), defaultPolicy, playerDefaultPolicy, policies, handlers), AnvilGui.class);
     }
 
     @AnvilGui

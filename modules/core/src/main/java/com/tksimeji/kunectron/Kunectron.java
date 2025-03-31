@@ -38,7 +38,7 @@ public final class Kunectron extends JavaPlugin {
 
     private static final @NotNull LinkedHashSet<Adapter> adapters = new LinkedHashSet<>();
 
-    private static @NotNull MarkupExtensionParser markupExtensionParse = MarkupExtensionParser.create();
+    private static @NotNull MarkupExtensionParser markupExtensionParse = MarkupExtensionParser.markupExtensionParser();
 
     @ApiStatus.Internal
     public static @NotNull Kunectron plugin() {
@@ -56,7 +56,7 @@ public final class Kunectron extends JavaPlugin {
     }
 
     public static <T> @NotNull T create(final @NotNull T gui) {
-        List<GuiType<?, ?>> types = GUI_TYPES.stream()
+        final List<GuiType<?, ?>> types = GUI_TYPES.stream()
                 .filter(type -> gui.getClass().isAnnotationPresent(type.getAnnotationClass()))
                 .toList();
 
@@ -69,10 +69,10 @@ public final class Kunectron extends JavaPlugin {
     public static <A extends Annotation, T> @NotNull T create(final @NotNull T gui, final @NotNull Class<A> annotation) {
         Preconditions.checkArgument(gui.getClass().isAnnotationPresent(annotation), String.format("'%s' is not annotated with '%s'.", gui.getClass().getName(), annotation.getName()));
 
-        GuiType<A, ?> type = getGuiType(annotation);
+        final GuiType<A, ?> type = getGuiType(annotation);
         Preconditions.checkArgument(type != null, "No gui type found to handle '" + annotation.getName() + "'.");
 
-        GuiController controller = type.createController(gui, gui.getClass().getAnnotation(annotation));
+        final GuiController controller = type.createController(gui, gui.getClass().getAnnotation(annotation));
         controllers.add(controller);
         controller.init();
         new KunectronGuiCreateEvent(gui, controller).callEvent();
@@ -92,7 +92,7 @@ public final class Kunectron extends JavaPlugin {
     }
 
     public static @NotNull GuiController getGuiControllerOrThrow(final @NotNull Object gui) {
-        GuiController controller = getGuiController(gui);
+        final GuiController controller = getGuiController(gui);
         if (controller == null) {
             throw new NullPointerException();
         }
@@ -168,6 +168,7 @@ public final class Kunectron extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MerchantGuiListener(), this);
         getServer().getPluginManager().registerEvents(new ServerListener(), this);
 
+        registerGuiType(AdvancementToastGuiType.instance(), this);
         registerGuiType(AnvilGuiType.instance(), this);
         registerGuiType(ChestGuiType.instance(), this);
         registerGuiType(MerchantGuiType.instance(), this);
@@ -176,10 +177,10 @@ public final class Kunectron extends JavaPlugin {
         registerAdapter(V1_21_1.INSTANCE);
         registerAdapter(V1_21_3.INSTANCE);
 
-        LocalDate localDate = LocalDate.now();
+        final LocalDate localDate = LocalDate.now();
 
-        int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
+        final int month = localDate.getMonthValue();
+        final int day = localDate.getDayOfMonth();
 
         if (month == 1 && day <= 3) {
             logger().info(Component.text(" _ __     ").color(NamedTextColor.WHITE));

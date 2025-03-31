@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface GuiHandler {
     int priority() default -1;
+
     boolean async() default false;
+
     boolean ignoreCancelled() default false;
 }

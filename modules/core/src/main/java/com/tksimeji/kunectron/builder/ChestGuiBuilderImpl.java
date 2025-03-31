@@ -28,15 +28,13 @@ public final class ChestGuiBuilderImpl extends ItemContainerGuiBuilderImpl<Chest
     @Override
     public @NotNull ChestGuiHooks build(final @NotNull Player player) {
         Preconditions.checkArgument(player != null, "Player cannot be null.");
-        Gui gui = new Gui(player, title, size, handlers);
+        final Gui gui = Kunectron.create(new Gui(player, title, size, handlers), ChestGui.class);
 
-        Kunectron.create(gui, ChestGui.class);
-
-        for (Map.Entry<Integer, ItemElement> entry : elements.entrySet()) {
+        for (final Map.Entry<Integer, ItemElement> entry : elements.entrySet()) {
             gui.useElement(entry.getKey(), entry.getValue());
         }
 
-        for (Map.Entry<Integer, ItemSlotPolicy> entry : policies.entrySet()) {
+        for (final Map.Entry<Integer, ItemSlotPolicy> entry : policies.entrySet()) {
             gui.usePolicy(entry.getKey(), entry.getValue());
         }
 

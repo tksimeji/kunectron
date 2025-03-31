@@ -47,7 +47,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(Kunectron.plugin(), () -> {
-            UUID uuid = Mojango.account(name).getUniqueId();
+            final UUID uuid = Mojango.account(name).getUniqueId();
             uuid(uuid);
             UUID_CACHE.put(name, uuid);
         });
@@ -60,7 +60,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
             return url((URL) null);
         }
 
-        Player player = Bukkit.getPlayer(uuid);
+        final Player player = Bukkit.getPlayer(uuid);
 
         if (player != null) {
             URL skin = player.getPlayerProfile().getTextures().getSkin();
@@ -70,7 +70,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(Kunectron.plugin(), () -> {
-            Skin skin = Mojango.account(uuid).getSkin();
+            final Skin skin = Mojango.account(uuid).getSkin();
             url(skin != null ? skin.getUrl() : null);
         });
         return this;
@@ -94,7 +94,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
         }
 
         try {
-            URL uri = URI.create(url).toURL();
+            final URL uri = URI.create(url).toURL();
             return url(uri);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Invalid url format: " + url);
@@ -122,8 +122,8 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
         final UUID uuid = UUID_CACHE.getOrDefault(this.url.toString(), UUID.randomUUID());
         UUID_CACHE.put(this.url.toString(), uuid);
 
-        PlayerProfile profile = Bukkit.createProfile(uuid);
-        PlayerTextures textures = profile.getTextures();
+        final PlayerProfile profile = Bukkit.createProfile(uuid);
+        final PlayerTextures textures = profile.getTextures();
 
         textures.setSkin(this.url);
         profile.setTextures(textures);
@@ -134,7 +134,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
 
     @Override
     public @NotNull ItemElement createCopy() {
-        PlayerHeadElementImpl copy = createCopy(new PlayerHeadElementImpl(), itemStack);
+        final PlayerHeadElementImpl copy = createCopy(new PlayerHeadElementImpl(), itemStack);
         copy.url = url;
         return copy;
     }

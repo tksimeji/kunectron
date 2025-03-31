@@ -10,7 +10,7 @@ import java.util.Set;
 
 public final class Classes {
     public static @NotNull Set<Class<?>> getClassTree(final @NotNull Class<?> aClass) {
-        Set<Class<?>> tree = new HashSet<>();
+        final Set<Class<?>> tree = new HashSet<>();
         tree.add(aClass);
 
         Class<?> superclass = aClass.getSuperclass();
@@ -24,13 +24,13 @@ public final class Classes {
     }
 
     public static @NotNull Set<Field> getFields(final @NotNull Class<?> aClass) {
-        Set<Field> fields = new HashSet<>();
+        final Set<Field> fields = new HashSet<>();
         getClassTree(aClass).forEach(clazz -> fields.addAll(Arrays.asList(clazz.getDeclaredFields())));
         return fields;
     }
 
     public static @NotNull Set<Method> getMethods(final @NotNull Class<?> aClass) {
-        Set<Method> methods = new HashSet<>();
+        final Set<Method> methods = new HashSet<>();
         getClassTree(aClass).forEach(clazz -> methods.addAll(Arrays.asList(clazz.getDeclaredMethods())));
         return methods;
     }

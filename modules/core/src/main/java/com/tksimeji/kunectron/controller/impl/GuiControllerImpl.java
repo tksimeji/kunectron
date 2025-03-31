@@ -27,13 +27,13 @@ import java.util.stream.IntStream;
 
 public abstract class GuiControllerImpl implements GuiController {
     public static @NotNull Set<Integer> parseIndexGroup(final @NotNull IndexGroup indexGroup) {
-        HashSet<Integer> indexes = new HashSet<>(Arrays.stream(indexGroup.indexes()).boxed().toList());
+        final HashSet<Integer> indexes = new HashSet<>(Arrays.stream(indexGroup.indexes()).boxed().toList());
 
         if (indexGroup.indexFrom() >= 0 && indexGroup.indexFrom() <= indexGroup.indexTo()) {
             indexes.addAll(IntStream.rangeClosed(indexGroup.indexFrom(), indexGroup.indexTo()).boxed().toList());
         }
 
-        for (int expectIndex : indexGroup.expectIndexes()) {
+        for (final int expectIndex : indexGroup.expectIndexes()) {
             indexes.remove(expectIndex);
         }
 
@@ -41,9 +41,9 @@ public abstract class GuiControllerImpl implements GuiController {
     }
 
     public static @NotNull Set<Integer> parseIndexGroup(final int[] value, final @NotNull IndexGroup[] indexGroups) {
-        Set<Integer> indexes = new HashSet<>(Arrays.stream(value).boxed().toList());
+        final Set<Integer> indexes = new HashSet<>(Arrays.stream(value).boxed().toList());
 
-        for (IndexGroup indexGroup : indexGroups) {
+        for (final IndexGroup indexGroup : indexGroups) {
             indexes.addAll(parseIndexGroup(indexGroup));
         }
 
@@ -80,7 +80,7 @@ public abstract class GuiControllerImpl implements GuiController {
 
     @Override
     public boolean callEvent(final @NotNull GuiEvent event) {
-        List<Method> handlers = this.handlers.stream().filter(handler -> handler.getParameterTypes()[0].isAssignableFrom(event.getClass())).toList();
+        final List<Method> handlers = this.handlers.stream().filter(handler -> handler.getParameterTypes()[0].isAssignableFrom(event.getClass())).toList();
 
         if (!new KunectronGuiEventCallEvent(event, this).callEvent()) {
             if (event instanceof CancellableEvent cancellableEvent) {
@@ -90,8 +90,8 @@ public abstract class GuiControllerImpl implements GuiController {
             return false;
         }
 
-        for (Method handler : handlers) {
-            GuiHandler annotation = handler.getAnnotation(GuiHandler.class);
+        for (final Method handler : handlers) {
+            final GuiHandler annotation = handler.getAnnotation(GuiHandler.class);
 
             if (event instanceof Cancellable && ((Cancellable) event).isCancelled() && annotation.ignoreCancelled()) {
                 continue;
@@ -133,7 +133,7 @@ public abstract class GuiControllerImpl implements GuiController {
 
     @ApiStatus.Internal
     protected final <A extends Annotation, T> @NotNull Pair<T, A> getDeclarationOrThrow(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
-        Pair<T, A> pair = getDeclaration(gui, annotation, aClass).orElse(null);
+        final Pair<T, A> pair = getDeclaration(gui, annotation, aClass).orElse(null);
         if (pair == null) {
             throw new NullPointerException(String.format("Required declaration field @%s %s not found.", annotation.getName(), aClass.getName()));
         }
@@ -147,7 +147,7 @@ public abstract class GuiControllerImpl implements GuiController {
                 .peek(field -> field.setAccessible(true))
                 .filter(field -> {
                     try {
-                        Object value = field.get(gui);
+                        final Object value = field.get(gui);
                         return value != null && aClass.isAssignableFrom(value.getClass());
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);

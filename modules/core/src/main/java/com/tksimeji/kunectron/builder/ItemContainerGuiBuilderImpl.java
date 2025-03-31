@@ -32,7 +32,7 @@ public abstract class ItemContainerGuiBuilderImpl<B extends ItemContainerGuiBuil
 
     @Override
     public @NotNull B element(final @NotNull IndexGroup[] indexGroups, final @NotNull ItemElement element) {
-        for (int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
+        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
             element(index, element);
         }
         return (B) this;
@@ -49,7 +49,7 @@ public abstract class ItemContainerGuiBuilderImpl<B extends ItemContainerGuiBuil
     @NotNull
     @Override
     public B policy(final @NotNull IndexGroup[] indexGroups, final @NotNull ItemSlotPolicy policy) {
-        for (int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
+        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
             policy(index, policy);
         }
         return (B) this;

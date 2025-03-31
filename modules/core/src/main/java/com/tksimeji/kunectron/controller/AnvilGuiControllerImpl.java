@@ -63,8 +63,8 @@ public final class AnvilGuiControllerImpl extends ItemContainerGuiControllerImpl
                 setResultElement(declaration.getLeft());
             });
 
-            for (Pair<ItemSlotPolicy, AnvilGui.Policy> declaration : getDeclarations(gui, AnvilGui.Policy.class, ItemSlotPolicy.class)) {
-                for (int index : parseAnnotation(declaration.getRight())) {
+            for (final Pair<ItemSlotPolicy, AnvilGui.Policy> declaration : getDeclarations(gui, AnvilGui.Policy.class, ItemSlotPolicy.class)) {
+                for (final int index : parseAnnotation(declaration.getRight())) {
                     setPolicy(index, declaration.getLeft());
                 }
             }
@@ -123,7 +123,7 @@ public final class AnvilGuiControllerImpl extends ItemContainerGuiControllerImpl
 
     @Override
     public void setElement(int index, @Nullable ItemElement element) {
-        ItemStack old = getInventory().getItem(index);
+        final ItemStack old = getInventory().getItem(index);
         if ((element == null && old == null) || (element != null && element.create(getLocale()).equals(old))) {
             return;
         }

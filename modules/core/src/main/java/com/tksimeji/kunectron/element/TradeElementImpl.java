@@ -182,8 +182,8 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
 
     @Override
     public @NotNull MerchantRecipe create() {
-        MerchantRecipe merchantRecipe = new MerchantRecipe(result, maxUses);
-        for (ItemStack ingredient : ingredients) {
+        final MerchantRecipe merchantRecipe = new MerchantRecipe(result, maxUses);
+        for (final ItemStack ingredient : ingredients) {
             merchantRecipe.addIngredient(ingredient);
         }
         return merchantRecipe;
@@ -191,7 +191,7 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
 
     @Override
     public @NotNull TradeElement createCopy() {
-        TradeElementImpl copy = new TradeElementImpl(result, ingredients.getIngredient1(), ingredients.getIngredient2());
+        final TradeElementImpl copy = new TradeElementImpl(result, ingredients.getIngredient1(), ingredients.getIngredient2());
         copy.maxUses = maxUses;
         copy.selectHandler = selectHandler;
         copy.purchaseHandler = purchaseHandler;
@@ -238,7 +238,7 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
 
         @Override
         public @NotNull Iterator<ItemStack> iterator() {
-            List<ItemStack> collection = new ArrayList<>();
+            final List<ItemStack> collection = new ArrayList<>();
             collection.add(ingredient1);
 
             if (hasIngredient2()) {

@@ -28,11 +28,9 @@ public final class MerchantGuiBuilderImpl extends ContainerGuiBuilderImpl<Mercha
     public @NotNull MerchantGuiHooks build(final @NotNull Player player) {
         Preconditions.checkArgument(player != null, "Player cannot be null.");
 
-        Gui gui = new Gui(player, title, handlers);
+        final Gui gui = Kunectron.create(new Gui(player, title, handlers), MerchantGui.class);
 
-        Kunectron.create(gui, MerchantGui.class);
-
-        for (TradeElement element : elements) {
+        for (final TradeElement element : elements) {
             gui.useAddElement(element);
         }
         return gui;

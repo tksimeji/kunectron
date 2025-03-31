@@ -40,10 +40,10 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
         objective = scoreboard.registerNewObjective(UUID.randomUUID().toString(), Criteria.DUMMY, title.asComponent());
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        Map<Integer, ComponentLike> lineMap = new TreeMap<>();
-        List<ComponentLike> lineList = new ArrayList<>();
+        final Map<Integer, ComponentLike> lineMap = new TreeMap<>();
+        final List<ComponentLike> lineList = new ArrayList<>();
 
-        for (Pair<ComponentLike, ScoreboardGui.Line> declaration : getDeclarations(gui, ScoreboardGui.Line.class, ComponentLike.class)) {
+        for (final Pair<ComponentLike, ScoreboardGui.Line> declaration : getDeclarations(gui, ScoreboardGui.Line.class, ComponentLike.class)) {
             ScoreboardGui.Line annotation = declaration.getRight();
             if (annotation.index() != -1) {
                 lineMap.put(annotation.index(), declaration.getLeft());
@@ -52,11 +52,11 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
             }
         }
 
-        for (Map.Entry<Integer, ComponentLike> line : lineMap.entrySet()) {
+        for (final Map.Entry<Integer, ComponentLike> line : lineMap.entrySet()) {
             setLine(line.getKey(), line.getValue());
         }
 
-        for (ComponentLike line : lineList) {
+        for (final ComponentLike line : lineList) {
             addLine(line);
         }
     }
@@ -117,7 +117,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
             return null;
         }
 
-        ScoreboardLine line = scoreboardLines.get(index);
+        final ScoreboardLine line = scoreboardLines.get(index);
         return line.getElement().create();
     }
 
@@ -128,7 +128,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
 
     @Override
     public void setLine(final int index, final @NotNull ComponentLike line) {
-        ComponentElement element = Element.component(line.asComponent(), markupExtensionContext);
+        final ComponentElement element = Element.component(line.asComponent(), markupExtensionContext);
 
         if (index >= scoreboardLines.size()) {
             for (int i = scoreboardLines.size(); i <= index; i++) {
@@ -197,7 +197,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
     public void close() {
         Kunectron.deleteGuiController(this);
         objective.unregister();
-        for (Player player : getPlayers()) {
+        for (final Player player : getPlayers()) {
             removePlayer(player);
         }
     }
@@ -210,7 +210,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
             objective.displayName(getTitle());
         }
 
-        for (ScoreboardLine line : scoreboardLines) {
+        for (final ScoreboardLine line : scoreboardLines) {
             if (!Objects.equals(line.getElement().create(), line.getRendered())) {
                 line.render();
             }
@@ -218,7 +218,7 @@ public final class ScoreboardGuiControllerImpl extends GuiControllerImpl impleme
     }
 
     private void updateScores() {
-        for (ScoreboardLine scoreboardLine : scoreboardLines) {
+        for (final ScoreboardLine scoreboardLine : scoreboardLines) {
             scoreboardLine.updateScore();
         }
     }

@@ -25,7 +25,7 @@ public final class DivididedByOperator implements BinaryOperator<NumberNode<?>> 
             return new IntegerNumberNode(leftInteger / rightInteger);
         }
 
-        double result = leftNumber.doubleValue() / rightNumber.doubleValue();
+        final double result = leftNumber.doubleValue() / rightNumber.doubleValue();
 
         if (result == Math.floor(result) && !Double.isInfinite(result)) {
             return new IntegerNumberNode((int) result);

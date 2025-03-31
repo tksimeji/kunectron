@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ServerListener implements Listener {
     @EventHandler
     public void onServerTickStart(final @NotNull ServerTickStartEvent event) {
-        for (GuiController controller : Kunectron.getGuiControllers()) {
+        for (final GuiController controller : Kunectron.getGuiControllers()) {
             if (!(controller instanceof TickableGuiController tickable)) {
                 continue;
             }

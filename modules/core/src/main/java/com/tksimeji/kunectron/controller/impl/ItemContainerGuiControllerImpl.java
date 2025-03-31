@@ -45,12 +45,12 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     @Override
     public void setElement(final int index, final @Nullable ItemElement element) {
-        ItemStack old = getInventory().getItem(index);
+        final ItemStack old = getInventory().getItem(index);
         if (!isValidIndex(index) || (element == null && old == null) || (element != null && element.create(getLocale()).equals(old))) {
             return;
         }
 
-        ItemElement aElement = element != null ? element.createCopy() : null;
+        final ItemElement aElement = element != null ? element.createCopy() : null;
 
         if (aElement instanceof MarkupExtensionSupport markupExtensionSupport) {
             markupExtensionSupport.setContext(markupExtensionContext);
@@ -62,10 +62,10 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     @Override
     public @NotNull ItemSlotPolicy getPolicy(final int index) {
-        ItemElement element = getElement(index);
+        final ItemElement element = getElement(index);
 
         if (element != null) {
-            ItemSlotPolicy elementPolicy = element.policy();
+            final ItemSlotPolicy elementPolicy = element.policy();
 
             if (elementPolicy != null) {
                 return elementPolicy;
@@ -123,7 +123,7 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     @Override
     public void tick() {
-        for (Map.Entry<Integer, ItemElement> entry : getElements().entrySet()) {
+        for (final Map.Entry<Integer, ItemElement> entry : getElements().entrySet()) {
             setElement(entry.getKey(), entry.getValue());
         }
     }

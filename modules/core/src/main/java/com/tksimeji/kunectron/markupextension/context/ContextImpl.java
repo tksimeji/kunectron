@@ -50,7 +50,7 @@ class ContextImpl<T> implements Context<T> {
     @Override
     public @Nullable Object getState(final @NotNull String name) {
         try {
-            Field field = object.getClass().getDeclaredField(name);
+            final Field field = object.getClass().getDeclaredField(name);
             field.setAccessible(true);
             return field.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -63,7 +63,7 @@ class ContextImpl<T> implements Context<T> {
         List<Class<?>> argTypes = Arrays.stream(args).map(arg -> arg != null ? arg.getClass() : Void.class).toList();
 
         try {
-            Method method = Classes.getMethods(object.getClass()).stream()
+            final Method method = Classes.getMethods(object.getClass()).stream()
                     .filter(aMethod -> aMethod.getName().equals(name))
                     .filter(aMethod -> aMethod.getParameterTypes().length == args.length)
                     .filter(aMethod -> {

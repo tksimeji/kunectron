@@ -32,9 +32,7 @@ public class ScoreboardGuiBuilderImpl extends IGuiBuilderImpl<ScoreboardGuiBuild
 
     @Override
     public @NotNull ScoreboardGuiHooks build() {
-        Gui gui = new Gui(handlers);
-
-        Kunectron.create(gui, ScoreboardGui.class);
+        final Gui gui = Kunectron.create(new Gui(handlers), ScoreboardGui.class);
 
         gui.useTitle(title);
 

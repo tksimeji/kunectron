@@ -47,7 +47,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     public ItemElementImpl(final @NotNull ItemType type) {
         this(type.createItemStack(), false);
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.values());
         Kunectron.adapter().resetAttributeModifiers(itemStack, itemMeta, Kunectron.plugin());
         itemStack.setItemMeta(itemMeta);
@@ -65,7 +65,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         this.itemStack = itemStack;
         this.itemStackMode = itemStackMode;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
 
         title(itemMeta.displayName());
         lore(itemMeta.hasLore() ? itemMeta.lore() : List.of());
@@ -112,8 +112,8 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return Component.empty();
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        Component title = Optional.ofNullable(itemMeta.displayName()).orElse(Component.empty());
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        final Component title = Optional.ofNullable(itemMeta.displayName()).orElse(Component.empty());
         return markupExtensionContext != null && Components.hasMarkupExtension(title) ? Components.markupExtension(title, markupExtensionContext) : title;
     }
 
@@ -125,7 +125,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
         this.title = title != null ? title.asComponent() : null;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.displayName((title != null ? this.title : Component.empty()).colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
         itemMeta.setHideTooltip(!itemStackMode && this.title == null && this.lore.isEmpty());
 
@@ -144,8 +144,8 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return List.of();
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        List<Component> lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        final List<Component> lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
         return markupExtensionContext != null && lore.stream().anyMatch(Components::hasMarkupExtension) ? lore.stream().map(component -> Components.markupExtension(component, markupExtensionContext)).toList() : lore;
     }
 
@@ -161,7 +161,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
                 .map(component -> component.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
                 .toList();
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.lore(lore);
         itemMeta.setHideTooltip(!itemStackMode && title == null && lore.isEmpty());
         itemStack.setItemMeta(itemMeta);
@@ -208,8 +208,9 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return this;
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setCustomModelData(0 <= customModelData ? customModelData : null);
+        itemStack.setItemMeta(itemMeta);
         return this;
     }
 
@@ -224,10 +225,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return this;
         }
 
-        Key key = itemModel != null ? itemModel.key() : null;
+        final Key key = itemModel != null ? itemModel.key() : null;
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setItemModel(key != null ? new NamespacedKey(key.namespace(), key.value()) : null);
+        itemStack.setItemMeta(itemMeta);
         return this;
     }
 
@@ -242,7 +244,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return this;
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (aura) {
             itemMeta.addEnchant(Enchantment.INFINITY, 1, false);
@@ -324,8 +326,8 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull ItemStack create(final @NotNull Locale locale) {
-        ItemStack itemStack = create();
-        ItemMeta itemMeta = itemStack.getItemMeta();
+        final ItemStack itemStack = create();
+        final ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (itemMeta == null) {
             return itemStack;
