@@ -1,5 +1,6 @@
 package com.tksimeji.kunectron.adapter
 
+import com.tksimeji.kunectron.AdvancementToastGui
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.inventory.AnvilInventory
@@ -8,9 +9,11 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.java.JavaPlugin
 
 interface Adapter {
-    fun supports(): Array<String>
+    val versions: Array<String>
 
-    fun fun_u32qi0(c1: Player, c2: Component): AnvilInventory
+    fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit)
 
-    fun fun_adp3uc(c1: ItemStack, c2: ItemMeta, c3: JavaPlugin)
+    fun createAnvilInventory(player: Player, title: Component): AnvilInventory
+
+    fun resetAttributeModifiers(itemStack: ItemStack, itemMeta: ItemMeta, plugin: JavaPlugin)
 }

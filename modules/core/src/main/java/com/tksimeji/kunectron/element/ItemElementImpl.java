@@ -49,7 +49,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         this(type.createItemStack(), false);
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.addItemFlags(ItemFlag.values());
-        Kunectron.adapter().fun_adp3uc(itemStack, itemMeta, Kunectron.plugin());
+        Kunectron.adapter().resetAttributeModifiers(itemStack, itemMeta, Kunectron.plugin());
         itemStack.setItemMeta(itemMeta);
     }
 

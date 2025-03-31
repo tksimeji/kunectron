@@ -137,7 +137,7 @@ public final class Kunectron extends JavaPlugin {
 
     public static @Nullable Adapter getAdapter(final @NotNull String minecraftVersion) {
         return adapters.stream()
-                .filter(adapter -> Arrays.asList(adapter.supports()).contains(minecraftVersion))
+                .filter(adapter -> Arrays.asList(adapter.getVersions()).contains(minecraftVersion))
                 .findFirst()
                 .orElse(null);
     }
