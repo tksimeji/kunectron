@@ -321,7 +321,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return itemStack.clone();
         }
 
-        return ((ItemElementImpl) createCopy().title(title()).lore(lore())).itemStack;
+        return ((ItemElementImpl) createCopy()).itemStack;
     }
 
     @Override
@@ -359,15 +359,18 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             to.itemStack = itemStack;
         }
 
-        to.title = title;
-        to.lore = lore;
-        to.policy = policy;
-        to.sound = sound;
-        to.soundVolume = soundVolume;
-        to.soundPitch = soundPitch;
-        to.handler = handler;
-
+        to.title(title);
+        to.lore(lore);
+        to.policy(policy);
+        to.sound(sound, soundVolume, soundPitch);
         to.markupExtensionContext = markupExtensionContext;
+
+        if (handler instanceof Handler1 handler1) {
+            to.handler(handler1);
+        } else if (handler instanceof Handler2 handler2) {
+            to.handler(handler2);
+        }
+
         return to;
     }
 }
