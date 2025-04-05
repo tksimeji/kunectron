@@ -62,6 +62,8 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
     }
 
     private ItemElementImpl(final @NotNull ItemStack itemStack, final boolean itemStackMode) {
+        Preconditions.checkArgument(itemStack.getItemMeta() != null, "Item elements cannot be created from an item stack that does not have an item meta.");
+
         this.itemStack = itemStack;
         this.itemStackMode = itemStackMode;
 
@@ -108,10 +110,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull Component title() {
-        if (!itemStack.hasItemMeta()) {
-            return Component.empty();
-        }
-
         final ItemMeta itemMeta = itemStack.getItemMeta();
         final Component title = Optional.ofNullable(itemMeta.displayName()).orElse(Component.empty());
         return markupExtensionContext != null && Components.hasMarkupExtension(title) ? Components.markupExtension(title, markupExtensionContext) : title;
@@ -119,10 +117,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull ItemElement title(final @Nullable ComponentLike title) {
-        if (!itemStack.hasItemMeta()) {
-            return this;
-        }
-
         this.title = title != null ? title.asComponent() : null;
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -140,10 +134,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull List<Component> lore() {
-        if (!itemStack.hasItemMeta()) {
-            return List.of();
-        }
-
         final ItemMeta itemMeta = itemStack.getItemMeta();
         final List<Component> lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
         return markupExtensionContext != null && lore.stream().anyMatch(Components::hasMarkupExtension) ? lore.stream().map(component -> Components.markupExtension(component, markupExtensionContext)).toList() : lore;
@@ -152,10 +142,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
     @Override
     public @NotNull ItemElement lore(final @NotNull Collection<Component> components) {
         Preconditions.checkArgument(components != null, "Components cannot be null.");
-
-        if (!itemStack.hasItemMeta()) {
-            return this;
-        }
 
         lore = components.stream()
                 .map(component -> component.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
@@ -195,7 +181,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public int customModelData() {
-        if (!itemStack.hasItemMeta() || itemStack.getItemMeta().hasCustomModelData()) {
+        if (itemStack.getItemMeta().hasCustomModelData()) {
             return -1;
         }
 
@@ -204,10 +190,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull ItemElement customModelData(final int customModelData) {
-        if (!itemStack.hasItemMeta()) {
-            return this;
-        }
-
         final ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setCustomModelData(0 <= customModelData ? customModelData : null);
         itemStack.setItemMeta(itemMeta);
@@ -216,15 +198,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @Nullable Key itemModel() {
-        return itemStack.hasItemMeta() ? itemStack.getItemMeta().getItemModel() : null;
+        return itemStack.getItemMeta().getItemModel();
     }
 
     @Override
     public @NotNull ItemElement itemModel(final @Nullable Keyed itemModel) {
-        if (!itemStack.hasItemMeta()) {
-            return this;
-        }
-
         final Key key = itemModel != null ? itemModel.key() : null;
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -235,15 +213,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public boolean aura() {
-        return itemStack.hasItemMeta() && itemStack.getItemMeta().hasEnchants();
+        return itemStack.getItemMeta().hasEnchants();
     }
 
     @Override
     public @NotNull ItemElement aura(final boolean aura) {
-        if (!itemStack.hasItemMeta()) {
-            return this;
-        }
-
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
         if (aura) {
