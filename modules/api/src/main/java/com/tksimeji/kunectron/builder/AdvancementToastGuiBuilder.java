@@ -28,5 +28,8 @@ public interface AdvancementToastGuiBuilder extends GuiBuilder<AdvancementToastG
     @Contract("_ -> this")
     @NotNull AdvancementToastGuiBuilder message(final @NotNull ComponentLike message);
 
+    @Contract("_ -> this")
+    @NotNull AdvancementToastGuiBuilder message(final @NotNull String message);
+
     @NotNull AdvancementToastGuiHooks build(final @NotNull Player player);
 }

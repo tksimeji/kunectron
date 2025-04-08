@@ -49,6 +49,11 @@ public class AdvancementToastGuiBuilderImpl extends IGuiBuilderImpl<AdvancementT
     }
 
     @Override
+    public @NotNull AdvancementToastGuiBuilder message(@NotNull String message) {
+        return message(Component.text(message));
+    }
+
+    @Override
     public @NotNull AdvancementToastGuiHooks build(final @NotNull Player player) {
         return Kunectron.create(new Gui(player, type, icon, message, handlers), AdvancementToastGui.class);
     }
