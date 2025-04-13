@@ -10,6 +10,7 @@ import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextension.MarkupExtensionParser;
 import com.tksimeji.kunectron.type.*;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -173,6 +174,7 @@ public final class Kunectron extends JavaPlugin {
         registerGuiType(ChestGuiType.instance(), this);
         registerGuiType(MerchantGuiType.instance(), this);
         registerGuiType(ScoreboardGuiType.instance(), this);
+        registerGuiType(SignGuiType.instance(), this);
 
         registerAdapter(V1_21_1.INSTANCE);
         registerAdapter(V1_21_3.INSTANCE);

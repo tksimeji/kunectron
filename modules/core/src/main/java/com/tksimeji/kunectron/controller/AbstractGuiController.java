@@ -1,8 +1,7 @@
-package com.tksimeji.kunectron.controller.impl;
+package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.event.CancellableEvent;
 import com.tksimeji.kunectron.event.GuiEvent;
 import com.tksimeji.kunectron.event.GuiHandler;
@@ -22,10 +21,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public abstract class GuiControllerImpl implements GuiController {
+public abstract class AbstractGuiController implements GuiController {
     public static @NotNull Set<Integer> parseIndexGroup(final @NotNull IndexGroup indexGroup) {
         final HashSet<Integer> indexes = new HashSet<>(Arrays.stream(indexGroup.indexes()).boxed().toList());
 
@@ -56,7 +54,7 @@ public abstract class GuiControllerImpl implements GuiController {
 
     protected final @NotNull Set<Method> handlers = new LinkedHashSet<>();
 
-    public GuiControllerImpl(final @NotNull Object gui) {
+    public AbstractGuiController(final @NotNull Object gui) {
         this.gui = gui;
         markupExtensionContext = Context.mutable(gui);
 
@@ -141,7 +139,7 @@ public abstract class GuiControllerImpl implements GuiController {
     }
 
     @ApiStatus.Internal
-    protected final <A extends Annotation, T> @NotNull Set<Pair<T, A>> getDeclarations(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
+    protected final <A extends Annotation, T> @NotNull List<Pair<T, A>> getDeclarations(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
         return Classes.getFields(gui.getClass()).stream()
                 .filter(field -> field.isAnnotationPresent(annotation))
                 .peek(field -> field.setAccessible(true))
@@ -160,6 +158,6 @@ public abstract class GuiControllerImpl implements GuiController {
                         throw new RuntimeException(e);
                     }
                 })
-                .collect(Collectors.toSet());
+                .toList();
     }
 }

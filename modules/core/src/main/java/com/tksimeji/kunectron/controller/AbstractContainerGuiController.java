@@ -1,13 +1,12 @@
-package com.tksimeji.kunectron.controller.impl;
+package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.controller.ContainerGuiController;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ContainerGuiControllerImpl<I extends Inventory> extends GuiControllerImpl implements ContainerGuiController<I> {
-    public ContainerGuiControllerImpl(@NotNull Object gui) {
+public abstract class AbstractContainerGuiController<I extends Inventory> extends AbstractGuiController implements ContainerGuiController<I> {
+    public AbstractContainerGuiController(@NotNull Object gui) {
         super(gui);
     }
 

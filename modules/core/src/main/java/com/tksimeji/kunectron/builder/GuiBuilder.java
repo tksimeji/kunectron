@@ -23,4 +23,8 @@ public interface GuiBuilder<B extends IGuiBuilder<B, H>, H extends Hooks> extend
     static @NotNull ScoreboardGuiBuilder scoreboard() {
         return new ScoreboardGuiBuilderImpl();
     }
+
+    static @NotNull SignGuiBuilder sign() {
+        return new SignGuiBuilderImpl();
+    }
 }

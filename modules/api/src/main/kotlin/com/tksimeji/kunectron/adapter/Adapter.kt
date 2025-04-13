@@ -1,7 +1,9 @@
 package com.tksimeji.kunectron.adapter
 
 import com.tksimeji.kunectron.AdvancementToastGui
+import com.tksimeji.kunectron.SignGui
 import net.kyori.adventure.text.Component
+import org.bukkit.DyeColor
 import org.bukkit.entity.Player
 import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.ItemStack
@@ -13,6 +15,10 @@ interface Adapter {
     fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit)
 
     fun createAnvilInventory(player: Player, title: Component): AnvilInventory
+
+    fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (lines: Array<String>) -> Unit)
+
+    fun closeSign(player: Player)
 
     fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean
 

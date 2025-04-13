@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.ScoreboardGui;
 import com.tksimeji.kunectron.controller.ScoreboardGuiController;
-import com.tksimeji.kunectron.controller.ScoreboardGuiControllerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -27,6 +26,6 @@ public class ScoreboardGuiType implements GuiType<ScoreboardGui, ScoreboardGuiCo
 
     @Override
     public @NotNull ScoreboardGuiController createController(final @NotNull Object gui, final @NotNull ScoreboardGui annotation) {
-        return new ScoreboardGuiControllerImpl(gui);
+        return new ScoreboardGuiController(gui);
     }
 }

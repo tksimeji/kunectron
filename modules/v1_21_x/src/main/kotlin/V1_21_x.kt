@@ -1,17 +1,26 @@
 package com.tksimeji.kunectron.adapter
 
 import com.tksimeji.kunectron.AdvancementToastGui
+import com.tksimeji.kunectron.SignGui
+import io.netty.channel.ChannelHandlerContext
+import io.netty.handler.codec.MessageToMessageDecoder
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
 import net.minecraft.advancements.*
 import net.minecraft.advancements.critereon.ImpossibleTrigger
 import net.minecraft.core.BlockPos
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
+import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.inventory.AnvilMenu
 import net.minecraft.world.inventory.ContainerLevelAccess
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.entity.SignBlockEntity
 import org.bukkit.Bukkit
+import org.bukkit.DyeColor
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.event.CraftEventFactory
 import org.bukkit.craftbukkit.inventory.CraftItemStack
@@ -23,6 +32,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 abstract class V1_21_x: Adapter {
+    private val signPositions = mutableMapOf<UUID, BlockPos>()
+
     override fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit) {
         val resourceLocation = ResourceLocation.withDefaultNamespace(UUID.randomUUID().toString())
 
@@ -73,5 +84,87 @@ abstract class V1_21_x: Adapter {
         nmsPlayer.initMenu(container)
 
         return inventory
+    }
+
+    override fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (Array<String>) -> Unit) {
+        val nmsPlayer = (player as CraftPlayer).handle
+
+        val playerLocation = player.location
+        val blockPos = BlockPos(playerLocation.blockX, playerLocation.blockY, playerLocation.blockZ)
+
+        signPositions[player.uniqueId] = blockPos
+
+        val block = when (signType) {
+            SignGui.SignType.OAK -> Blocks.OAK_SIGN
+            SignGui.SignType.SPRUCE -> Blocks.SPRUCE_SIGN
+            SignGui.SignType.BIRCH -> Blocks.BIRCH_SIGN
+            SignGui.SignType.JUNGLE -> Blocks.JUNGLE_SIGN
+            SignGui.SignType.ACACIA -> Blocks.ACACIA_SIGN
+            SignGui.SignType.DARK_OAK -> Blocks.DARK_OAK_SIGN
+            SignGui.SignType.MANGROVE -> Blocks.MANGROVE_SIGN
+            SignGui.SignType.CHERRY -> Blocks.CHERRY_SIGN
+            SignGui.SignType.PALE_OAK -> Blocks.PALE_OAK_SIGN
+            SignGui.SignType.BAMBOO -> Blocks.BAMBOO_SIGN
+            SignGui.SignType.CRIMSON -> Blocks.CRIMSON_SIGN
+            SignGui.SignType.WAPPED -> Blocks.WARPED_SIGN
+        }
+
+        val color = when (textColor) {
+            DyeColor.WHITE -> net.minecraft.world.item.DyeColor.WHITE
+            DyeColor.ORANGE -> net.minecraft.world.item.DyeColor.ORANGE
+            DyeColor.MAGENTA -> net.minecraft.world.item.DyeColor.MAGENTA
+            DyeColor.LIGHT_BLUE -> net.minecraft.world.item.DyeColor.LIGHT_BLUE
+            DyeColor.YELLOW -> net.minecraft.world.item.DyeColor.YELLOW
+            DyeColor.LIME -> net.minecraft.world.item.DyeColor.LIME
+            DyeColor.PINK -> net.minecraft.world.item.DyeColor.PINK
+            DyeColor.GRAY -> net.minecraft.world.item.DyeColor.GRAY
+            DyeColor.LIGHT_GRAY -> net.minecraft.world.item.DyeColor.LIGHT_GRAY
+            DyeColor.CYAN -> net.minecraft.world.item.DyeColor.CYAN
+            DyeColor.PURPLE -> net.minecraft.world.item.DyeColor.PURPLE
+            DyeColor.BLUE -> net.minecraft.world.item.DyeColor.BLUE
+            DyeColor.BROWN -> net.minecraft.world.item.DyeColor.BROWN
+            DyeColor.GREEN -> net.minecraft.world.item.DyeColor.GREEN
+            DyeColor.RED -> net.minecraft.world.item.DyeColor.RED
+            DyeColor.BLACK -> net.minecraft.world.item.DyeColor.BLACK
+        }
+
+        val sign = SignBlockEntity(blockPos, block.defaultBlockState())
+        var signText = sign.frontText
+            .setColor(color)
+            .setHasGlowingText(glowing)
+
+        for ((index, line) in lines.withIndex()) {
+            signText = signText.setMessage(index, net.minecraft.network.chat.Component.literal(line ?: ""))
+        }
+
+        val connection = nmsPlayer.connection
+
+        sign.setText(signText, true)
+        player.sendBlockChange(playerLocation, block.defaultBlockState().createCraftBlockData())
+        sign.level = nmsPlayer.level()
+        connection.sendPacket(sign.updatePacket!!)
+        sign.level = null
+        connection.sendPacket(ClientboundOpenSignEditorPacket(blockPos, true))
+
+        val channel = connection.connection.channel
+
+        channel.pipeline().addAfter("decoder", "sign_update_listener", object : MessageToMessageDecoder<ServerboundSignUpdatePacket>() {
+            override fun decode(ctx: ChannelHandlerContext, packet: ServerboundSignUpdatePacket, out: MutableList<Any>) {
+                if (packet.pos == blockPos) {
+                    closeSign(player)
+                    onClose(packet.lines)
+                    channel.pipeline().remove(this)
+                }
+                out.add(packet)
+            }
+        })
+    }
+
+    override fun closeSign(player: Player) {
+        val blockPos = signPositions[player.uniqueId] ?: return
+        val nmsPlayer = (player as CraftPlayer).handle
+        val serverLevel = nmsPlayer.level()
+        val blockState = serverLevel.getBlockState(blockPos)
+        nmsPlayer.connection.sendPacket(ClientboundBlockUpdatePacket(blockPos, blockState))
     }
 }

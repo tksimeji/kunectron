@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.AdvancementToastGui;
 import com.tksimeji.kunectron.controller.AdvancementToastGuiController;
-import com.tksimeji.kunectron.controller.AdvancementToastGuiControllerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -30,6 +29,6 @@ public final class AdvancementToastGuiType implements GuiType<AdvancementToastGu
 
     @Override
     public @NotNull AdvancementToastGuiController createController(final @NotNull Object gui, final @NotNull AdvancementToastGui annotation) {
-        return new AdvancementToastGuiControllerImpl(gui);
+        return new AdvancementToastGuiController(gui);
     }
 }

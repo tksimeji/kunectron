@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.MerchantGui;
 import com.tksimeji.kunectron.controller.MerchantGuiController;
-import com.tksimeji.kunectron.controller.MerchantGuiControllerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -27,6 +26,6 @@ public final class MerchantGuiType implements GuiType<MerchantGui, MerchantGuiCo
 
     @Override
     public @NotNull MerchantGuiController createController(final @NotNull Object gui, final @NotNull MerchantGui annotation) {
-        return new MerchantGuiControllerImpl(gui);
+        return new MerchantGuiController(gui);
     }
 }

@@ -108,11 +108,9 @@ public interface AnvilGuiHooks extends IAnvilGuiHooks {
 
     private @NotNull AnvilGuiController controller() {
         final GuiController controller = Kunectron.getGuiController(this);
-
-        if (!(controller instanceof AnvilGuiController)) {
-            throw new IllegalStateException("No gui controller found.");
+        if (controller instanceof AnvilGuiController anvilGuiController) {
+            return anvilGuiController;
         }
-
-        return (AnvilGuiController) controller;
+        throw new IllegalStateException("No gui controller found.");
     }
 }

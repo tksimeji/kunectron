@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ScoreboardGuiEvents {
     private ScoreboardGuiEvents() {
+        throw new UnsupportedOperationException();
     }
 
     public interface InitEvent extends GuiEvent {

@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.AnvilGui;
 import com.tksimeji.kunectron.controller.AnvilGuiController;
-import com.tksimeji.kunectron.controller.AnvilGuiControllerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -30,6 +29,6 @@ public final class AnvilGuiType implements GuiType<AnvilGui, AnvilGuiController>
 
     @Override
     public @NotNull AnvilGuiController createController(final @NotNull Object gui, final @NotNull AnvilGui annotation) {
-        return new AnvilGuiControllerImpl(gui, annotation);
+        return new AnvilGuiController(gui, annotation);
     }
 }

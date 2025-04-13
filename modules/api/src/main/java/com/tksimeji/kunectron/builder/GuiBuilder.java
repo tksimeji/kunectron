@@ -24,4 +24,8 @@ public interface GuiBuilder<B extends IGuiBuilder<B, H>, H extends Hooks> extend
     static @NotNull ScoreboardGuiBuilder scoreboard() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
+
+    static @NotNull SignGuiBuilder sign() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
 }

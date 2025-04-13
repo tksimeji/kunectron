@@ -1,21 +1,19 @@
-package com.tksimeji.kunectron.controller.impl;
+package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.IndexGroup;
-import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extends ContainerGuiControllerImpl<I> implements ItemContainerGuiController<I> {
+public abstract class AbstractItemContainerGuiController<I extends Inventory> extends AbstractContainerGuiController<I> implements ItemContainerGuiController<I> {
     private final @NotNull Map<Integer, ItemElement> elements = new HashMap<>();
 
     private final @NotNull Map<Integer, ItemSlotPolicy> policies = new HashMap<>();
@@ -23,11 +21,11 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
     private @NotNull ItemSlotPolicy defaultPolicy;
     private @NotNull ItemSlotPolicy playerDefaultPolicy;
 
-    public ItemContainerGuiControllerImpl(final @NotNull Object gui) {
+    public AbstractItemContainerGuiController(final @NotNull Object gui) {
         this(gui, Policy.itemSlot(false), Policy.itemSlot(false));
     }
 
-    public ItemContainerGuiControllerImpl(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy) {
+    public AbstractItemContainerGuiController(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy) {
         super(gui);
         this.defaultPolicy = defaultPolicy;
         this.playerDefaultPolicy = playerDefaultPolicy;
@@ -128,12 +126,10 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
         }
     }
 
-    @ApiStatus.Internal
     protected @NotNull Set<Integer> parseIndexGroup(final @NotNull IndexGroup indexGroup, final boolean player) {
         return parseIndexGroup(indexGroup).stream().map(index -> player ? index + getInventory().getSize() : index).collect(Collectors.toSet());
     }
 
-    @ApiStatus.Internal
     protected @NotNull Set<Integer> parseIndexGroup(final int[] value, final @NotNull IndexGroup[] indexGroups, final boolean player) {
         return parseIndexGroup(value, indexGroups).stream().map(index -> player ? index + getInventory().getSize() : index).collect(Collectors.toSet());
     }

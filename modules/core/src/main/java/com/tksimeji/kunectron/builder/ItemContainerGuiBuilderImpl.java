@@ -2,7 +2,7 @@ package com.tksimeji.kunectron.builder;
 
 import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.IndexGroup;
-import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
+import com.tksimeji.kunectron.controller.AbstractGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.hooks.ItemContainerGuiHooks;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
@@ -32,7 +32,7 @@ public abstract class ItemContainerGuiBuilderImpl<B extends ItemContainerGuiBuil
 
     @Override
     public @NotNull B element(final @NotNull IndexGroup[] indexGroups, final @NotNull ItemElement element) {
-        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
+        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> AbstractGuiController.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
             element(index, element);
         }
         return (B) this;
@@ -49,7 +49,7 @@ public abstract class ItemContainerGuiBuilderImpl<B extends ItemContainerGuiBuil
     @NotNull
     @Override
     public B policy(final @NotNull IndexGroup[] indexGroups, final @NotNull ItemSlotPolicy policy) {
-        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> GuiControllerImpl.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
+        for (final int index : Arrays.stream(indexGroups).flatMap(indexGroup -> AbstractGuiController.parseIndexGroup(indexGroup).stream()).collect(Collectors.toSet())) {
             policy(index, policy);
         }
         return (B) this;

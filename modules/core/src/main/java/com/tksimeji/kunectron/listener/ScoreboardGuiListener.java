@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public final class ScoreboardGuiListener implements Listener {
     @EventHandler
     public void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
-        final ScoreboardGuiController controller = ScoreboardGuiController.get(event.getPlayer());
+        final ScoreboardGuiController controller = ScoreboardGuiController.lookup(event.getPlayer());
 
         if (controller == null) {
             return;

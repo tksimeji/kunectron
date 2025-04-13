@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public final class MerchantGuiListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPurchase(final @NotNull PlayerPurchaseEvent event) {
-        final MerchantGuiController controller = MerchantGuiController.get(event.getPlayer());
+        final MerchantGuiController controller = MerchantGuiController.lookup(event.getPlayer());
 
         if (controller == null) {
             return;
@@ -29,7 +29,7 @@ public final class MerchantGuiListener implements Listener {
             return;
         }
 
-        final MerchantGuiController controller = MerchantGuiController.get(player);
+        final MerchantGuiController controller = MerchantGuiController.lookup(player);
 
         if (controller == null) {
             return;

@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.ChestGui;
 import com.tksimeji.kunectron.controller.ChestGuiController;
-import com.tksimeji.kunectron.controller.ChestGuiControllerImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Singleton;
@@ -30,6 +29,6 @@ public final class ChestGuiType implements GuiType<ChestGui, ChestGuiController>
 
     @Override
     public @NotNull ChestGuiController createController(final @NotNull Object gui, final @NotNull ChestGui annotation) {
-        return new ChestGuiControllerImpl(gui);
+        return new ChestGuiController(gui);
     }
 }

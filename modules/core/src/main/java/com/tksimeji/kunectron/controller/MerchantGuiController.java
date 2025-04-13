@@ -1,41 +1,178 @@
 package com.tksimeji.kunectron.controller;
 
+import com.tksimeji.kunectron.MerchantGui;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.element.TradeElement;
+import com.tksimeji.kunectron.element.TradeElementImpl;
+import com.tksimeji.kunectron.event.merchant.*;
 import com.tksimeji.kunectron.type.MerchantGuiType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.MerchantInventory;
-import org.jetbrains.annotations.ApiStatus;
+import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.*;
 
-public sealed interface MerchantGuiController extends ContainerGuiController<MerchantInventory> permits MerchantGuiControllerImpl {
-    @ApiStatus.Internal
-    static @Nullable MerchantGuiController get(final @NotNull Player player) {
-        return Kunectron.getGuiControllers(MerchantGuiType.instance())
-                .stream()
+public final class MerchantGuiController extends AbstractContainerGuiController<MerchantInventory> {
+    public static @Nullable MerchantGuiController lookup(final @NotNull Player player) {
+        return Kunectron.getGuiControllers(MerchantGuiType.instance()).stream()
                 .filter(controller -> controller.getPlayer() == player)
                 .findFirst()
                 .orElse(null);
     }
 
-    @Nullable TradeElement getElement(final int index);
+    private final @NotNull Player player;
 
-    @NotNull List<TradeElement> getElements();
+    private final @NotNull List<TradeElement> elements = new ArrayList<>();
 
-    boolean setElement(final int index, final @NotNull TradeElement element);
+    private final @NotNull Merchant merchant = Bukkit.createMerchant();
 
-    void addElement(final @NotNull TradeElement element);
+    private @Nullable MerchantInventory inventory;
 
-    void removeElement(final int index);
+    private int update;
 
-    void insertElement(final int index, final @NotNull TradeElement element);
+    public MerchantGuiController(final @NotNull Object gui) {
+        super(gui);
 
-    boolean select(final int index);
+        player = getDeclarationOrThrow(gui, MerchantGui.Player.class, Player.class).getLeft();
 
-    boolean purchase(final int index);
+        update();
+        update = 0;
 
-    void update();
+        final Map<Integer, TradeElement> elementMap = new TreeMap<>();
+        final List<TradeElement> elementList = new ArrayList<>();
+
+        for (final Pair<TradeElement, MerchantGui.Element> declaration : getDeclarations(gui, MerchantGui.Element.class, TradeElement.class)) {
+            MerchantGui.Element annotation = declaration.getRight();
+            if (annotation.index() != -1) {
+                elementMap.put(annotation.index(), declaration.getLeft());
+            } else {
+                elementList.add(declaration.getLeft());
+            }
+        }
+
+        for (final Map.Entry<Integer, TradeElement> element : elementMap.entrySet()) {
+            setElement(element.getKey(), element.getValue());
+        }
+
+        for (final TradeElement element : elementList) {
+            addElement(element);
+        }
+    }
+
+    @Override
+    public void init() {
+        callEvent(new MerchantGuiInitEventImpl(gui));
+    }
+
+    @Override
+    public @NotNull Player getPlayer() {
+        return player;
+    }
+
+    public @NotNull MerchantInventory getInventory() {
+        if (inventory == null) {
+            throw new IllegalStateException();
+        }
+        return inventory;
+    }
+
+    public @Nullable TradeElement getElement(final int index) {
+        if (index >= elements.size()) {
+            return null;
+        }
+        return elements.get(index);
+    }
+
+    public @NotNull List<TradeElement> getElements() {
+        return new ArrayList<>(elements);
+    }
+
+    public boolean setElement(final int index, final @NotNull TradeElement element) {
+        if (index < 0 || index > elements.size()) {
+            return false;
+        }
+
+        if (index == elements.size()) {
+            elements.add(element);
+        } else {
+            elements.set(index, element);
+        }
+
+        if (element instanceof TradeElementImpl impl) {
+            impl.registerObserver(this);
+        }
+
+        update();
+        return true;
+    }
+
+    public void addElement(final @NotNull TradeElement element) {
+        setElement(elements.size(), element);
+    }
+
+    public void removeElement(final int index) {
+        if (getElement(index) instanceof TradeElementImpl impl) {
+            impl.unregisterObserver(this);
+        }
+        elements.remove(index);
+        update();
+    }
+
+    public void insertElement(final int index, final @NotNull TradeElement element) {
+        if (index > elements.size()) {
+            return;
+        }
+
+        if (element instanceof TradeElementImpl impl) {
+            impl.registerObserver(this);
+        }
+
+        elements.add(index, element);
+        update();
+    }
+
+    public boolean select(final int index) {
+        final TradeElement element = elements.get(index);
+        if (!element.canSelect()) {
+            return true;
+        }
+        return callEvent(new MerchantGuiSelectEventImpl(gui, index, element));
+    }
+
+    public boolean purchase(final int index) {
+        final TradeElement element = elements.get(index);
+        if (!element.canPurchase()) {
+            return true;
+        }
+        return callEvent(new MerchantGuiPurchaseEventImpl(gui, index, element));
+    }
+
+    @Override
+    public void close() {
+        if (0 < update) {
+            update--;
+            return;
+        }
+
+        callEvent(new MerchantGuiCloseEventImpl(gui));
+        super.close();
+    }
+
+    public void update() {
+        merchant.setRecipes(elements.stream().map(TradeElement::create).toList());
+        update++;
+        Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
+            player.openInventory(MenuType.MERCHANT.builder()
+                    .title(getDeclarationOrDefault(gui, MerchantGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent())
+                    .merchant(merchant)
+                    .build(player));
+
+            inventory = (MerchantInventory) player.getOpenInventory().getTopInventory();
+        });
+    }
 }

@@ -1,24 +1,34 @@
 package com.tksimeji.kunectron.hooks;
 
-import net.kyori.adventure.text.Component;
+import com.tksimeji.kunectron.SignGui;
 import org.apache.commons.lang3.NotImplementedException;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public interface AdvancementToastGuiHooks extends IAdvancementToastGuiHooks {
+public interface SignGuiHooks extends ISignGuiHooks {
     @Override
     default @NotNull Player usePlayer() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
     @Override
-    default @NotNull ItemStack useIcon() {
+    default @NotNull SignGui.SignType useType() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
     @Override
-    default @NotNull Component useMessage() {
+    default @NotNull DyeColor useTextColor() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
+    @Override
+    default boolean useGlowing() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
+    @Override
+    default void useClose() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 }
