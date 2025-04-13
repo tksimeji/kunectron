@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.inventory.AnvilInventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.plugin.java.JavaPlugin
 
 interface Adapter {
@@ -15,5 +14,9 @@ interface Adapter {
 
     fun createAnvilInventory(player: Player, title: Component): AnvilInventory
 
-    fun resetAttributeModifiers(itemStack: ItemStack, itemMeta: ItemMeta, plugin: JavaPlugin)
+    fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean
+
+    fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)
+
+    fun showAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)
 }

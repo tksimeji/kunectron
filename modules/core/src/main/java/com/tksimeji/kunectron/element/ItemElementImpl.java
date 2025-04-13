@@ -17,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,10 +46,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     public ItemElementImpl(final @NotNull ItemType type) {
         this(type.createItemStack(), false);
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.addItemFlags(ItemFlag.values());
-        Kunectron.adapter().resetAttributeModifiers(itemStack, itemMeta, Kunectron.plugin());
-        itemStack.setItemMeta(itemMeta);
     }
 
     public ItemElementImpl(final @NotNull Material material) {
@@ -72,6 +67,10 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         title(itemMeta.displayName());
         lore(itemMeta.hasLore() ? itemMeta.lore() : List.of());
         amount(itemStack.getAmount());
+
+        if (!itemStackMode) {
+            hideAdditionalTooltip(true);
+        }
     }
 
     @Override
@@ -227,6 +226,21 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         }
 
         itemStack.setItemMeta(itemMeta);
+        return this;
+    }
+
+    @Override
+    public boolean hideAdditionalTooltip() {
+        return !Kunectron.adapter().hasAdditionalTooltip(itemStack, Kunectron.plugin());
+    }
+
+    @Override
+    public @NotNull ItemElement hideAdditionalTooltip(final boolean hideAdditionalTooltip) {
+        if (hideAdditionalTooltip) {
+            Kunectron.adapter().hideAdditionalTooltip(itemStack, Kunectron.plugin());
+        } else {
+            Kunectron.adapter().showAdditionalTooltip(itemStack, Kunectron.plugin());
+        }
         return this;
     }
 

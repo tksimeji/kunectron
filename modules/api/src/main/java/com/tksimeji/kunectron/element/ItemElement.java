@@ -69,6 +69,11 @@ public interface ItemElement extends Element<ItemStack> {
     @Contract("_ -> this")
     @NotNull ItemElement aura(final boolean aura);
 
+    boolean hideAdditionalTooltip();
+
+    @Contract("_ -> this")
+    @NotNull ItemElement hideAdditionalTooltip(final boolean hideAdditionalTooltip);
+
     @Nullable ItemSlotPolicy policy();
 
     @Contract("_ -> this")
