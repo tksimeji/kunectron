@@ -156,7 +156,7 @@ public final class ScoreboardGuiController extends AbstractGuiController impleme
     }
 
     public void removeLines() {
-        for (int i = 0; i < scoreboardLines.size(); i++) {
+        for (int i = scoreboardLines.size() - 1; i >= 0; i--) {
             removeLine(i);
         }
     }
