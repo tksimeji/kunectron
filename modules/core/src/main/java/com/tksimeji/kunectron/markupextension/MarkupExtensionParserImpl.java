@@ -129,44 +129,54 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
             return new StringNode(tokenValue);
         }
 
-        if (token.isIdentifier() && info.position < info.tokens.size() && info.tokens.get(info.position).isLeftParen()) {
-            info.position++;
-            final List<AstNode<?>> args = new ArrayList<>();
+        if (token.isIdentifier()) {
+            AstNode<?> currentNode = new IdentifierNode(token.getValue());
 
-            if (!info.tokens.get(info.position).isRightParen()) {
-                args.add(parseOr(info));
-                while (info.position < info.tokens.size() && info.tokens.get(info.position).isComma()) {
+            while (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
+                info.position++;
+
+                if (info.position >= info.tokens.size()) {
+                    throw new RuntimeException("Unexpected end of tokens after dot");
+                }
+
+                final Token nextToken = info.tokens.get(info.position);
+                final String nextTokenValue = nextToken.getValue();
+
+                if (nextToken.isIdentifier() && info.position + 1 < info.tokens.size() && info.tokens.get(info.position + 1).isLeftParen()) {
                     info.position++;
-                    args.add(parseOr(info));
+                    info.position++;
+                    final List<AstNode<?>> args = new ArrayList<>();
+
+                    if (!info.tokens.get(info.position).isRightParen()) {
+                        args.add(parseOr(info));
+                        while (info.position < info.tokens.size() && info.tokens.get(info.position).isComma()) {
+                            info.position++;
+                            args.add(parseOr(info));
+                        }
+                    }
+
+                    if (info.position >= info.tokens.size() || !info.tokens.get(info.position).isRightParen()) {
+                        throw new RuntimeException("Expected closing parenthesis");
+                    }
+
+                    info.position++;
+                    currentNode = new MethodCallNode(nextTokenValue, args, currentNode);
+                } else if (nextToken.isIdentifier()) {
+                    info.position++;
+                    currentNode = new MemberAccessNode(currentNode, nextTokenValue);
+                } else {
+                    throw new RuntimeException("Unexpected token after dot: " + nextTokenValue);
                 }
             }
 
-            info.position++;
-            final AstNode<?> methodCallNode = new MethodCallNode(token.getValue(), args);
-
-            if (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
-                info.position++;
-                final String member = info.tokens.get(info.position++).getValue();
-                return new MemberAccessNode(methodCallNode, member);
-            }
-
-            return methodCallNode;
-        }
-
-        if (token.isIdentifier()) {
-            final AstNode<?> identifierNode = new IdentifierNode(token.getValue());
-
-            if (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
-                info.position++;
-                final String member = info.tokens.get(info.position++).getValue();
-                return new MemberAccessNode(identifierNode, member);
-            }
-
-            return identifierNode;
+            return currentNode;
         }
 
         if (token.isLeftParen()) {
             final AstNode<?> orNode = parseOr(info);
+            if (info.position >= info.tokens.size() || !info.tokens.get(info.position).isRightParen()) {
+                throw new RuntimeException("Expected closing parenthesis");
+            }
             info.position++;
             return orNode;
         }
