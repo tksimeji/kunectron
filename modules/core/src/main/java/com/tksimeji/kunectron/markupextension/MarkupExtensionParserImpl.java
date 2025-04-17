@@ -130,13 +130,35 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
         }
 
         if (token.isIdentifier()) {
-            AstNode<?> currentNode = new IdentifierNode(token.getValue());
+            AstNode<?> currentNode;
+
+            if (info.position < info.tokens.size() && info.tokens.get(info.position).isLeftParen()) {
+                info.position++;
+                final List<AstNode<?>> args = new ArrayList<>();
+
+                if (!info.tokens.get(info.position).isRightParen()) {
+                    args.add(parseOr(info));
+                    while (info.position < info.tokens.size() && info.tokens.get(info.position).isComma()) {
+                        info.position++;
+                        args.add(parseOr(info));
+                    }
+                }
+
+                if (info.position >= info.tokens.size() || !info.tokens.get(info.position).isRightParen()) {
+                    throw new RuntimeException("Expected closing parenthesis.");
+                }
+                info.position++;
+
+                currentNode = new MethodCallNode(tokenValue, args, null);
+            } else {
+                currentNode = new IdentifierNode(tokenValue);
+            }
 
             while (info.position < info.tokens.size() && info.tokens.get(info.position).isDot()) {
                 info.position++;
 
                 if (info.position >= info.tokens.size()) {
-                    throw new RuntimeException("Unexpected end of tokens after dot");
+                    throw new RuntimeException("Unexpected end of tokens after dot.");
                 }
 
                 final Token nextToken = info.tokens.get(info.position);
@@ -156,9 +178,8 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
                     }
 
                     if (info.position >= info.tokens.size() || !info.tokens.get(info.position).isRightParen()) {
-                        throw new RuntimeException("Expected closing parenthesis");
+                        throw new RuntimeException("Expected closing parenthesis.");
                     }
-
                     info.position++;
                     currentNode = new MethodCallNode(nextTokenValue, args, currentNode);
                 } else if (nextToken.isIdentifier()) {
@@ -175,7 +196,7 @@ final class MarkupExtensionParserImpl implements MarkupExtensionParser {
         if (token.isLeftParen()) {
             final AstNode<?> orNode = parseOr(info);
             if (info.position >= info.tokens.size() || !info.tokens.get(info.position).isRightParen()) {
-                throw new RuntimeException("Expected closing parenthesis");
+                throw new RuntimeException("Expected closing parenthesis.");
             }
             info.position++;
             return orNode;
