@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class ScoreboardGuiController extends AbstractGuiController {
+public final class ScoreboardGuiController extends AbstractGuiController implements TickableGuiController {
     public static @Nullable ScoreboardGuiController lookup(final @NotNull Player player) {
         return Kunectron.getGuiControllers(ScoreboardGuiType.instance()).stream()
                 .filter(controller -> controller.isPlayer(player))
@@ -191,6 +191,7 @@ public final class ScoreboardGuiController extends AbstractGuiController {
         }
     }
 
+    @Override
     public void tick() {
         callEvent(new ScoreboardGuiTickEventImpl(gui));
 
