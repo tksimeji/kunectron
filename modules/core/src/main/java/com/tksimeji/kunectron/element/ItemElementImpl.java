@@ -62,11 +62,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         this.itemStack = itemStack;
         this.itemStackMode = itemStackMode;
 
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (!itemStackMode) {
-            title(itemMeta.displayName());
-            lore(itemMeta.hasLore() ? itemMeta.lore() : List.of());
+        if (itemStackMode) {
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            title = itemMeta.displayName();
+            lore = itemMeta.lore();
+        } else {
             amount(itemStack.getAmount());
             hideAdditionalTooltip(true);
         }

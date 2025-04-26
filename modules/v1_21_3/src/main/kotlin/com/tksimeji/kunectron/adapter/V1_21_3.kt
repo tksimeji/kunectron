@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 
 object V1_21_3: V1_21_x() {
     override val versions: Array<String>
-        get() = arrayOf("1.21.3", "1.21.4")
+        get() = arrayOf("1.21.3", "1.21.4", "1.21.5")
 
     override fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean {
         return !itemStack.hasData(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP)

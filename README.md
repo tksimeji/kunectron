@@ -3,7 +3,7 @@
 A Minecraft GUI framework
 
 ![Version](https://img.shields.io/badge/version-1.0.0--beta.7-blue?style=flat-square)
-![Adapter](https://img.shields.io/badge/adapter-1.21.1--1.21.4-blue?style=flat-square)
+![Adapter](https://img.shields.io/badge/adapter-1.21.1--1.21.5-blue?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue?style=flat-square)
 
 > [!WARNING]
