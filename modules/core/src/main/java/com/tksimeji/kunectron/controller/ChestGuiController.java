@@ -29,6 +29,8 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
     public ChestGuiController(final @NotNull Object gui) {
         super(gui);
 
+        player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
+
         Component title = getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
         if (title instanceof TranslatableComponent translatableComponent &&
                 GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
@@ -38,8 +40,6 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
         inventory = Bukkit.createInventory(null,
                 getDeclarationOrDefault(gui, ChestGui.Size.class, ChestGui.ChestSize.class, ChestGui.ChestSize.SIZE_54).getLeft().toInt(),
                 title);
-
-        player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> player.openInventory(inventory));
 
