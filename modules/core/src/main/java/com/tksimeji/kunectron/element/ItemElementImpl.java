@@ -10,6 +10,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.translation.GlobalTranslator;
@@ -320,12 +321,18 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
             return itemStack;
         }
 
-        if (itemMeta.hasDisplayName()) {
-            itemMeta.displayName(GlobalTranslator.render(Objects.requireNonNull(itemMeta.displayName()), locale));
+        if (title instanceof TranslatableComponent translatableComponent && GlobalTranslator.translator().canTranslate(translatableComponent.key(), locale)) {
+            itemMeta.displayName(GlobalTranslator.render(translatableComponent, locale));
         }
 
         if (itemMeta.hasLore()) {
-            itemMeta.lore(Objects.requireNonNull(itemMeta.lore()).stream().map(component -> GlobalTranslator.render(component, locale)).toList());
+            itemMeta.lore(Objects.requireNonNull(itemMeta.lore()).stream().map(component -> {
+                if (component instanceof TranslatableComponent translatableComponent) {
+                    return GlobalTranslator.render(translatableComponent, locale);
+                } else {
+                    return component;
+                }
+            }).toList());
         }
 
         itemStack.setItemMeta(itemMeta);
