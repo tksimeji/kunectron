@@ -10,7 +10,6 @@ import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextension.MarkupExtensionParser;
 import com.tksimeji.kunectron.type.*;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;

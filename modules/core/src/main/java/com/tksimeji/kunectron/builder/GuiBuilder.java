@@ -16,10 +16,6 @@ public interface GuiBuilder<B extends IGuiBuilder<B, H>, H extends Hooks> extend
         return new ChestGuiBuilderImpl();
     }
 
-    static @NotNull HopperGuiBuilder hopper() {
-        return new HopperGuiBuilderImpl();
-    }
-
     static @NotNull MerchantGuiBuilder merchant() {
         return new MerchantGuiBuilderImpl();
     }
