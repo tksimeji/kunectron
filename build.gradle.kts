@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.tksimeji"
-version = "1.0.0-beta.8"
+version = "1.0.0-beta.9"
 
 allprojects {
     apply {
