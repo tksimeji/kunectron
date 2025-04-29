@@ -11,6 +11,8 @@ import com.tksimeji.kunectron.event.chest.ChestGuiInitEventImpl;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,9 +29,15 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
     public ChestGuiController(final @NotNull Object gui) {
         super(gui);
 
+        Component title = getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
+        if (title instanceof TranslatableComponent translatableComponent &&
+                GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
+            title = GlobalTranslator.render(title, getLocale());
+        }
+
         inventory = Bukkit.createInventory(null,
                 getDeclarationOrDefault(gui, ChestGui.Size.class, ChestGui.ChestSize.class, ChestGui.ChestSize.SIZE_54).getLeft().toInt(),
-                getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent());
+                title);
 
         player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
 

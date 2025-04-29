@@ -13,6 +13,8 @@ import com.tksimeji.kunectron.event.anvil.AnvilGuiInitEventImpl;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -40,7 +42,13 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
         overwriteResultSlot = annotation.overwriteResultSlot();
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
-            inventory = Kunectron.adapter().createAnvilInventory(player, getDeclarationOrDefault(gui, AnvilGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent());
+            Component title = getDeclarationOrDefault(gui, AnvilGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
+            if (title instanceof TranslatableComponent translatableComponent &&
+                    GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
+                title = GlobalTranslator.render(title, getLocale());
+            }
+
+            inventory = Kunectron.adapter().createAnvilInventory(player, title);
 
             getDeclaration(gui, AnvilGui.DefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
                 setDefaultPolicy(declaration.getLeft());
