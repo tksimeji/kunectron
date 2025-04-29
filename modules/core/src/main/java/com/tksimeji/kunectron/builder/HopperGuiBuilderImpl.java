@@ -1,10 +1,10 @@
 package com.tksimeji.kunectron.builder;
 
 import com.google.common.base.Preconditions;
-import com.tksimeji.kunectron.ChestGui;
+import com.tksimeji.kunectron.HopperGui;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.element.ItemElement;
-import com.tksimeji.kunectron.hooks.ChestGuiHooks;
+import com.tksimeji.kunectron.hooks.HopperGuiHooks;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -15,20 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public final class ChestGuiBuilderImpl extends ItemContainerGuiBuilderImpl<ChestGuiBuilder, ChestGuiHooks> implements ChestGuiBuilder {
-    private @NotNull ChestGui.ChestSize size = ChestGui.ChestSize.SIZE_54;
-
+public final class HopperGuiBuilderImpl extends ItemContainerGuiBuilderImpl<HopperGuiBuilder, HopperGuiHooks> implements HopperGuiBuilder {
     @Override
-    public @NotNull ChestGuiBuilder size(final @NotNull ChestGui.ChestSize size) {
-        Preconditions.checkArgument(size != null, "Size cannot be null.");
-        this.size = size;
-        return this;
-    }
-
-    @Override
-    public @NotNull ChestGuiHooks build(final @NotNull Player player) {
+    public @NotNull HopperGuiHooks build(final @NotNull Player player) {
         Preconditions.checkArgument(player != null, "Player cannot be null.");
-        final Gui gui = Kunectron.create(new Gui(player, title, size, handlers), ChestGui.class);
+        final Gui gui = Kunectron.create(new Gui(player, title, handlers));
 
         for (final Map.Entry<Integer, ItemElement> entry : elements.entrySet()) {
             gui.useElement(entry.getKey(), entry.getValue());
@@ -43,22 +34,18 @@ public final class ChestGuiBuilderImpl extends ItemContainerGuiBuilderImpl<Chest
         return gui;
     }
 
-    @ChestGui
-    private static final class Gui extends AbstractGui<ChestGuiHooks> implements ChestGuiHooks {
-        @ChestGui.Player
+    @HopperGui
+    private static final class Gui extends AbstractGui<HopperGuiHooks> implements HopperGuiHooks {
+        @HopperGui.Player
         private final @NotNull Player player;
 
-        @ChestGui.Title
+        @HopperGui.Title
         private final @NotNull Component title;
 
-        @ChestGui.Size
-        private final @NotNull ChestGui.ChestSize size;
-
-        public Gui(final @NotNull Player player, final @NotNull ComponentLike title, final @NotNull ChestGui.ChestSize size, final @NotNull List<HandlerInfo> handlers) {
+        public Gui(final @NotNull Player player, final @NotNull ComponentLike title, final @NotNull List<HandlerInfo> handlers) {
             super(handlers);
             this.player = player;
             this.title = title.asComponent();
-            this.size = size;
         }
     }
 }

@@ -2,8 +2,8 @@ package com.tksimeji.kunectron.hooks;
 
 import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.controller.ChestGuiController;
 import com.tksimeji.kunectron.controller.GuiController;
+import com.tksimeji.kunectron.controller.HopperGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-public interface ChestGuiHooks extends IChestGuiHooks {
+public interface HopperGuiHooks extends IHopperGuiHooks {
     @Override
     default @NotNull Player usePlayer() {
         return controller().getPlayer();
@@ -103,10 +103,10 @@ public interface ChestGuiHooks extends IChestGuiHooks {
         controller().setState(key, value);
     }
 
-    private @NotNull ChestGuiController controller() {
+    private @NotNull HopperGuiController controller() {
         final GuiController controller = Kunectron.getGuiController(this);
-        if (controller instanceof ChestGuiController chestGuiController) {
-            return chestGuiController;
+        if (controller instanceof HopperGuiController hopperGuiController) {
+            return hopperGuiController;
         }
         throw new IllegalStateException("No gui controller found.");
     }

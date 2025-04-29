@@ -17,6 +17,10 @@ public interface GuiBuilder<B extends IGuiBuilder<B, H>, H extends Hooks> extend
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
+    static @NotNull HopperGuiBuilder hopper() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
     static @NotNull MerchantGuiBuilder merchant() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
