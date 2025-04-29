@@ -322,13 +322,13 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         }
 
         if (title instanceof TranslatableComponent translatableComponent && GlobalTranslator.translator().canTranslate(translatableComponent.key(), locale)) {
-            itemMeta.displayName(GlobalTranslator.render(translatableComponent, locale));
+            itemMeta.displayName(GlobalTranslator.render(translatableComponent, locale).style(title.style()));
         }
 
         if (itemMeta.hasLore()) {
             itemMeta.lore(Objects.requireNonNull(itemMeta.lore()).stream().map(component -> {
                 if (component instanceof TranslatableComponent translatableComponent) {
-                    return GlobalTranslator.render(translatableComponent, locale);
+                    return GlobalTranslator.render(translatableComponent, locale).style(component.style());
                 } else {
                     return component;
                 }
