@@ -121,7 +121,7 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
         setElement(2, element);
     }
 
-    public void setElement(int index, @Nullable ItemElement element) {
+    public void setElement(final int index, final @Nullable ItemElement element) {
         final ItemStack old = getInventory().getItem(index);
         if ((element == null && old == null) || (element != null && element.create(getLocale()).equals(old))) {
             return;
@@ -135,8 +135,9 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
     }
 
     @Override
-    public void click(int index, @NotNull Action action, @NotNull Mouse mouse) {
+    public void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse) {
         callEvent(new AnvilGuiClickEventImpl(gui, index, getElement(index), action, mouse));
+        super.click(index, action, mouse);
     }
 
     @Override
@@ -147,7 +148,7 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
     }
 
     @Override
-    public boolean callEvent(@NotNull GuiEvent event) {
+    public boolean callEvent(final @NotNull GuiEvent event) {
         if (event instanceof AnvilGuiEvents.TextChangeEvent textChangeEvent) {
             text = textChangeEvent.getText();
         }

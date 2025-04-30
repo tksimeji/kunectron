@@ -1,6 +1,8 @@
 package com.tksimeji.kunectron.controller;
 
+import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.IndexGroup;
+import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
@@ -117,6 +119,14 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
     @Override
     public boolean isValidIndex(final int index) {
         return index >= 0 && index < getSize();
+    }
+
+    @Override
+    public void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse) {
+        final ItemElement element = getElement(index);
+        if (element != null && element.sound() != null) {
+            getPlayer().playSound(getPlayer(), Objects.requireNonNull(element.sound()), element.soundVolume(), element.soundPitch());
+        }
     }
 
     @Override

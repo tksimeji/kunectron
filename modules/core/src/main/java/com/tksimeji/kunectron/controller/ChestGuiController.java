@@ -81,6 +81,7 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
     @Override
     public void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse) {
         callEvent(new ChestGuiClickEventImpl(gui, index, getElement(index), action, mouse));
+        super.click(index, action, mouse);
     }
 
     @Override
