@@ -43,7 +43,7 @@ public final class ChestGuiBuilderImpl extends ItemContainerGuiBuilderImpl<Chest
         return gui;
     }
 
-    @ChestGui
+    @ChestGui(autoReload = true, serverSideTranslation = true)
     private static final class Gui extends AbstractGui<ChestGuiHooks> implements ChestGuiHooks {
         @ChestGui.Player
         private final @NotNull Player player;

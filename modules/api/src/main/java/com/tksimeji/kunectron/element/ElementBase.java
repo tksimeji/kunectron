@@ -4,8 +4,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface ElementBase<T> {
-    @NotNull T create();
-
-    @NotNull Element<?> createCopy();
+interface ElementBase<T> extends Cloneable {
+    @NotNull T clone();
 }

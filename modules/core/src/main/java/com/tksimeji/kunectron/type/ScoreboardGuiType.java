@@ -26,6 +26,6 @@ public class ScoreboardGuiType implements GuiType<ScoreboardGui, ScoreboardGuiCo
 
     @Override
     public @NotNull ScoreboardGuiController createController(final @NotNull Object gui, final @NotNull ScoreboardGui annotation) {
-        return new ScoreboardGuiController(gui);
+        return new ScoreboardGuiController(gui, annotation);
     }
 }

@@ -160,7 +160,7 @@ public final class ItemContainerGuiListener implements Listener {
                 }
 
                 final ItemElement element = controller.getElement(i);
-                final ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
+                final ItemStack elementItemStack = controller.createItemStack(element);
 
                 if (controller.getPolicy(i).isFixation() || (elementItemStack != null && !elementItemStack.isSimilar(itemStack))) {
                     continue;
@@ -255,9 +255,9 @@ public final class ItemContainerGuiListener implements Listener {
         public void placeSome() {
             event.setCancelled(false);
             final ItemElement element = controller.getElement(index);
-            final ItemStack elementItemStack = element != null ? element.create(player.locale()) : null;
+            final ItemStack elementItemStack = controller.createItemStack(element);
 
-            if (!controller.isValidIndex(index) || elementItemStack == null) {
+            if (!controller.isValidIndex(index) || element == null || elementItemStack == null) {
                 return;
             }
 

@@ -134,8 +134,8 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
     }
 
     @Override
-    public @NotNull ItemElement createCopy() {
-        final PlayerHeadElementImpl copy = createCopy(new PlayerHeadElementImpl(), itemStack);
+    public @NotNull ItemElement clone() {
+        final PlayerHeadElementImpl copy = clone(new PlayerHeadElementImpl(), itemStack);
         copy.url = url;
         return copy;
     }

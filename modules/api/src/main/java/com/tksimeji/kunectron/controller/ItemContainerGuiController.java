@@ -5,10 +5,10 @@ import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Map;
 
 public interface ItemContainerGuiController<I extends Inventory> extends ContainerGuiController<I>, TickableGuiController {
@@ -34,9 +34,9 @@ public interface ItemContainerGuiController<I extends Inventory> extends Contain
 
     int getSize();
 
-    @NotNull Locale getLocale();
-
     boolean isValidIndex(final int index);
+
+    @Nullable ItemStack createItemStack(final @Nullable ItemElement element);
 
     void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse);
 }

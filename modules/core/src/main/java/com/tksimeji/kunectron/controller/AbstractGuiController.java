@@ -72,6 +72,11 @@ public abstract class AbstractGuiController implements GuiController {
     }
 
     @Override
+    public @NotNull Context<?> getContext() {
+        return markupExtensionContext;
+    }
+
+    @Override
     public void setState(final @NotNull String name, final @Nullable Object value) {
         markupExtensionContext.setState(name, value);
     }

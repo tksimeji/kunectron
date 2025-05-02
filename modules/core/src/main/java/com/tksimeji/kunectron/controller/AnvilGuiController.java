@@ -19,7 +19,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.AnvilInventory;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +35,7 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
     private final boolean overwriteResultSlot;
 
     public AnvilGuiController(final @NotNull Object gui, final @NotNull AnvilGui annotation) {
-        super(gui);
+        super(gui, annotation.autoReload(), annotation.serverSideTranslation(), annotation.markupExtensions());
 
         player = getDeclarationOrThrow(gui, AnvilGui.Player.class, Player.class).getLeft();
         overwriteResultSlot = annotation.overwriteResultSlot();
@@ -119,15 +118,6 @@ public final class AnvilGuiController extends AbstractItemContainerGuiController
 
     public void setResultElement(final @Nullable ItemElement element) {
         setElement(2, element);
-    }
-
-    public void setElement(final int index, final @Nullable ItemElement element) {
-        final ItemStack old = getInventory().getItem(index);
-        if ((element == null && old == null) || (element != null && element.create(getLocale()).equals(old))) {
-            return;
-        }
-
-        super.setElement(index, element);
     }
 
     public boolean isOverwriteResultSlot() {

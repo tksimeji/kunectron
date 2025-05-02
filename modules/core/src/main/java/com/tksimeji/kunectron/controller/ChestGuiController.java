@@ -26,8 +26,8 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
 
     private final @NotNull Inventory inventory;
 
-    public ChestGuiController(final @NotNull Object gui) {
-        super(gui);
+    public ChestGuiController(final @NotNull Object gui, final @NotNull ChestGui annotation) {
+        super(gui, annotation.autoReload(), annotation.serverSideTranslation(), annotation.markupExtensions());
 
         player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
 

@@ -26,6 +26,6 @@ public final class MerchantGuiType implements GuiType<MerchantGui, MerchantGuiCo
 
     @Override
     public @NotNull MerchantGuiController createController(final @NotNull Object gui, final @NotNull MerchantGui annotation) {
-        return new MerchantGuiController(gui);
+        return new MerchantGuiController(gui, annotation);
     }
 }

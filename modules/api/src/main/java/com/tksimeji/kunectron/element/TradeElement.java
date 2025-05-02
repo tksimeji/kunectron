@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
-public interface TradeElement extends Element<MerchantRecipe> {
+import java.util.Locale;
+
+public interface TradeElement extends Element<TradeElement> {
     @NotNull ItemStack result();
 
     @Contract("_ -> this")
@@ -53,18 +55,19 @@ public interface TradeElement extends Element<MerchantRecipe> {
     @Contract("_ -> this")
     @NotNull TradeElement purchaseHandler(final @NotNull TradeElement.PurchaseHandler2 handler);
 
-    @Override
-    @NotNull TradeElement createCopy();
+    @NotNull MerchantRecipe createMerchantRecipe(final @Nullable Locale locale);
 
     boolean equals(final @Nullable MerchantRecipe object);
 
     interface SelectHandler {
     }
 
+    @FunctionalInterface
     interface SelectHandler1 extends SelectHandler {
         void onSelect();
     }
 
+    @FunctionalInterface
     interface SelectHandler2 extends SelectHandler {
         void onSelect(@NotNull MerchantGuiEvents.SelectEvent event);
     }
@@ -72,10 +75,12 @@ public interface TradeElement extends Element<MerchantRecipe> {
     interface PurchaseHandler {
     }
 
+    @FunctionalInterface
     interface PurchaseHandler1 extends PurchaseHandler {
         void onPurchase();
     }
 
+    @FunctionalInterface
     interface PurchaseHandler2 extends PurchaseHandler {
         void onPurchase(@NotNull MerchantGuiEvents.PurchaseEvent event);
     }

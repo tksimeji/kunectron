@@ -1,6 +1,7 @@
 package com.tksimeji.kunectron.element;
 
 import com.tksimeji.kunectron.event.ItemContainerClickEvent;
+import com.tksimeji.kunectron.markupextensions.context.Context;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
@@ -19,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-public interface ItemElement extends Element<ItemStack> {
+public interface ItemElement extends Element<ItemElement> {
     @NotNull ItemType type();
 
     @Contract("_ -> this")
@@ -99,10 +100,9 @@ public interface ItemElement extends Element<ItemStack> {
     @Contract("_ -> this")
     @NotNull ItemElement handler(final @Nullable Handler2 handler);
 
-    @NotNull ItemStack create(final @NotNull Locale locale);
+    @NotNull ItemStack createItemStack();
 
-    @Override
-    @NotNull ItemElement createCopy();
+    @NotNull ItemStack createItemStack(final @Nullable Locale locale, final @Nullable Context<?> ctx);
 
     interface Handler {
     }

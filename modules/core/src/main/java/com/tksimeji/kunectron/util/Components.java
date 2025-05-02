@@ -41,10 +41,10 @@ public final class Components {
         return translatableComponent;
     }
 
-    public static @NotNull Component markupExtension(final @NotNull Component component, final @NotNull Context<?> ctx) {
+    public static @NotNull Component markupExtensions(final @NotNull Component component, final @NotNull Context<?> ctx) {
         final List<Component> children = new ArrayList<>();
         for (final Component child : component.children()) {
-            children.add(markupExtension(child, ctx));
+            children.add(markupExtensions(child, ctx));
         }
 
         if (component instanceof TextComponent textComponent) {
@@ -54,7 +54,7 @@ public final class Components {
         if (component instanceof TranslatableComponent translatableComponent) {
             final List<Component> arguments = new ArrayList<>();
             for (final TranslationArgument argument : translatableComponent.arguments()) {
-                arguments.add(markupExtension(argument.asComponent(), ctx));
+                arguments.add(markupExtensions(argument.asComponent(), ctx));
             }
             return translatableComponent.arguments(arguments).children(children);
         }

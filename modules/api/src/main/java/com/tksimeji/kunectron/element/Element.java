@@ -1,7 +1,5 @@
 package com.tksimeji.kunectron.element;
 
-import com.tksimeji.kunectron.markupextensions.context.Context;
-import net.kyori.adventure.text.ComponentLike;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -14,22 +12,6 @@ import java.net.URL;
 import java.util.UUID;
 
 public interface Element<T> extends ElementBase<T> {
-    static @NotNull ComponentElement component() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component) {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component, final @Nullable Context<?> ctx) {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component, final @Nullable Object object) {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
-    }
-
     static @NotNull ItemElement item(final @NotNull ItemType type) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }

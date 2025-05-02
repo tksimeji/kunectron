@@ -2,7 +2,6 @@ package com.tksimeji.kunectron.element;
 
 import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
 import com.tksimeji.kunectron.markupextensions.context.Context;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.util.Components;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
-public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
+public class ItemElementImpl implements ItemElement {
     protected @NotNull ItemStack itemStack;
 
     protected @Nullable Component title;
@@ -40,8 +39,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     protected @Nullable Handler handler;
 
     protected final boolean itemStackMode;
-
-    protected @Nullable Context<?> markupExtensionContext;
 
     public ItemElementImpl(final @NotNull ItemType type) {
         this(type.createItemStack(), false);
@@ -66,19 +63,10 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
             title = itemMeta.displayName();
             lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
         } else {
+            title((ComponentLike) null);
             amount(itemStack.getAmount());
             hideAdditionalTooltip(true);
         }
-    }
-
-    @Override
-    public @Nullable Context<?> getContext() {
-        return markupExtensionContext;
-    }
-
-    @Override
-    public void setContext(@Nullable Context<?> ctx) {
-        markupExtensionContext = ctx;
     }
 
     @Override
@@ -113,6 +101,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     @Override
     public @NotNull ItemElement title(final @Nullable ComponentLike title) {
         this.title = title != null ? title.asComponent().colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE) : null;
+
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.displayName(this.title);
+        itemStack.setItemMeta(itemMeta);
+        updateHideToolTip();
         return this;
     }
 
@@ -132,6 +125,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
         lore = components.stream()
                 .map(component -> component.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
                 .toList();
+
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.lore(lore);
+        itemStack.setItemMeta(itemMeta);
+        updateHideToolTip();
         return this;
     }
 
@@ -218,7 +216,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     @Override
     public @NotNull ItemElement hideAdditionalTooltip(final boolean hideAdditionalTooltip) {
         if (hideAdditionalTooltip) {
-            Kunectron.adapter().hideAdditionalTooltip(itemStack, Kunectron.plugin());
+            hideAdditionalTooltip();
         } else {
             Kunectron.adapter().showAdditionalTooltip(itemStack, Kunectron.plugin());
         }
@@ -285,33 +283,31 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     }
 
     @Override
-    public @NotNull ItemStack create() {
-        return create0(null);
+    public @NotNull ItemStack createItemStack() {
+        return createItemStack(null, null);
     }
 
     @Override
-    public @NotNull ItemStack create(final @Nullable Locale locale) {
-        return create0(locale);
-    }
-
-    private @NotNull ItemStack create0(final @Nullable Locale locale) {
+    public @NotNull ItemStack createItemStack(@Nullable Locale locale, @Nullable Context<?> ctx) {
         final ItemStack itemStack = this.itemStack.clone();
+        if (locale == null && ctx == null) {
+            return itemStack;
+        }
+
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
         Component title = this.title;
-        if (title != null) {
-            if (markupExtensionContext != null) {
-                title = Components.markupExtension(title, markupExtensionContext);
-            }
-            if (locale != null) {
-                title = Components.translate(title, locale);
-            }
+        if (title != null && ctx != null) {
+            title = Components.markupExtensions(title, ctx);
+        }
+        if (title != null && locale != null) {
+            title = Components.translate(title, locale);
         }
         itemMeta.displayName(title);
 
         itemMeta.lore(lore.stream().map(component -> {
-            if (markupExtensionContext != null) {
-                component = Components.markupExtension(component, markupExtensionContext);
+            if (ctx != null) {
+                component = Components.markupExtensions(component, ctx);
             }
             if (locale != null) {
                 component = Components.translate(component, locale);
@@ -324,15 +320,15 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     }
 
     @Override
-    public @NotNull ItemElement createCopy() {
-        return createCopy(new ItemElementImpl(itemStack.clone(), itemStackMode));
+    public @NotNull ItemElement clone() {
+        return clone(new ItemElementImpl(itemStack.clone(), itemStackMode));
     }
 
-    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T copy) {
-        return createCopy(copy, null);
+    protected <T extends ItemElementImpl> @NotNull T clone(final @NotNull T copy) {
+        return clone(copy, null);
     }
 
-    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T copy, final @Nullable ItemStack itemStack) {
+    protected <T extends ItemElementImpl> @NotNull T clone(final @NotNull T copy, final @Nullable ItemStack itemStack) {
         if (itemStack != null) {
             copy.itemStack = itemStack;
         }
@@ -341,7 +337,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
         copy.lore(lore);
         copy.policy(policy);
         copy.sound(sound, soundVolume, soundPitch);
-        copy.markupExtensionContext = markupExtensionContext;
 
         if (handler instanceof Handler1 handler1) {
             copy.handler(handler1);
@@ -350,5 +345,11 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
         }
 
         return copy;
+    }
+
+    protected void updateHideToolTip() {
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setHideTooltip(title == null && lore.isEmpty());
+        itemStack.setItemMeta(itemMeta);
     }
 }

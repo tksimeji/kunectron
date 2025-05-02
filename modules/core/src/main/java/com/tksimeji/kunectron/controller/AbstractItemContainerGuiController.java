@@ -4,7 +4,6 @@ import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.element.ItemElement;
-import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
 import org.bukkit.inventory.Inventory;
@@ -23,14 +22,21 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
     private @NotNull ItemSlotPolicy defaultPolicy;
     private @NotNull ItemSlotPolicy playerDefaultPolicy;
 
-    public AbstractItemContainerGuiController(final @NotNull Object gui) {
-        this(gui, Policy.itemSlot(false), Policy.itemSlot(false));
+    private final boolean autoReload;
+    private final boolean serverSideTranslation;
+    private final boolean markupExtensions;
+
+    public AbstractItemContainerGuiController(final @NotNull Object gui, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
+        this(gui, Policy.itemSlot(false), Policy.itemSlot(false), autoReload, serverSideTranslation, markupExtensions);
     }
 
-    public AbstractItemContainerGuiController(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy) {
+    public AbstractItemContainerGuiController(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
         super(gui);
         this.defaultPolicy = defaultPolicy;
         this.playerDefaultPolicy = playerDefaultPolicy;
+        this.autoReload = autoReload;
+        this.serverSideTranslation = serverSideTranslation;
+        this.markupExtensions = markupExtensions;
     }
 
     @Override
@@ -45,19 +51,20 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
 
     @Override
     public void setElement(final int index, final @Nullable ItemElement element) {
-        final ItemStack old = getInventory().getItem(index);
-        if (!isValidIndex(index) || (element == null && old == null) || (element != null && element.create(getLocale()).equals(old))) {
+        final ItemElement aElement = element != null ? element.clone() : null;
+        final ItemStack oldItemStack = getInventory().getItem(index);
+
+        if (!isValidIndex(index) || (element == null && oldItemStack == null)) {
             return;
         }
 
-        final ItemElement aElement = element != null ? element.createCopy() : null;
-
-        if (aElement instanceof MarkupExtensionsSupport markupExtensionsSupport) {
-            markupExtensionsSupport.setContext(markupExtensionContext);
+        final ItemStack itemStack = createItemStack(aElement);
+        if (element != null && Objects.equals(itemStack, oldItemStack)) {
+            return;
         }
 
         elements.put(index, aElement);
-        getInventory().setItem(index, element != null ? aElement.create(getLocale()) : null);
+        getInventory().setItem(index, itemStack);
     }
 
     @Override
@@ -112,13 +119,14 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
     }
 
     @Override
-    public @NotNull Locale getLocale() {
-        return getPlayer().locale();
+    public boolean isValidIndex(final int index) {
+        return index >= 0 && index < getSize();
     }
 
     @Override
-    public boolean isValidIndex(final int index) {
-        return index >= 0 && index < getSize();
+    public @Nullable ItemStack createItemStack(final @Nullable ItemElement element) {
+        if (element == null) return null;
+        return element.createItemStack(serverSideTranslation ? getLocale() : null, markupExtensions ? markupExtensionContext : null);
     }
 
     @Override
@@ -131,6 +139,7 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
 
     @Override
     public void tick() {
+        if (!autoReload) return;
         for (final Map.Entry<Integer, ItemElement> entry : getElements().entrySet()) {
             setElement(entry.getKey(), entry.getValue());
         }

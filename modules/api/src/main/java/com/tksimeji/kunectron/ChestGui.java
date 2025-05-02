@@ -8,6 +8,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ChestGui {
+    boolean autoReload() default false;
+
+    boolean serverSideTranslation() default false;
+
+    boolean markupExtensions() default false;
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface Player {

@@ -8,6 +8,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface AnvilGui {
+    boolean autoReload() default false;
+
+    boolean serverSideTranslation() default false;
+
+    boolean markupExtensions() default false;
+
     boolean overwriteResultSlot() default true;
 
     @Retention(RetentionPolicy.RUNTIME)

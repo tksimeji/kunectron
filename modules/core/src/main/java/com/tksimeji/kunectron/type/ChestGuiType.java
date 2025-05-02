@@ -29,6 +29,6 @@ public final class ChestGuiType implements GuiType<ChestGui, ChestGuiController>
 
     @Override
     public @NotNull ChestGuiController createController(final @NotNull Object gui, final @NotNull ChestGui annotation) {
-        return new ChestGuiController(gui);
+        return new ChestGuiController(gui, annotation);
     }
 }

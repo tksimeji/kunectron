@@ -4,15 +4,17 @@ import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.controller.MerchantGuiController;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
 import com.tksimeji.kunectron.markupextensions.context.Context;
+import com.tksimeji.kunectron.util.Components;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
-public class TradeElementImpl implements ObservableElement<MerchantRecipe, MerchantGuiController>, TradeElement {
+public class TradeElementImpl implements ObservableElement<TradeElement, MerchantGuiController>, TradeElement {
     private @NotNull ItemStack result;
 
     private @NotNull Ingredients ingredients;
@@ -104,11 +106,9 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
     @Override
     public @NotNull TradeElement maxUses(final @Range(from = 0, to = Integer.MAX_VALUE) int maxUses) {
         Preconditions.checkArgument(0 < maxUses, "Max uses cannot be less than 0.");
-
         if (maxUses == this.maxUses) {
             return this;
         }
-
         this.maxUses = maxUses;
         callObservers();
         return this;
@@ -124,7 +124,6 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
         if (canSelect == this.canSelect) {
             return this;
         }
-
         this.canSelect = canSelect;
         callObservers();
         return this;
@@ -181,16 +180,26 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
     }
 
     @Override
-    public @NotNull MerchantRecipe create() {
+    public @NotNull MerchantRecipe createMerchantRecipe(@Nullable Locale locale) {
         final MerchantRecipe merchantRecipe = new MerchantRecipe(result, maxUses);
         for (final ItemStack ingredient : ingredients) {
+            if (locale != null) {
+                final ItemMeta itemMeta = ingredient.getItemMeta();
+                if (itemMeta.hasDisplayName()) {
+                    itemMeta.displayName(Components.translate(Objects.requireNonNull(itemMeta.displayName()), locale));
+                }
+                if (itemMeta.hasLore()) {
+                    itemMeta.lore(Objects.requireNonNull(itemMeta.lore()).stream().map(component -> Components.translate(component, locale)).toList());
+                }
+                ingredient.setItemMeta(itemMeta);
+            }
             merchantRecipe.addIngredient(ingredient);
         }
         return merchantRecipe;
     }
 
     @Override
-    public @NotNull TradeElement createCopy() {
+    public @NotNull TradeElement clone() {
         final TradeElementImpl copy = new TradeElementImpl(result, ingredients.getIngredient1(), ingredients.getIngredient2());
         copy.maxUses = maxUses;
         copy.selectHandler = selectHandler;

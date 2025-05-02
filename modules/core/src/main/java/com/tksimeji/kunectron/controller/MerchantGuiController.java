@@ -35,7 +35,9 @@ public final class MerchantGuiController extends AbstractContainerGuiController<
 
     private int update;
 
-    public MerchantGuiController(final @NotNull Object gui) {
+    private final boolean serverSideTranslation;
+
+    public MerchantGuiController(final @NotNull Object gui, final @NotNull MerchantGui annotation) {
         super(gui);
 
         player = getDeclarationOrThrow(gui, MerchantGui.Player.class, Player.class).getLeft();
@@ -43,13 +45,15 @@ public final class MerchantGuiController extends AbstractContainerGuiController<
         update();
         update = 0;
 
+        serverSideTranslation = annotation.serverSideTranslation();
+
         final Map<Integer, TradeElement> elementMap = new TreeMap<>();
         final List<TradeElement> elementList = new ArrayList<>();
 
         for (final Pair<TradeElement, MerchantGui.Element> declaration : getDeclarations(gui, MerchantGui.Element.class, TradeElement.class)) {
-            MerchantGui.Element annotation = declaration.getRight();
-            if (annotation.index() != -1) {
-                elementMap.put(annotation.index(), declaration.getLeft());
+            MerchantGui.Element elementAnnotation = declaration.getRight();
+            if (elementAnnotation.index() != -1) {
+                elementMap.put(elementAnnotation.index(), declaration.getLeft());
             } else {
                 elementList.add(declaration.getLeft());
             }
@@ -164,7 +168,7 @@ public final class MerchantGuiController extends AbstractContainerGuiController<
     }
 
     public void update() {
-        merchant.setRecipes(elements.stream().map(TradeElement::create).toList());
+        merchant.setRecipes(elements.stream().map(element -> element.createMerchantRecipe(serverSideTranslation ? getLocale() : null)).toList());
         update++;
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
             player.openInventory(MenuType.MERCHANT.builder()

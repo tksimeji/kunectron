@@ -1,10 +1,6 @@
 package com.tksimeji.kunectron.element;
 
 import com.google.common.base.Preconditions;
-import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
-import com.tksimeji.kunectron.markupextensions.context.Context;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
@@ -16,29 +12,6 @@ import java.net.URL;
 import java.util.UUID;
 
 public interface Element<T> extends ElementBase<T> {
-    static @NotNull ComponentElement component() {
-        return component(Component.empty());
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component) {
-        Preconditions.checkArgument(component != null, "Component cannot be null.");
-        return new ComponentElementImpl(component);
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component, final @Nullable Context<?> ctx) {
-        Preconditions.checkArgument(component != null, "Component cannot be null.");
-        ComponentElement element = component(component);
-        if (element instanceof MarkupExtensionsSupport markupExtensionsSupport) {
-            markupExtensionsSupport.setContext(ctx);
-        }
-        return element;
-    }
-
-    static @NotNull ComponentElement component(final @NotNull ComponentLike component, final @Nullable Object object) {
-        Preconditions.checkArgument(component != null, "Component cannot be null.");
-        return component(component, object != null ? Context.context(object) : null);
-    }
-
     static @NotNull ItemElement item(final @NotNull ItemType type) {
         Preconditions.checkArgument(type != null, "Item type cannot be null.");
         return new ItemElementImpl(type);
