@@ -30,7 +30,7 @@ public interface ItemElement extends Element<ItemStack> {
     @Contract("_ -> this")
     @NotNull ItemElement material(final @NotNull Material material);
 
-    @NotNull Component title();
+    @Nullable Component title();
 
     @Contract("_ -> this")
     @NotNull ItemElement title(final @Nullable ComponentLike title);

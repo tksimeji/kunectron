@@ -42,7 +42,7 @@ public class ComponentElementImpl implements ComponentElement, MarkupExtensionSu
 
     @Override
     public @NotNull Component create() {
-        if (!Components.hasMarkupExtension(source) || markupExtensionContext == null) {
+        if (markupExtensionContext == null) {
             return source;
         }
         return Components.markupExtension(source, markupExtensionContext);

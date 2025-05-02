@@ -10,10 +10,8 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -66,7 +64,7 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         if (itemStackMode) {
             final ItemMeta itemMeta = itemStack.getItemMeta();
             title = itemMeta.displayName();
-            lore = itemMeta.lore();
+            lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
         } else {
             amount(itemStack.getAmount());
             hideAdditionalTooltip(true);
@@ -108,21 +106,13 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
     }
 
     @Override
-    public @NotNull Component title() {
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        final Component title = Optional.ofNullable(itemMeta.displayName()).orElse(Component.empty());
-        return markupExtensionContext != null && Components.hasMarkupExtension(title) ? Components.markupExtension(title, markupExtensionContext) : title;
+    public @Nullable Component title() {
+        return title;
     }
 
     @Override
     public @NotNull ItemElement title(final @Nullable ComponentLike title) {
-        this.title = title != null ? title.asComponent() : null;
-
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.displayName((title != null ? this.title : Component.empty()).colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
-        itemMeta.setHideTooltip(!itemStackMode && this.title == null && this.lore.isEmpty());
-
-        itemStack.setItemMeta(itemMeta);
+        this.title = title != null ? title.asComponent().colorIfAbsent(NamedTextColor.WHITE).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE) : null;
         return this;
     }
 
@@ -133,23 +123,15 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull List<Component> lore() {
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        final List<Component> lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
-        return markupExtensionContext != null && lore.stream().anyMatch(Components::hasMarkupExtension) ? lore.stream().map(component -> Components.markupExtension(component, markupExtensionContext)).toList() : lore;
+        return Collections.unmodifiableList(lore);
     }
 
     @Override
     public @NotNull ItemElement lore(final @NotNull Collection<Component> components) {
         Preconditions.checkArgument(components != null, "Components cannot be null.");
-
         lore = components.stream()
                 .map(component -> component.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
                 .toList();
-
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.lore(lore);
-        itemMeta.setHideTooltip(!itemStackMode && title == null && lore.isEmpty());
-        itemStack.setItemMeta(itemMeta);
         return this;
     }
 
@@ -183,7 +165,6 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         if (itemStack.getItemMeta().hasCustomModelData()) {
             return -1;
         }
-
         return itemStack.getItemMeta().getCustomModelData();
     }
 
@@ -305,41 +286,38 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
 
     @Override
     public @NotNull ItemStack create() {
-        if (markupExtensionContext == null) {
-            return itemStack.clone();
-        }
-
-        return ((ItemElementImpl) createCopy()).itemStack;
+        return create0(null);
     }
 
     @Override
-    public @NotNull ItemStack create(final @NotNull Locale locale) {
-        final ItemStack itemStack = create();
+    public @NotNull ItemStack create(final @Nullable Locale locale) {
+        return create0(locale);
+    }
+
+    private @NotNull ItemStack create0(final @Nullable Locale locale) {
+        final ItemStack itemStack = this.itemStack.clone();
         final ItemMeta itemMeta = itemStack.getItemMeta();
 
-        if (itemMeta == null) {
-            return itemStack;
+        Component title = this.title;
+        if (title != null) {
+            if (markupExtensionContext != null) {
+                title = Components.markupExtension(title, markupExtensionContext);
+            }
+            if (locale != null) {
+                title = Components.translate(title, locale);
+            }
         }
+        itemMeta.displayName(title);
 
-        if (title instanceof TranslatableComponent translatableComponent && GlobalTranslator.translator().canTranslate(translatableComponent.key(), locale)) {
-            itemMeta.displayName(GlobalTranslator.render(translatableComponent, locale)
-                    .style(title.style())
-                    .colorIfAbsent(NamedTextColor.WHITE)
-                    .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
-        }
-
-        if (itemMeta.hasLore()) {
-            itemMeta.lore(Objects.requireNonNull(itemMeta.lore()).stream().map(component -> {
-                if (component instanceof TranslatableComponent translatableComponent) {
-                    return GlobalTranslator.render(translatableComponent, locale)
-                            .style(component.style())
-                            .colorIfAbsent(NamedTextColor.GRAY)
-                            .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
-                } else {
-                    return component;
-                }
-            }).toList());
-        }
+        itemMeta.lore(lore.stream().map(component -> {
+            if (markupExtensionContext != null) {
+                component = Components.markupExtension(component, markupExtensionContext);
+            }
+            if (locale != null) {
+                component = Components.translate(component, locale);
+            }
+            return component;
+        }).toList());
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
@@ -350,27 +328,27 @@ public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
         return createCopy(new ItemElementImpl(itemStack.clone(), itemStackMode));
     }
 
-    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T to) {
-        return createCopy(to, null);
+    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T copy) {
+        return createCopy(copy, null);
     }
 
-    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T to, final @Nullable ItemStack itemStack) {
+    protected <T extends ItemElementImpl> @NotNull T createCopy(final @NotNull T copy, final @Nullable ItemStack itemStack) {
         if (itemStack != null) {
-            to.itemStack = itemStack;
+            copy.itemStack = itemStack;
         }
 
-        to.title(title);
-        to.lore(lore);
-        to.policy(policy);
-        to.sound(sound, soundVolume, soundPitch);
-        to.markupExtensionContext = markupExtensionContext;
+        copy.title(title);
+        copy.lore(lore);
+        copy.policy(policy);
+        copy.sound(sound, soundVolume, soundPitch);
+        copy.markupExtensionContext = markupExtensionContext;
 
         if (handler instanceof Handler1 handler1) {
-            to.handler(handler1);
+            copy.handler(handler1);
         } else if (handler instanceof Handler2 handler2) {
-            to.handler(handler2);
+            copy.handler(handler2);
         }
 
-        return to;
+        return copy;
     }
 }
