@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface IElement<T> {
+interface ElementBase<T> {
     @NotNull T create();
 
     @NotNull Element<?> createCopy();

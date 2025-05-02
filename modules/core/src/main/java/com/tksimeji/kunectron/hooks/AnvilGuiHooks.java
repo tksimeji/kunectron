@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
-public interface AnvilGuiHooks extends IAnvilGuiHooks {
+public interface AnvilGuiHooks extends AnvilGuiHooksBase {
     @Override
     default @NotNull Player usePlayer() {
         return controller().getPlayer();

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface ITokenFactory {
+interface TokenFactoryBase {
     @NotNull Token createBoolean(final @NotNull String value);
 
     @NotNull Token createNumber(final @NotNull String value);

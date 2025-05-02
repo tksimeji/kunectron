@@ -1,33 +1,32 @@
 package com.tksimeji.kunectron.type;
 
 import com.tksimeji.kunectron.controller.GuiController;
-import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;
 
 public interface GuiType<A extends Annotation, C extends GuiController> extends GuiTypeBase<A, C> {
     static @NotNull GuiType<?, ?> advancementToast() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return AdvancementToastGuiType.instance();
     }
 
     static @NotNull GuiType<?, ?> anvil() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return AnvilGuiType.instance();
     }
 
     static @NotNull GuiType<?, ?> chest() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return ChestGuiType.instance();
     }
 
     static @NotNull GuiType<?, ?> merchant() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return MerchantGuiType.instance();
     }
 
     static @NotNull GuiType<?, ?> scoreboard() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return ScoreboardGuiType.instance();
     }
 
     static @NotNull GuiType<?, ?> sign() {
-        throw new NotImplementedException("The API module cannot be called at runtime.");
+        return SignGuiType.instance();
     }
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.Map;
 
-public interface ChestGuiHooks extends IChestGuiHooks {
+public interface ChestGuiHooks extends ChestGuiHooksBase {
     @Override
     default @NotNull Player usePlayer() {
         return controller().getPlayer();

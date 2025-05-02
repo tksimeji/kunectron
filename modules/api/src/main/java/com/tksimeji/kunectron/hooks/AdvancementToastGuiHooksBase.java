@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface IAdvancementToastGuiHooks extends Hooks {
+interface AdvancementToastGuiHooksBase extends Hooks {
     @NotNull Player usePlayer();
 
     @NotNull ItemStack useIcon();

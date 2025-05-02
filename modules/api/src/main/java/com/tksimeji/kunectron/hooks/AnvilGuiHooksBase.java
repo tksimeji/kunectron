@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Internal
-interface IAnvilGuiHooks extends ItemContainerGuiHooks {
+interface AnvilGuiHooksBase extends ItemContainerGuiHooks {
     @Nullable ItemElement useFirstElement();
 
     void useFirstElement(final @Nullable ItemElement element);

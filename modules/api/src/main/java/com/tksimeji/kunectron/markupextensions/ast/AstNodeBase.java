@@ -5,7 +5,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface IAstNode<T> {
+interface AstNodeBase<T> {
     @NotNull T evaluate(final @NotNull Context<?> ctx);
 
     @NotNull Object evaluateDeep(final @NotNull Context<?> ctx);

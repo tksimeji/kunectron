@@ -23,22 +23,22 @@ abstract class AbstractGui<H extends Hooks> {
                 .toList();
 
         for (final IGuiBuilderImpl.HandlerInfo handler : handlers) {
-            final IGuiBuilder.HandlerFunction function = handler.function();
+            final GuiBuilderBase.HandlerFunction function = handler.function();
 
             if (handler.async()) {
                 Bukkit.getScheduler().runTaskAsynchronously(Kunectron.plugin(), () -> {
-                    if (function instanceof IGuiBuilder.HandlerFunction1<?> handlerFunction1) {
-                        ((IGuiBuilder.HandlerFunction1<E>) handlerFunction1).onEvent(event);
-                    } else if (function instanceof IGuiBuilder.HandlerFunction2<?, ?> handlerFunction2) {
-                        ((IGuiBuilder.HandlerFunction2<E, H>) handlerFunction2).onEvent(event, (H) this);
+                    if (function instanceof GuiBuilderBase.HandlerFunction1<?> handlerFunction1) {
+                        ((GuiBuilderBase.HandlerFunction1<E>) handlerFunction1).onEvent(event);
+                    } else if (function instanceof GuiBuilderBase.HandlerFunction2<?, ?> handlerFunction2) {
+                        ((GuiBuilderBase.HandlerFunction2<E, H>) handlerFunction2).onEvent(event, (H) this);
                     }
                 });
             } else {
                 Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
-                    if (function instanceof IGuiBuilder.HandlerFunction1<?> handlerFunction1) {
-                        ((IGuiBuilder.HandlerFunction1<E>) handlerFunction1).onEvent(event);
-                    } else if (function instanceof IGuiBuilder.HandlerFunction2<?, ?> handlerFunction2) {
-                        ((IGuiBuilder.HandlerFunction2<E, H>) handlerFunction2).onEvent(event, (H) this);
+                    if (function instanceof GuiBuilderBase.HandlerFunction1<?> handlerFunction1) {
+                        ((GuiBuilderBase.HandlerFunction1<E>) handlerFunction1).onEvent(event);
+                    } else if (function instanceof GuiBuilderBase.HandlerFunction2<?, ?> handlerFunction2) {
+                        ((GuiBuilderBase.HandlerFunction2<E, H>) handlerFunction2).onEvent(event, (H) this);
                     }
                 });
             }

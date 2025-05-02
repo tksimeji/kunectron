@@ -4,7 +4,7 @@ import com.tksimeji.kunectron.markupextensions.context.Context;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-public interface AstNode<T> extends IAstNode<T> {
+public interface AstNode<T> extends AstNodeBase<T> {
     @Override
     @NotNull T evaluate(final @NotNull Context<?> ctx);
 

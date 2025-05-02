@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Set;
 
-public interface ScoreboardGuiHooks extends IScoreboardGuiHooks {
+public interface ScoreboardGuiHooks extends ScoreboardGuiHooksBase {
     @Override
     default @NotNull Set<Player> usePlayers() {
         throw new NotImplementedException("The API module cannot be called at runtime.");

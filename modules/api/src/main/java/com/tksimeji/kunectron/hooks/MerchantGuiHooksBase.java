@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @ApiStatus.Internal
-interface IMerchantGuiHooks extends ContainerGuiHooks {
+interface MerchantGuiHooksBase extends ContainerGuiHooks {
     @Nullable TradeElement useElement(final int index);
 
     void useElement(final int index, final @NotNull TradeElement element);

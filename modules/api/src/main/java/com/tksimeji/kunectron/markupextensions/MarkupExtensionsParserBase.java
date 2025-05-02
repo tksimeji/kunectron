@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 @ApiStatus.Internal
-interface IMarkupExtensionsParser {
+interface MarkupExtensionsParserBase {
     @NotNull AstNode<?> parse(final @NotNull String input);
 
     @NotNull AstNode<?> parse(final @NotNull String input, final @NotNull Tokenizer tokenizer);

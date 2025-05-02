@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface MerchantGuiHooks extends IMerchantGuiHooks {
+public interface MerchantGuiHooks extends MerchantGuiHooksBase {
     @Override
     default @NotNull Player usePlayer() {
         return controller().getPlayer();

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @ApiStatus.Internal
-interface IScoreboardGuiHooks extends Hooks {
+interface ScoreboardGuiHooksBase extends Hooks {
     @NotNull Set<Player> usePlayers();
 
     void useAddPlayer(final @NotNull Player player);

@@ -2,7 +2,7 @@ package com.tksimeji.kunectron.markupextensions.context;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface Context<T> extends IContext<T> {
+public interface Context<T> extends ContextBase<T> {
     static <T> @NotNull Context<T> context(final @NotNull T object) {
         return new ContextImpl<>(object);
     }

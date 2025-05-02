@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @ApiStatus.Internal
-interface ITokenizer {
+interface TokenizerBase {
     @NotNull TokenFactory getFactory();
 
     void setFactory(final @NotNull TokenFactory factory);

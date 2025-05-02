@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IGuiBuilderImpl<B extends IGuiBuilder<B, H>, H extends Hooks> implements IGuiBuilder<B, H> {
+public abstract class IGuiBuilderImpl<B extends GuiBuilderBase<B, H>, H extends Hooks> implements GuiBuilderBase<B, H> {
     protected final @NotNull List<HandlerInfo> handlers = new ArrayList<>();
 
     @Override

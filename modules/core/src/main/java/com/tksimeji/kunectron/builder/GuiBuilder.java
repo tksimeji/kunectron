@@ -3,7 +3,7 @@ package com.tksimeji.kunectron.builder;
 import com.tksimeji.kunectron.hooks.Hooks;
 import org.jetbrains.annotations.NotNull;
 
-public interface GuiBuilder<B extends IGuiBuilder<B, H>, H extends Hooks> extends IGuiBuilder<B, H> {
+public interface GuiBuilder<B extends GuiBuilderBase<B, H>, H extends Hooks> extends GuiBuilderBase<B, H> {
     static @NotNull AdvancementToastGuiBuilder advancementToast() {
         return new AdvancementToastGuiBuilderImpl();
     }

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 @ApiStatus.Internal
-interface ISignGuiHooks extends Hooks {
+interface SignGuiHooksBase extends Hooks {
     @NotNull Player usePlayer();
 
     @NotNull SignGui.SignType useType();

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 @ApiStatus.Internal
-interface IChestGuiHooks extends ItemContainerGuiHooks {
+interface ChestGuiHooksBase extends ItemContainerGuiHooks {
     @Nullable ItemElement useElement(final int index);
 
     void useElement(final int index, final @NotNull ItemElement element);

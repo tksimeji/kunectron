@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URL;
 import java.util.UUID;
 
-public interface Element<T> extends IElement<T> {
+public interface Element<T> extends ElementBase<T> {
     static @NotNull ComponentElement component() {
         return component(Component.empty());
     }

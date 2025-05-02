@@ -8,7 +8,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public interface SignGuiHooks extends ISignGuiHooks {
+public interface SignGuiHooks extends SignGuiHooksBase {
     @Override
     default @NotNull Player usePlayer() {
         return controller().getPlayer();

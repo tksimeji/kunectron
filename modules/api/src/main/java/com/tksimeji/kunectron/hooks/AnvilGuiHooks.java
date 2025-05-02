@@ -4,7 +4,7 @@ import com.tksimeji.kunectron.element.ItemElement;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 
-public interface AnvilGuiHooks extends IAnvilGuiHooks {
+public interface AnvilGuiHooks extends AnvilGuiHooksBase {
     @Override
     default @Nullable ItemElement useFirstElement() {
         throw new NotImplementedException("The API module cannot be called at runtime.");

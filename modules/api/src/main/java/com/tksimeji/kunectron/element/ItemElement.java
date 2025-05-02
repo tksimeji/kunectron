@@ -107,10 +107,12 @@ public interface ItemElement extends Element<ItemStack> {
     interface Handler {
     }
 
+    @FunctionalInterface
     interface Handler1 extends Handler {
         void onClick();
     }
 
+    @FunctionalInterface
     interface Handler2 extends Handler {
         void onClick(@NotNull ItemContainerClickEvent event);
     }

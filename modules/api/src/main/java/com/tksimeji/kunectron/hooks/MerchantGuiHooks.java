@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface MerchantGuiHooks extends IMerchantGuiHooks {
+public interface MerchantGuiHooks extends MerchantGuiHooksBase {
     @Override
     default @Nullable TradeElement useElement(final int index) {
         throw new NotImplementedException("The API module cannot be called at runtime.");

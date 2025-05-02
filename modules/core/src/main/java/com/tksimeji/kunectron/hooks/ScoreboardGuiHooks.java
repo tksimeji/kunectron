@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public interface ScoreboardGuiHooks extends IScoreboardGuiHooks {
+public interface ScoreboardGuiHooks extends ScoreboardGuiHooksBase {
     @Override
     default @NotNull Set<Player> usePlayers() {
         return controller().getPlayers();

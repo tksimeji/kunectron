@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ApiStatus.Internal
-interface IContext<T> {
+interface ContextBase<T> {
     @NotNull T getObject();
 
     @Nullable Object getState(final @NotNull String name);
