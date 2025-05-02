@@ -161,7 +161,7 @@ public final class ScoreboardGuiController extends AbstractGuiController impleme
     }
 
     public void insertLine(final int index, final @NotNull ComponentLike line) {
-        scoreboardLines.set(index, new ScoreboardLine(line.asComponent()));
+        scoreboardLines.add(index, new ScoreboardLine(line.asComponent()));
         updateScores();
     }
 

@@ -42,13 +42,48 @@ public interface ItemElement extends Element<ItemElement> {
     @NotNull List<Component> lore();
 
     @Contract("_ -> this")
-    @NotNull ItemElement lore(final @NotNull Collection<Component> components);
+    @NotNull ItemElement lore(final @NotNull Collection<Component> lore);
 
     @Contract("_ -> this")
-    @NotNull ItemElement lore(final @NotNull ComponentLike... components);
+    @NotNull ItemElement lore(final @NotNull ComponentLike... lore);
 
     @Contract("_ -> this")
-    @NotNull ItemElement lore(final @NotNull String... strings);
+    @NotNull ItemElement lore(final @NotNull String... lore);
+
+    @Contract("_, _ -> this")
+    @NotNull ItemElement setLoreLine(final int index, final @NotNull Component line);
+
+    @Contract("_, _ -> this")
+    @NotNull ItemElement setLoreLine(final int index, final @NotNull String line);
+
+    @Contract("_ -> this")
+    @NotNull ItemElement addLoreLine(final @NotNull Component line);
+
+    @Contract("_ -> this")
+    @NotNull ItemElement addLoreLine(final @NotNull String line);
+
+    @Contract("_ -> this")
+    @NotNull ItemElement removeLoreLine(final int index);
+
+    @Contract("_, _ -> this")
+    @NotNull ItemElement insertLoreLine(final int index, final @NotNull Component line);
+
+    @Contract("_, _ -> this")
+    @NotNull ItemElement insertLoreLine(final int index, final @NotNull String line);
+
+    @Contract("_ -> this")
+    @NotNull ItemElement clearLoreLine(final int index);
+
+    @Contract("-> this")
+    @NotNull ItemElement clearLoreLines();
+
+    @Contract("-> this")
+    @NotNull ItemElement clearLore();
+
+    int loreWidth();
+
+    @Contract("_ -> this")
+    @NotNull ItemElement loreWidth(final int loreWidth);
 
     @Range(from = 1, to = Integer.MAX_VALUE) int amount();
 

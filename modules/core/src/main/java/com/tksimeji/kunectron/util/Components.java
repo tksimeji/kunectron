@@ -3,18 +3,14 @@ package com.tksimeji.kunectron.util;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsException;
 import com.tksimeji.kunectron.markupextensions.context.Context;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.TranslationArgument;
+import net.kyori.adventure.text.*;
 import net.kyori.adventure.translation.GlobalTranslator;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
 
 public final class Components {
     private static final @NotNull Pattern markupExtensionPattern = Pattern.compile("\\{([^}]*)}");
@@ -80,5 +76,60 @@ public final class Components {
         matcher.appendTail(builder);
 
         return textComponent.content(builder.toString());
+    }
+
+    public static @NotNull Component[] splitAt(final @NotNull Component component, final int index) {
+        final Spliterator<Component> spliterator = component.spliterator(ComponentIteratorType.DEPTH_FIRST);
+        final List<TextComponent> parts = StreamSupport.stream(spliterator, false).map(part -> (TextComponent) part).toList();
+
+        final List<Component> beforeParts = new ArrayList<>();
+        final List<Component> afterParts = new ArrayList<>();
+        int cumulative = 0;
+
+        for (final TextComponent part : parts) {
+            final String partText = part.content();
+            final int partLength = partText.length();
+
+            if (cumulative + partLength < index) {
+                beforeParts.add(part);
+            } else if (cumulative >= index) {
+                afterParts.add(part);
+            } else {
+                final int intraIndex = index - cumulative;
+                final String beforeText = partText.substring(0, intraIndex);
+                final String afterText = partText.substring(index);
+
+                final TextComponent beforeComponent = Component.text(beforeText).style(part.style());
+                final TextComponent afterComponent = Component.text(afterText).style(part.style());
+                beforeParts.add(beforeComponent);
+                afterParts.add(afterComponent);
+            }
+
+            cumulative++;
+        }
+
+        final TextComponent.Builder beforeCombined = Component.text();
+        for (final Component part : beforeParts) {
+            beforeCombined.append(part);
+        }
+
+        final TextComponent.Builder afterCombined = Component.text();
+        for (final Component part : afterParts) {
+            afterCombined.append(part);
+        }
+
+        return new Component[] {beforeCombined.build(), afterCombined.build()};
+    }
+
+    public static boolean isTextComponent(final @NotNull Component component) {
+        if (!(component instanceof TextComponent)) {
+            return false;
+        }
+        for (final Component child : component.children()) {
+            if (!isTextComponent(child)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

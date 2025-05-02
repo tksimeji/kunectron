@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -29,6 +30,7 @@ public class ItemElementImpl implements ItemElement {
 
     protected @Nullable Component title;
     protected @NotNull List<Component> lore = List.of();
+    protected int loreWidth = -1;
 
     protected @Nullable ItemSlotPolicy policy;
 
@@ -120,29 +122,114 @@ public class ItemElementImpl implements ItemElement {
     }
 
     @Override
-    public @NotNull ItemElement lore(final @NotNull Collection<Component> components) {
-        Preconditions.checkArgument(components != null, "Components cannot be null.");
-        lore = components.stream()
-                .map(component -> component.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
+    public @NotNull ItemElement lore(final @NotNull Collection<Component> lore) {
+        Preconditions.checkArgument(lore != null, "Lines cannot be null.");
+        this.lore = lore.stream()
+                .map(line -> line.asComponent().colorIfAbsent(NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE))
                 .toList();
 
         final ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.lore(lore);
+        itemMeta.lore(this.lore);
         itemStack.setItemMeta(itemMeta);
         updateHideToolTip();
         return this;
     }
 
     @Override
-    public @NotNull ItemElement lore(final @NotNull ComponentLike... components) {
-        Preconditions.checkArgument(components != null, "Components cannot be null.");
-        return lore(Arrays.stream(components).map(ComponentLike::asComponent).toList());
+    public @NotNull ItemElement lore(final @NotNull ComponentLike... lore) {
+        Preconditions.checkArgument(lore != null, "Lines cannot be null.");
+        return lore(Arrays.stream(lore).map(ComponentLike::asComponent).toList());
     }
 
     @Override
-    public @NotNull ItemElement lore(final @NotNull String... strings) {
-        Preconditions.checkArgument(strings != null, "Strings cannot be null.");
-        return lore(Arrays.stream(strings).map(Component::text).map(Component::asComponent).toList());
+    public @NotNull ItemElement lore(final @NotNull String... lore) {
+        Preconditions.checkArgument(lore != null, "Lines cannot be null.");
+        return lore(Arrays.stream(lore).map(Component::text).map(Component::asComponent).toList());
+    }
+
+    @Override
+    public @NotNull ItemElement setLoreLine(final int index, final @NotNull Component line) {
+        Preconditions.checkArgument(index >= 0, index + " is an invalid index.");
+        if (lore.size() <= index) {
+            for (int i = lore.size(); i <= index; i++) {
+                if (i == index) {
+                    lore.set(index, line);
+                } else {
+                    lore.set(index, Component.empty());
+                }
+            }
+        } else {
+            lore.set(index, line);
+        }
+        lore(lore);
+        return this;
+    }
+
+    @Override
+    public @NotNull ItemElement setLoreLine(final int index, final @NotNull String line) {
+        return setLoreLine(index, Component.text(line));
+    }
+
+    @Override
+    public @NotNull ItemElement addLoreLine(final @NotNull Component line) {
+        lore.add(line);
+        lore(lore);
+        return this;
+    }
+
+    @Override
+    public @NotNull ItemElement addLoreLine(final @NotNull String line) {
+        return addLoreLine(Component.text(line));
+    }
+
+    @Override
+    public @NotNull ItemElement removeLoreLine(final int index) {
+        lore.remove(index);
+        lore(lore);
+        return this;
+    }
+
+    @Override
+    public @NotNull ItemElement insertLoreLine(final int index, final @NotNull Component line) {
+        lore.add(index, line);
+        lore(lore);
+        return this;
+    }
+
+    @Override
+    public @NotNull ItemElement insertLoreLine(final int index, final @NotNull String line) {
+        return insertLoreLine(index, Component.text(line));
+    }
+
+    @Override
+    public @NotNull ItemElement clearLoreLine(final int index) {
+        return setLoreLine(index, Component.empty());
+    }
+
+    @Override
+    public @NotNull ItemElement clearLoreLines() {
+        for (int i = 0; i < lore.size(); i++) {
+            clearLoreLine(i);
+        }
+        return this;
+    }
+
+    @Override
+    public @NotNull ItemElement clearLore() {
+        lore.clear();
+        lore(lore);
+        return this;
+    }
+
+    @Override
+    public int loreWidth() {
+        return loreWidth;
+    }
+
+    @Override
+    public @NotNull ItemElement loreWidth(int loreWidth) {
+        this.loreWidth = loreWidth > 0 ? loreWidth : -1;
+        return this;
     }
 
     @Override
@@ -305,7 +392,7 @@ public class ItemElementImpl implements ItemElement {
         }
         itemMeta.displayName(title);
 
-        itemMeta.lore(lore.stream().map(component -> {
+        List<Component> lore = this.lore.stream().map(component -> {
             if (ctx != null) {
                 component = Components.markupExtensions(component, ctx);
             }
@@ -313,7 +400,34 @@ public class ItemElementImpl implements ItemElement {
                 component = Components.translate(component, locale);
             }
             return component;
-        }).toList());
+        }).toList();
+        if (loreWidth != -1) {
+            final List<Component> lore2 = new ArrayList<>();
+            for (final Component line : lore) {
+                if (!Components.isTextComponent(line)) {
+                    lore2.add(line);
+                    continue;
+                }
+
+                final String plainText = PlainTextComponentSerializer.plainText().serialize(line);
+
+                if (plainText.length() <= loreWidth) {
+                    lore2.add(line);
+                } else {
+                    Component component = line;
+                    while (PlainTextComponentSerializer.plainText().serialize(component).length() > loreWidth) {
+                        final Component[] split = Components.splitAt(component, loreWidth);
+                        lore2.add(split[0]);
+                        component = split[1];
+                    }
+                    if (!PlainTextComponentSerializer.plainText().serialize(component).isEmpty()) {
+                        lore2.add(component);
+                    }
+                }
+            }
+            lore = lore2;
+        }
+        itemMeta.lore(lore);
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
