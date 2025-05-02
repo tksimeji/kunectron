@@ -7,11 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-@ApiStatus.Experimental
 public interface AdvancementToastGuiBuilder extends GuiBuilder<AdvancementToastGuiBuilder, AdvancementToastGuiHooks> {
     @Contract("_ -> this")
     @NotNull AdvancementToastGuiBuilder type(final @NotNull AdvancementToastGui.AdvancementType type);
