@@ -2,7 +2,7 @@ package com.tksimeji.kunectron;
 
 import com.tksimeji.kunectron.adapter.Adapter;
 import com.tksimeji.kunectron.controller.GuiController;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionParser;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsParser;
 import com.tksimeji.kunectron.type.GuiType;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.plugin.Plugin;
@@ -73,11 +73,11 @@ public final class Kunectron {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
-    public static @NotNull MarkupExtensionParser getMarkupExtensionParser() {
+    public static @NotNull MarkupExtensionsParser getMarkupExtensionsParser() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
-    public static void setMarkupExtensionParser(final @NotNull MarkupExtensionParser markupExtensionParser) {
+    public static void setMarkupExtensionsParser(final @NotNull MarkupExtensionsParser markupExtensionsParser) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 }

@@ -1,8 +1,8 @@
 package com.tksimeji.kunectron.element;
 
 import com.google.common.base.Preconditions;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
-import com.tksimeji.kunectron.markupextension.context.Context;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
+import com.tksimeji.kunectron.markupextensions.context.Context;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.Material;
@@ -28,8 +28,8 @@ public interface Element<T> extends IElement<T> {
     static @NotNull ComponentElement component(final @NotNull ComponentLike component, final @Nullable Context<?> ctx) {
         Preconditions.checkArgument(component != null, "Component cannot be null.");
         ComponentElement element = component(component);
-        if (element instanceof MarkupExtensionSupport markupExtensionSupport) {
-            markupExtensionSupport.setContext(ctx);
+        if (element instanceof MarkupExtensionsSupport markupExtensionsSupport) {
+            markupExtensionsSupport.setContext(ctx);
         }
         return element;
     }

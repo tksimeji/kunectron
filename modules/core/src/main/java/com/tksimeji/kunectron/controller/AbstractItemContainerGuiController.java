@@ -4,7 +4,7 @@ import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.element.ItemElement;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
 import org.bukkit.inventory.Inventory;
@@ -52,8 +52,8 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
 
         final ItemElement aElement = element != null ? element.createCopy() : null;
 
-        if (aElement instanceof MarkupExtensionSupport markupExtensionSupport) {
-            markupExtensionSupport.setContext(markupExtensionContext);
+        if (aElement instanceof MarkupExtensionsSupport markupExtensionsSupport) {
+            markupExtensionsSupport.setContext(markupExtensionContext);
         }
 
         elements.put(index, aElement);

@@ -2,8 +2,8 @@ package com.tksimeji.kunectron.element;
 
 import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
-import com.tksimeji.kunectron.markupextension.context.Context;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
+import com.tksimeji.kunectron.markupextensions.context.Context;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.util.Components;
 import net.kyori.adventure.key.Key;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Range;
 
 import java.util.*;
 
-public class ItemElementImpl implements ItemElement, MarkupExtensionSupport {
+public class ItemElementImpl implements ItemElement, MarkupExtensionsSupport {
     protected @NotNull ItemStack itemStack;
 
     protected @Nullable Component title;

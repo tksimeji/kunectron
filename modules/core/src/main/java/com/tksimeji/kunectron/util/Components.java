@@ -1,8 +1,8 @@
 package com.tksimeji.kunectron.util;
 
 import com.tksimeji.kunectron.Kunectron;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionException;
-import com.tksimeji.kunectron.markupextension.context.Context;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsException;
+import com.tksimeji.kunectron.markupextensions.context.Context;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -71,9 +71,9 @@ public final class Components {
         while (matcher.find()) {
             final String innerText = matcher.group(1);
             try {
-                final String result = Kunectron.getMarkupExtensionParser().parse(innerText).evaluateDeep(ctx).toString();
+                final String result = Kunectron.getMarkupExtensionsParser().parse(innerText).evaluateDeep(ctx).toString();
                 matcher.appendReplacement(builder, Matcher.quoteReplacement(result));
-            } catch (final MarkupExtensionException e) {
+            } catch (final MarkupExtensionsException e) {
                 matcher.appendReplacement(builder, Matcher.quoteReplacement(e.getMessage()));
             }
         }

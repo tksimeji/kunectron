@@ -8,7 +8,7 @@ import com.tksimeji.kunectron.event.bukkit.KunectronGuiCreateEvent;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
 import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionParser;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsParser;
 import com.tksimeji.kunectron.type.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -38,7 +38,7 @@ public final class Kunectron extends JavaPlugin {
 
     private static final @NotNull LinkedHashSet<Adapter> adapters = new LinkedHashSet<>();
 
-    private static @NotNull MarkupExtensionParser markupExtensionParse = MarkupExtensionParser.markupExtensionParser();
+    private static @NotNull MarkupExtensionsParser markupExtensionsParse = MarkupExtensionsParser.markupExtensionsParser();
 
     @ApiStatus.Internal
     public static @NotNull Kunectron plugin() {
@@ -150,12 +150,12 @@ public final class Kunectron extends JavaPlugin {
         adapters.addFirst(adapter);
     }
 
-    public static @NotNull MarkupExtensionParser getMarkupExtensionParser() {
-        return markupExtensionParse;
+    public static @NotNull MarkupExtensionsParser getMarkupExtensionsParser() {
+        return markupExtensionsParse;
     }
 
-    public static void setMarkupExtensionParser(final @NotNull MarkupExtensionParser markupExtensionParser) {
-        Kunectron.markupExtensionParse = markupExtensionParser;
+    public static void setMarkupExtensionParser(final @NotNull MarkupExtensionsParser markupExtensionsParser) {
+        Kunectron.markupExtensionsParse = markupExtensionsParser;
     }
 
     @Override

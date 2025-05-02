@@ -2,8 +2,8 @@ package com.tksimeji.kunectron.element;
 
 import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.controller.MerchantGuiController;
-import com.tksimeji.kunectron.markupextension.MarkupExtensionSupport;
-import com.tksimeji.kunectron.markupextension.context.Context;
+import com.tksimeji.kunectron.markupextensions.MarkupExtensionsSupport;
+import com.tksimeji.kunectron.markupextensions.context.Context;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +31,8 @@ public class TradeElementImpl implements ObservableElement<MerchantRecipe, Merch
     public TradeElementImpl(final @NotNull ItemStack result, final @NotNull ItemStack ingredient1, final @Nullable ItemStack ingredient2) {
         this.result = result.clone();
 
-        if (this.result instanceof MarkupExtensionSupport markupExtensionSupport) {
-            markupExtensionSupport.setContext(null);
+        if (this.result instanceof MarkupExtensionsSupport markupExtensionsSupport) {
+            markupExtensionsSupport.setContext(null);
         }
 
         ingredients = new IngredientsImpl(ingredient1.clone(), ingredient2 != null ? ingredient2.clone() : null);
