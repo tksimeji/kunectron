@@ -62,7 +62,7 @@ public class ItemElementImpl implements ItemElement {
         if (itemStackMode) {
             final ItemMeta itemMeta = itemStack.getItemMeta();
             title = itemMeta.displayName();
-            lore = Optional.ofNullable(itemMeta.lore()).orElse(List.of());
+            lore = Optional.ofNullable(itemMeta.lore()).orElse(new ArrayList<>());
         } else {
             title((ComponentLike) null);
             amount(itemStack.getAmount());
@@ -149,6 +149,7 @@ public class ItemElementImpl implements ItemElement {
     @Override
     public @NotNull ItemElement setLoreLine(final int index, final @NotNull Component line) {
         Preconditions.checkArgument(index >= 0, index + " is an invalid index.");
+        final List<Component> lore = new ArrayList<>(this.lore);
         if (lore.size() <= index) {
             for (int i = lore.size(); i <= index; i++) {
                 if (i == index) {
@@ -171,6 +172,7 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public @NotNull ItemElement addLoreLine(final @NotNull Component line) {
+        final List<Component> lore = new ArrayList<>(this.lore);
         lore.add(line);
         lore(lore);
         return this;
@@ -183,6 +185,7 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public @NotNull ItemElement removeLoreLine(final int index) {
+        final List<Component> lore = new ArrayList<>(this.lore);
         lore.remove(index);
         lore(lore);
         return this;
@@ -190,6 +193,7 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public @NotNull ItemElement insertLoreLine(final int index, final @NotNull Component line) {
+        final List<Component> lore = new ArrayList<>(this.lore);
         lore.add(index, line);
         lore(lore);
         return this;
@@ -215,8 +219,7 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public @NotNull ItemElement clearLore() {
-        lore.clear();
-        lore(lore);
+        lore(List.of());
         return this;
     }
 
