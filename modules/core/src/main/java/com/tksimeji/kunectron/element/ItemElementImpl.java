@@ -11,7 +11,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -227,7 +226,7 @@ public class ItemElementImpl implements ItemElement {
     }
 
     @Override
-    public @NotNull ItemElement loreWidth(int loreWidth) {
+    public @NotNull ItemElement loreWidth(final int loreWidth) {
         this.loreWidth = loreWidth > 0 ? loreWidth : -1;
         return this;
     }
@@ -404,26 +403,7 @@ public class ItemElementImpl implements ItemElement {
         if (loreWidth != -1) {
             final List<Component> lore2 = new ArrayList<>();
             for (final Component line : lore) {
-                if (!Components.isTextComponent(line)) {
-                    lore2.add(line);
-                    continue;
-                }
-
-                final String plainText = PlainTextComponentSerializer.plainText().serialize(line);
-
-                if (plainText.length() <= loreWidth) {
-                    lore2.add(line);
-                } else {
-                    Component component = line;
-                    while (PlainTextComponentSerializer.plainText().serialize(component).length() > loreWidth) {
-                        final Component[] split = Components.splitAt(component, loreWidth);
-                        lore2.add(split[0]);
-                        component = split[1];
-                    }
-                    if (!PlainTextComponentSerializer.plainText().serialize(component).isEmpty()) {
-                        lore2.add(component);
-                    }
-                }
+                lore2.addAll(Components.split(line, loreWidth));
             }
             lore = lore2;
         }
@@ -449,6 +429,7 @@ public class ItemElementImpl implements ItemElement {
 
         copy.title(title);
         copy.lore(lore);
+        copy.loreWidth(loreWidth);
         copy.policy(policy);
         copy.sound(sound, soundVolume, soundPitch);
 

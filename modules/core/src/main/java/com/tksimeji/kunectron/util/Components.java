@@ -4,13 +4,13 @@ import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsException;
 import com.tksimeji.kunectron.markupextensions.context.Context;
 import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.translation.GlobalTranslator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 public final class Components {
     private static final @NotNull Pattern markupExtensionPattern = Pattern.compile("\\{([^}]*)}");
@@ -78,47 +78,92 @@ public final class Components {
         return textComponent.content(builder.toString());
     }
 
-    public static @NotNull Component[] splitAt(final @NotNull Component component, final int index) {
-        final Spliterator<Component> spliterator = component.spliterator(ComponentIteratorType.DEPTH_FIRST);
-        final List<TextComponent> parts = StreamSupport.stream(spliterator, false).map(part -> (TextComponent) part).toList();
+    public static @NotNull List<Component> flatten(final @NotNull Component component) {
+        final List<Component> result = new ArrayList<>();
+        result.add(component);
+        for (final Component child : component.children()) {
+            result.addAll(flatten(child));
+        }
+        return result;
+    }
 
-        final List<Component> beforeParts = new ArrayList<>();
-        final List<Component> afterParts = new ArrayList<>();
-        int cumulative = 0;
+    public static List<Component> split(final @NotNull Component component, final int length) {
+        final List<Component> result = new ArrayList<>();
 
-        for (final TextComponent part : parts) {
-            final String partText = part.content();
-            final int partLength = partText.length();
+        final Component[] split = splitAt(component, length);
+        final Component part1 = split[0];
+        final Component part2 = split[1];
 
-            if (cumulative + partLength < index) {
-                beforeParts.add(part);
-            } else if (cumulative >= index) {
-                afterParts.add(part);
+        if (part1 != null) result.add(split[0]);
+        if (part2 != null) {
+            if (PlainTextComponentSerializer.plainText().serialize(split[1]).length() > length) {
+                result.addAll(split(split[1], length));
             } else {
-                final int intraIndex = index - cumulative;
-                final String beforeText = partText.substring(0, intraIndex);
-                final String afterText = partText.substring(index);
-
-                final TextComponent beforeComponent = Component.text(beforeText).style(part.style());
-                final TextComponent afterComponent = Component.text(afterText).style(part.style());
-                beforeParts.add(beforeComponent);
-                afterParts.add(afterComponent);
+                result.add(split[1]);
             }
+        }
+        return result;
+    }
 
-            cumulative++;
+    public static @NotNull Component[] splitAt(final @NotNull Component component, final int index) {
+        final List<Component> components = flatten(component);
+        final List<Component> part1Components = new ArrayList<>();
+        final List<Component> part2Components = new ArrayList<>();
+
+        int cumulative = 0;
+        boolean splitOccurred = false;
+
+        for (final Component partComponent : components) {
+            if (partComponent instanceof TextComponent textComponent) {
+                final String content = textComponent.content();
+                final int length = content.length();
+
+                if (!splitOccurred) {
+                    if (cumulative + length <= index) {
+                        part1Components.add(partComponent);
+                    } else if (cumulative >= index) {
+                        part2Components.add(partComponent);
+                        splitOccurred = true;
+                    } else {
+                        final int intraIndex = index - cumulative;
+                        final String plainText1 = content.substring(0, intraIndex);
+                        final String plainText2 = content.substring(intraIndex);
+                        part1Components.add(Component.text(plainText1).style(partComponent.style()));
+                        part2Components.add(Component.text(plainText2).style(partComponent.style()));
+                        splitOccurred = true;
+                    }
+                    cumulative += length;
+                } else {
+                    part2Components.add(partComponent);
+                }
+            } else {
+                if (!splitOccurred) {
+                    part1Components.add(partComponent);
+                } else {
+                    part2Components.add(partComponent);
+                }
+            }
         }
 
-        final TextComponent.Builder beforeCombined = Component.text();
-        for (final Component part : beforeParts) {
-            beforeCombined.append(part);
+        Component part1 = null;
+        for (final Component part1Component : part1Components) {
+            if (part1 == null) {
+                part1 = part1Component;
+            } else {
+                part1 = part1.append(part1Component);
+            }
         }
 
-        final TextComponent.Builder afterCombined = Component.text();
-        for (final Component part : afterParts) {
-            afterCombined.append(part);
+        Component part2 = null;
+        for (final Component part2Component : part2Components) {
+            if (part2 == null) {
+                part2 = part2Component;
+            } else {
+                part2 = part2.append(part2Component);
+            }
         }
 
-        return new Component[] {beforeCombined.build(), afterCombined.build()};
+        return new Component[] { part1, part2 };
     }
 
     public static boolean isTextComponent(final @NotNull Component component) {

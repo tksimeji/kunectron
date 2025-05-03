@@ -2,7 +2,8 @@
 
 A Minecraft GUI framework
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta.10-blue?style=flat-square)
+![Version](https://img.shields.io/badge/api--version-1.0.0--beta.10-blue?style=flat-square)
+![Version](https://img.shields.io/badge/plugin--version-1.0.0--beta.10.1-blue?style=flat-square)
 ![Adapter](https://img.shields.io/badge/adapter-1.21.1--1.21.5-blue?style=flat-square)
 ![Licence](https://img.shields.io/badge/licence-MIT-blue?style=flat-square)
 
@@ -21,7 +22,7 @@ Add a dependency to your build tool of choice.
 
 ```kotlin
 dependencies {
-    compileOnly("com.tksimeji:kunectron:x.y.z")
+    compileOnly("com.tksimeji:kunectron:{api-version}")
 }
 ```
 
@@ -29,7 +30,7 @@ dependencies {
 
 ```groovy
 dependencies {
-    compileOnly 'com.tksimeji:kunectron:x.y.z'
+    compileOnly 'com.tksimeji:kunectron:{api-version}'
 }
 ```
 
@@ -39,7 +40,7 @@ dependencies {
 <dependency>
     <groupId>com.tksimeji</groupId>
     <artifactId>kunectron</artifactId>
-    <version>x.y.z</version>
+    <version>{api-version}</version>
     <scope>provided</scope>
 </dependency>
 ```
