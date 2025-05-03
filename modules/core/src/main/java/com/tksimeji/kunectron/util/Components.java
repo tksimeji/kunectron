@@ -82,7 +82,7 @@ public final class Components {
         final List<Component> result = new ArrayList<>();
         result.add(component);
         for (final Component child : component.children()) {
-            result.addAll(flatten(child));
+            result.addAll(flatten(child).stream().map(aChild -> aChild.style(component.style())).toList());
         }
         return result;
     }
@@ -148,18 +148,18 @@ public final class Components {
         Component part1 = null;
         for (final Component part1Component : part1Components) {
             if (part1 == null) {
-                part1 = part1Component;
+                part1 = part1Component.children(List.of());
             } else {
-                part1 = part1.append(part1Component);
+                part1 = part1.append(part1Component.children(List.of()));
             }
         }
 
         Component part2 = null;
         for (final Component part2Component : part2Components) {
             if (part2 == null) {
-                part2 = part2Component;
+                part2 = part2Component.children(List.of());
             } else {
-                part2 = part2.append(part2Component);
+                part2 = part2.append(part2Component.children(List.of()));
             }
         }
 
