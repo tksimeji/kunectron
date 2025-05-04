@@ -4,6 +4,7 @@ import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.AnvilGui;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.controller.impl.ItemContainerGuiControllerImpl;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.event.AnvilGuiEvents;
 import com.tksimeji.kunectron.event.GuiEvent;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public final class AnvilGuiController extends AbstractItemContainerGuiController<AnvilInventory> {
+public final class AnvilGuiController extends ItemContainerGuiControllerImpl<AnvilInventory> {
     private final @NotNull Player player;
 
     private @NotNull AnvilInventory inventory;

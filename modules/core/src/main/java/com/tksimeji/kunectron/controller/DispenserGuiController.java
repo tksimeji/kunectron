@@ -1,14 +1,14 @@
 package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.Action;
-import com.tksimeji.kunectron.ChestGui;
-import com.tksimeji.kunectron.Mouse;
+import com.tksimeji.kunectron.DispenserGui;
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.controller.impl.ItemContainerGuiControllerImpl;
 import com.tksimeji.kunectron.element.ItemElement;
-import com.tksimeji.kunectron.event.chest.ChestGuiClickEventImpl;
-import com.tksimeji.kunectron.event.chest.ChestGuiCloseEventImpl;
-import com.tksimeji.kunectron.event.chest.ChestGuiInitEventImpl;
+import com.tksimeji.kunectron.event.dispenser.DispenserGuiClickEventImpl;
+import com.tksimeji.kunectron.event.dispenser.DispenserGuiCloseEventImpl;
+import com.tksimeji.kunectron.event.dispenser.DispenserGuiInitEventImpl;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -17,58 +17,59 @@ import net.kyori.adventure.translation.GlobalTranslator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Set;
 
-public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inventory> {
+public final class DispenserGuiController extends ItemContainerGuiControllerImpl<Inventory> {
     private final @NotNull Player player;
 
     private final @NotNull Inventory inventory;
 
-    public ChestGuiController(final @NotNull Object gui, final @NotNull ChestGui annotation) {
+    public DispenserGuiController(final @NotNull Object gui, final @NotNull DispenserGui annotation) {
         super(gui, annotation.autoReload(), annotation.serverSideTranslation(), annotation.markupExtensions());
 
-        player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
+        player = getDeclarationOrThrow(gui, DispenserGui.Player.class, Player.class).getLeft();
 
-        Component title = getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
+        Component title = getDeclarationOrDefault(gui, DispenserGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
         if (serverSideTranslation &&
                 title instanceof TranslatableComponent translatableComponent &&
                 GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
             title = GlobalTranslator.render(title, getLocale());
         }
 
-        inventory = Bukkit.createInventory(null,
-                getDeclarationOrDefault(gui, ChestGui.Size.class, ChestGui.ChestSize.class, ChestGui.ChestSize.SIZE_54).getLeft().toInt(),
-                title);
+        inventory = Bukkit.createInventory(null, InventoryType.DISPENSER, title);
 
-        Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> player.openInventory(inventory));
-
-        getDeclaration(gui, ChestGui.DefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
+        getDeclaration(gui, DispenserGui.DefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
             setDefaultPolicy(declaration.getLeft());
         });
 
-        getDeclaration(gui, ChestGui.PlayerDefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
+        getDeclaration(gui, DispenserGui.PlayerDefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
             setPlayerDefaultPolicy(declaration.getLeft());
         });
 
-        for (Pair<ItemElement, ChestGui.Element> declaration : getDeclarations(gui, ChestGui.Element.class, ItemElement.class)) {
+        for (Pair<ItemElement, DispenserGui.Element> declaration : getDeclarations(gui, DispenserGui.Element.class, ItemElement.class)) {
             for (final int index : parseAnnotation(declaration.getRight())) {
                 setElement(index, declaration.getLeft());
             }
         }
 
-        for (Pair<ItemSlotPolicy, ChestGui.Policy> declaration : getDeclarations(gui, ChestGui.Policy.class, ItemSlotPolicy.class)) {
+        for (Pair<ItemSlotPolicy, DispenserGui.Policy> declaration : getDeclarations(gui, DispenserGui.Policy.class, ItemSlotPolicy.class)) {
             for (final int index : parseAnnotation(declaration.getRight())) {
                 setPolicy(index, declaration.getLeft());
             }
         }
+
+        Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
+           player.openInventory(inventory);
+        });
     }
 
     @Override
     public void init() {
-        callEvent(new ChestGuiInitEventImpl(gui));
+        callEvent(new DispenserGuiInitEventImpl(gui));
     }
 
     @Override
@@ -76,27 +77,28 @@ public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inv
         return player;
     }
 
+    @Override
     public @NotNull Inventory getInventory() {
         return inventory;
     }
 
     @Override
     public void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse) {
-        callEvent(new ChestGuiClickEventImpl(gui, index, getElement(index), action, mouse));
+        callEvent(new DispenserGuiClickEventImpl(gui, index, getElement(index), action, mouse));
         super.click(index, action, mouse);
     }
 
     @Override
     public void close() {
-        callEvent(new ChestGuiCloseEventImpl(gui));
+        callEvent(new DispenserGuiCloseEventImpl(gui));
         super.close();
     }
 
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Element annotation) {
+    private @NotNull Set<Integer> parseAnnotation(final @NotNull DispenserGui.Element annotation) {
         return parseIndexGroup(annotation.index(), annotation.groups());
     }
 
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Policy annotation) {
+    private @NotNull Set<Integer> parseAnnotation(final @NotNull DispenserGui.Policy annotation) {
         return parseIndexGroup(annotation.index(), annotation.groups(), annotation.player());
     }
 }

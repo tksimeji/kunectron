@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.adapter.Adapter;
 import com.tksimeji.kunectron.adapter.V1_21_1;
 import com.tksimeji.kunectron.adapter.V1_21_3;
+import com.tksimeji.kunectron.controller.ContainerGuiController;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiCreateEvent;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
 import com.tksimeji.kunectron.listener.*;
@@ -18,6 +19,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
@@ -99,6 +101,21 @@ public final class Kunectron extends JavaPlugin {
         return controller;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Inventory> @Nullable ContainerGuiController<T> getGuiController(final @NotNull T inventory) {
+        return (ContainerGuiController<T>) getGuiControllers().stream()
+                .filter(controller -> (controller instanceof ContainerGuiController<?> containerGuiController) && containerGuiController.getInventory().equals(inventory))
+                .findFirst().orElse(null);
+    }
+
+    public static <T extends Inventory> @NotNull ContainerGuiController<T> getGuiControllerOrThrow(final @NotNull T inventory) {
+        final ContainerGuiController<T> controller = getGuiController(inventory);
+        if (controller == null) {
+            throw new NullPointerException();
+        }
+        return controller;
+    }
+
     public static <C extends GuiController> @NotNull Set<C> getGuiControllers(final @NotNull GuiType<?, C> type) {
         return controllers.stream()
                 .filter(controller -> type.getControllerClass().isAssignableFrom(controller.getClass()))
@@ -171,6 +188,7 @@ public final class Kunectron extends JavaPlugin {
         registerGuiType(AdvancementToastGuiType.instance(), this);
         registerGuiType(AnvilGuiType.instance(), this);
         registerGuiType(ChestGuiType.instance(), this);
+        registerGuiType(DispenserGuiType.instance(), this);
         registerGuiType(MerchantGuiType.instance(), this);
         registerGuiType(ScoreboardGuiType.instance(), this);
         registerGuiType(SignGuiType.instance(), this);

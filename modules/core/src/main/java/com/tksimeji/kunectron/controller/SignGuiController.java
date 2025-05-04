@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.SignGui;
+import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
 import com.tksimeji.kunectron.event.sign.SignCloseEventImpl;
 import com.tksimeji.kunectron.event.sign.SignInitEventImpl;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public final class SignGuiController extends AbstractGuiController {
+public final class SignGuiController extends GuiControllerImpl {
     private final @NotNull Player player;
 
     private final @NotNull SignGui.SignType type;

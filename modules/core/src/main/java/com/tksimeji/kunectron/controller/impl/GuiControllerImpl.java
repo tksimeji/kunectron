@@ -1,7 +1,8 @@
-package com.tksimeji.kunectron.controller;
+package com.tksimeji.kunectron.controller.impl;
 
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.event.CancellableEvent;
 import com.tksimeji.kunectron.event.GuiEvent;
 import com.tksimeji.kunectron.event.GuiHandler;
@@ -23,7 +24,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.IntStream;
 
-public abstract class AbstractGuiController implements GuiController {
+public abstract class GuiControllerImpl implements GuiController {
     public static @NotNull Set<Integer> parseIndexGroup(final @NotNull IndexGroup indexGroup) {
         final HashSet<Integer> indexes = new HashSet<>(Arrays.stream(indexGroup.indexes()).boxed().toList());
 
@@ -54,7 +55,7 @@ public abstract class AbstractGuiController implements GuiController {
 
     protected final @NotNull Set<Method> handlers = new LinkedHashSet<>();
 
-    public AbstractGuiController(final @NotNull Object gui) {
+    public GuiControllerImpl(final @NotNull Object gui) {
         this.gui = gui;
         markupExtensionContext = Context.mutable(gui);
 

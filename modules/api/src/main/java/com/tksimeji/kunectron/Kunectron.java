@@ -1,10 +1,12 @@
 package com.tksimeji.kunectron;
 
 import com.tksimeji.kunectron.adapter.Adapter;
+import com.tksimeji.kunectron.controller.ContainerGuiController;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsParser;
 import com.tksimeji.kunectron.type.GuiType;
 import org.apache.commons.lang3.NotImplementedException;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +36,14 @@ public final class Kunectron {
     }
 
     public static @NotNull GuiController getGuiControllerOrThrow(final @NotNull Object gui) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
+    public static <T extends Inventory> @Nullable ContainerGuiController<T> getGuiController(final @NotNull T inventory) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
+    public static <T extends Inventory> @NotNull ContainerGuiController<T> getGuiControllerOrThrow(final @NotNull T inventory) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 

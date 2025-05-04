@@ -15,11 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class ItemContainerGuiListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -28,28 +25,26 @@ public final class ItemContainerGuiListener implements Listener {
             return;
         }
 
-        final ItemContainerGuiController<?> controller = controller(event.getInventory());
-
-        if (controller == null) {
+        if (!(Kunectron.getGuiController(event.getInventory()) instanceof ItemContainerGuiController<?> itemContainerGuiController)) {
             return;
         }
 
         event.setCancelled(true);
 
         final int index = event.getRawSlot();
-        final ItemSlotPolicy policy = index >= 0 ? controller.getPolicy(index) : Policy.itemSlot(true);
+        final ItemSlotPolicy policy = index >= 0 ? itemContainerGuiController.getPolicy(index) : Policy.itemSlot(true);
 
-        if (controller.isValidIndex(index)) {
+        if (itemContainerGuiController.isValidIndex(index)) {
             Action action = event.getClick() == ClickType.DOUBLE_CLICK ? Action.DOUBLE_CLICK : event.isShiftClick() ? Action.SHIFT_CLICK : Action.SINGLE_CLICK;
             Mouse mouse = event.getClick().isLeftClick() ? Mouse.LEFT : Mouse.RIGHT;
-            controller.click(index, action, mouse);
+            itemContainerGuiController.click(index, action, mouse);
         }
 
         if (policy.isFixation()) {
             return;
         }
 
-        final ClickProcessor processor = new ClickProcessor(event, controller, player);
+        final ClickProcessor processor = new ClickProcessor(event, itemContainerGuiController, player);
 
         switch (event.getAction()) {
             case CLONE_STACK, DROP_ALL_CURSOR, DROP_ONE_CURSOR -> event.setCancelled(false);
@@ -71,24 +66,10 @@ public final class ItemContainerGuiListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
-
-        final ItemContainerGuiController<?> controller = controller(event.getInventory());
-
-        if (controller == null) {
+        if (!(Kunectron.getGuiController(event.getInventory()) instanceof ItemContainerGuiController<?> itemContainerGuiController)) {
             return;
         }
-
-        event.setCancelled(event.getRawSlots().stream().anyMatch(index -> controller.getPolicy(index).isFixation()));
-    }
-
-    @ApiStatus.Internal
-    private @Nullable ItemContainerGuiController<?> controller(final @Nullable Inventory inventory) {
-        return Kunectron.getGuiControllers()
-                .stream()
-                .filter(controller -> (controller instanceof ItemContainerGuiController<?> containerGuiController) && containerGuiController.getInventory() == inventory)
-                .map(controller -> (ItemContainerGuiController<?>) controller)
-                .findFirst()
-                .orElse(null);
+        event.setCancelled(event.getRawSlots().stream().anyMatch(index -> itemContainerGuiController.getPolicy(index).isFixation()));
     }
 
     private static class ClickProcessor {

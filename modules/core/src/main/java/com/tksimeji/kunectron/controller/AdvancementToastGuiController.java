@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.AdvancementToastGui;
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.bukkit.entity.Player;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class AdvancementToastGuiController extends AbstractGuiController {
+public class AdvancementToastGuiController extends GuiControllerImpl {
     private final @NotNull AdvancementToastGui.AdvancementType type;
 
     private final @NotNull Player player;

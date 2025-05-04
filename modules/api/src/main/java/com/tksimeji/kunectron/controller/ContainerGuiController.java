@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 public interface ContainerGuiController<I extends Inventory> extends GuiController {
+    static void from() {
+    }
+
     @NotNull Player getPlayer();
 
     @NotNull I getInventory();

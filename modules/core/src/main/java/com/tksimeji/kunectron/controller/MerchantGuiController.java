@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.MerchantGui;
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.controller.impl.ContainerGuiControllerImpl;
 import com.tksimeji.kunectron.element.TradeElement;
 import com.tksimeji.kunectron.element.TradeElementImpl;
 import com.tksimeji.kunectron.event.merchant.*;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class MerchantGuiController extends AbstractContainerGuiController<MerchantInventory> {
+public final class MerchantGuiController extends ContainerGuiControllerImpl<MerchantInventory> {
     public static @Nullable MerchantGuiController lookup(final @NotNull Player player) {
         return Kunectron.getGuiControllers(MerchantGuiType.instance()).stream()
                 .filter(controller -> controller.getPlayer() == player)

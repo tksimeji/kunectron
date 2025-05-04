@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.controller;
 
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.ScoreboardGui;
+import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
 import com.tksimeji.kunectron.event.scoreboard.ScoreboardGuiInitEventImpl;
 import com.tksimeji.kunectron.event.scoreboard.ScoreboardGuiPlayerAddEvent;
 import com.tksimeji.kunectron.event.scoreboard.ScoreboardGuiPlayerRemoveEvent;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public final class ScoreboardGuiController extends AbstractGuiController implements TickableGuiController {
+public final class ScoreboardGuiController extends GuiControllerImpl implements TickableGuiController {
     public static @Nullable ScoreboardGuiController lookup(final @NotNull Player player) {
         return Kunectron.getGuiControllers(ScoreboardGuiType.instance()).stream()
                 .filter(controller -> controller.isPlayer(player))

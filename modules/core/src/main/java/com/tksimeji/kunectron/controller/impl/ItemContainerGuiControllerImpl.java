@@ -1,8 +1,9 @@
-package com.tksimeji.kunectron.controller;
+package com.tksimeji.kunectron.controller.impl;
 
 import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.IndexGroup;
 import com.tksimeji.kunectron.Mouse;
+import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractItemContainerGuiController<I extends Inventory> extends AbstractContainerGuiController<I> implements ItemContainerGuiController<I> {
+public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extends ContainerGuiControllerImpl<I> implements ItemContainerGuiController<I> {
     private final @NotNull Map<Integer, ItemElement> elements = new HashMap<>();
 
     private final @NotNull Map<Integer, ItemSlotPolicy> policies = new HashMap<>();
@@ -26,11 +27,11 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
     protected final boolean serverSideTranslation;
     protected final boolean markupExtensions;
 
-    public AbstractItemContainerGuiController(final @NotNull Object gui, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
+    public ItemContainerGuiControllerImpl(final @NotNull Object gui, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
         this(gui, Policy.itemSlot(false), Policy.itemSlot(false), autoReload, serverSideTranslation, markupExtensions);
     }
 
-    public AbstractItemContainerGuiController(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
+    public ItemContainerGuiControllerImpl(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
         super(gui);
         this.defaultPolicy = defaultPolicy;
         this.playerDefaultPolicy = playerDefaultPolicy;

@@ -1,14 +1,15 @@
-package com.tksimeji.kunectron.controller;
+package com.tksimeji.kunectron.controller.impl;
 
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.controller.ContainerGuiController;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public abstract class AbstractContainerGuiController<I extends Inventory> extends AbstractGuiController implements ContainerGuiController<I> {
-    public AbstractContainerGuiController(@NotNull Object gui) {
+public abstract class ContainerGuiControllerImpl<I extends Inventory> extends GuiControllerImpl implements ContainerGuiController<I> {
+    public ContainerGuiControllerImpl(@NotNull Object gui) {
         super(gui);
     }
 
@@ -22,7 +23,7 @@ public abstract class AbstractContainerGuiController<I extends Inventory> extend
         Kunectron.deleteGuiController(this);
 
         if (getPlayer().getOpenInventory().getTopInventory().getType() != InventoryType.CRAFTING &&
-                Kunectron.getGuiControllers().stream().noneMatch(controller -> controller instanceof ContainerGuiController<?> containerGuiController && containerGuiController.getPlayer() == getPlayer())) {
+                Kunectron.getGuiControllers().stream().noneMatch(controller -> controller instanceof com.tksimeji.kunectron.controller.ContainerGuiController<?> containerGuiController && containerGuiController.getPlayer() == getPlayer())) {
             getPlayer().closeInventory();
         }
 
