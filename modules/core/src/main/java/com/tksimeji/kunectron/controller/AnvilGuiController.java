@@ -1,9 +1,6 @@
 package com.tksimeji.kunectron.controller;
 
-import com.tksimeji.kunectron.Action;
-import com.tksimeji.kunectron.AnvilGui;
-import com.tksimeji.kunectron.Mouse;
-import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.*;
 import com.tksimeji.kunectron.controller.impl.ItemContainerGuiControllerImpl;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.event.AnvilGuiEvents;
@@ -20,7 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.AnvilInventory;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,6 +65,12 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
             getDeclaration(gui, AnvilGui.ResultElement.class, ItemElement.class).ifPresent(declaration -> {
                 setResultElement(declaration.getLeft());
             });
+
+            for (Pair<ItemElement, AnvilGui.Element> declaration : getDeclarations(gui, AnvilGui.Element.class, ItemElement.class)) {
+                for (final int index : parseAnnotation(declaration.getRight())) {
+                    setElement(index, declaration.getLeft());
+                }
+            }
 
             for (final Pair<ItemSlotPolicy, AnvilGui.Policy> declaration : getDeclarations(gui, AnvilGui.Policy.class, ItemSlotPolicy.class)) {
                 for (final int index : parseAnnotation(declaration.getRight())) {
@@ -147,7 +149,10 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
         return super.callEvent(event);
     }
 
-    @ApiStatus.Internal
+    private @NotNull Set<Integer> parseAnnotation(final @NotNull AnvilGui.Element annotation) {
+        return parseIndexGroup(annotation.index(), annotation.groups());
+    }
+
     private @NotNull Set<Integer> parseAnnotation(final @NotNull AnvilGui.Policy annotation) {
         return parseIndexGroup(annotation.index(), annotation.groups(), annotation.player());
     }

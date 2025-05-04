@@ -28,20 +28,9 @@ public @interface AnvilGui {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    @interface Policy {
+    @interface Element {
         int[] index() default {};
-        boolean player() default false;
         IndexGroup[] groups() default {};
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    @interface DefaultPolicy {
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.FIELD)
-    @interface PlayerDefaultPolicy {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -57,5 +46,23 @@ public @interface AnvilGui {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface ResultElement {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    @interface Policy {
+        int[] index() default {};
+        boolean player() default false;
+        IndexGroup[] groups() default {};
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    @interface DefaultPolicy {
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    @interface PlayerDefaultPolicy {
     }
 }
