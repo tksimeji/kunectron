@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extends ContainerGuiControllerImpl<I> implements ItemContainerGuiController<I> {
     private @NotNull Component title = Component.empty();
+    private @NotNull Component displayedTitle = title;
 
     private final @NotNull Map<Integer, ItemElement> elements = new HashMap<>();
 
@@ -69,7 +70,10 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     @Override
     public void sendTitle() {
-        Kunectron.adapter().sendTitleUpdate(getPlayer().getOpenInventory(), markupExtensions ? Components.markupExtensions(title, markupExtensionContext) : title);
+        final Component title = markupExtensions ? Components.markupExtensions(this.title, markupExtensionContext) : this.title;
+        if (title.equals(displayedTitle)) return;
+        Kunectron.adapter().sendTitleUpdate(getPlayer().getOpenInventory(), title);
+        displayedTitle = title;
     }
 
     @Override
@@ -96,7 +100,7 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
             return;
         }
 
-        elements.put(index, element.clone());
+        elements.put(index, element != null ? element.clone() : null);
         getInventory().setItem(index, itemStack);
     }
 
