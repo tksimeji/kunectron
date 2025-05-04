@@ -10,9 +10,7 @@ import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
 import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsParser;
-import com.tksimeji.kunectron.test.TestCommand;
 import com.tksimeji.kunectron.type.*;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -180,10 +178,6 @@ public final class Kunectron extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
-        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-            event.registrar().register(TestCommand.create().build());
-        });
 
         getServer().getPluginManager().registerEvents(new AnvilGuiListener(), this);
         getServer().getPluginManager().registerEvents(new ContainerGuiListener(), this);
