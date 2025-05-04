@@ -305,7 +305,7 @@ public class ItemElementImpl implements ItemElement {
     @Override
     public @NotNull ItemElement hideAdditionalTooltip(final boolean hideAdditionalTooltip) {
         if (hideAdditionalTooltip) {
-            hideAdditionalTooltip();
+            Kunectron.adapter().hideAdditionalTooltip(itemStack, Kunectron.plugin());
         } else {
             Kunectron.adapter().showAdditionalTooltip(itemStack, Kunectron.plugin());
         }
