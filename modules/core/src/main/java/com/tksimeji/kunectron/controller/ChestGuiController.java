@@ -5,22 +5,13 @@ import com.tksimeji.kunectron.ChestGui;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.controller.impl.ItemContainerGuiControllerImpl;
-import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.event.chest.ChestGuiClickEventImpl;
 import com.tksimeji.kunectron.event.chest.ChestGuiCloseEventImpl;
 import com.tksimeji.kunectron.event.chest.ChestGuiInitEventImpl;
-import com.tksimeji.kunectron.policy.ItemSlotPolicy;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.translation.GlobalTranslator;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 
 public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inventory> {
     private final @NotNull Player player;
@@ -31,39 +22,16 @@ public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inv
         super(gui, annotation.autoReload(), annotation.serverSideTranslation(), annotation.markupExtensions());
 
         player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
-
-        Component title = getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
-        if (serverSideTranslation &&
-                title instanceof TranslatableComponent translatableComponent &&
-                GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
-            title = GlobalTranslator.render(title, getLocale());
-        }
-
         inventory = Bukkit.createInventory(null,
                 getDeclarationOrDefault(gui, ChestGui.Size.class, ChestGui.ChestSize.class, ChestGui.ChestSize.SIZE_54).getLeft().toInt(),
-                title);
+                titleFromField(ChestGui.Title.class));
+
+        elementsFromFields(ChestGui.Element.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups()));
+        policiesFromFields(ChestGui.Policy.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups(), aAnnotation.player()));
+        defaultPolicyFromField(ChestGui.DefaultPolicy.class);
+        defaultPolicyFromField(ChestGui.PlayerDefaultPolicy.class);
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> player.openInventory(inventory));
-
-        getDeclaration(gui, ChestGui.DefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
-            setDefaultPolicy(declaration.getLeft());
-        });
-
-        getDeclaration(gui, ChestGui.PlayerDefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
-            setPlayerDefaultPolicy(declaration.getLeft());
-        });
-
-        for (Pair<ItemElement, ChestGui.Element> declaration : getDeclarations(gui, ChestGui.Element.class, ItemElement.class)) {
-            for (final int index : parseAnnotation(declaration.getRight())) {
-                setElement(index, declaration.getLeft());
-            }
-        }
-
-        for (Pair<ItemSlotPolicy, ChestGui.Policy> declaration : getDeclarations(gui, ChestGui.Policy.class, ItemSlotPolicy.class)) {
-            for (final int index : parseAnnotation(declaration.getRight())) {
-                setPolicy(index, declaration.getLeft());
-            }
-        }
     }
 
     @Override
@@ -90,13 +58,5 @@ public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inv
     public void close() {
         callEvent(new ChestGuiCloseEventImpl(gui));
         super.close();
-    }
-
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Element annotation) {
-        return parseIndexGroup(annotation.index(), annotation.groups());
-    }
-
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull ChestGui.Policy annotation) {
-        return parseIndexGroup(annotation.index(), annotation.groups(), annotation.player());
     }
 }

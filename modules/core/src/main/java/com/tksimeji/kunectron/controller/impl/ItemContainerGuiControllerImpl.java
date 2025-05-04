@@ -7,12 +7,18 @@ import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
+import com.tksimeji.kunectron.util.Components;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extends ContainerGuiControllerImpl<I> implements ItemContainerGuiController<I> {
@@ -144,6 +150,42 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
         for (final Map.Entry<Integer, ItemElement> entry : getElements().entrySet()) {
             setElement(entry.getKey(), entry.getValue());
         }
+    }
+
+    protected @NotNull Component titleFromField(final @NotNull Class<? extends Annotation> annotation) {
+        final @NotNull Component title = getDeclarationOrDefault(gui, annotation, ComponentLike.class, Component.empty()).getLeft().asComponent();
+        if (serverSideTranslation) {
+            return Components.translate(title, getLocale());
+        }
+        return title;
+    }
+
+    protected <A extends Annotation> void elementsFromFields(final @NotNull Class<A> annotation, final Function<A, Set<Integer>> parser) {
+        for (Pair<ItemElement, A> declaration : getDeclarations(gui, annotation, ItemElement.class)) {
+            for (int index : parser.apply(declaration.getRight())) {
+                setElement(index, declaration.getLeft());
+            }
+        }
+    }
+
+    protected <A extends Annotation> void policiesFromFields(final @NotNull Class<A> annotation, final Function<A, Set<Integer>> parser) {
+        for (Pair<ItemSlotPolicy, A> declaration : getDeclarations(gui, annotation, ItemSlotPolicy.class)) {
+            for (int index : parser.apply(declaration.getRight())) {
+                setPolicy(index, declaration.getLeft());
+            }
+        }
+    }
+
+    protected void defaultPolicyFromField(final @NotNull Class<? extends Annotation> annotation) {
+        getDeclaration(gui, annotation, ItemSlotPolicy.class).ifPresent(declaration -> {
+            setDefaultPolicy(declaration.getLeft());
+        });
+    }
+
+    protected void playerDefaultPolicyFromField(final @NotNull Class<? extends Annotation> annotation) {
+        getDeclaration(gui, annotation, ItemSlotPolicy.class).ifPresent(declaration -> {
+            setPlayerDefaultPolicy(declaration.getLeft());
+        });
     }
 
     protected @NotNull Set<Integer> parseIndexGroup(final @NotNull IndexGroup indexGroup, final boolean player) {

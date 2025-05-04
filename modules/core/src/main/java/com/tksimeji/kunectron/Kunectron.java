@@ -189,6 +189,7 @@ public final class Kunectron extends JavaPlugin {
         registerGuiType(AnvilGuiType.instance(), this);
         registerGuiType(ChestGuiType.instance(), this);
         registerGuiType(DispenserGuiType.instance(), this);
+        registerGuiType(HopperGuiType.instance(), this);
         registerGuiType(MerchantGuiType.instance(), this);
         registerGuiType(ScoreboardGuiType.instance(), this);
         registerGuiType(SignGuiType.instance(), this);

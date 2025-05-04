@@ -8,19 +8,11 @@ import com.tksimeji.kunectron.event.GuiEvent;
 import com.tksimeji.kunectron.event.anvil.AnvilGuiClickEventImpl;
 import com.tksimeji.kunectron.event.anvil.AnvilGuiCloseEventImpl;
 import com.tksimeji.kunectron.event.anvil.AnvilGuiInitEventImpl;
-import com.tksimeji.kunectron.policy.ItemSlotPolicy;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.translation.GlobalTranslator;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.AnvilInventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 public final class AnvilGuiController extends ItemContainerGuiControllerImpl<AnvilInventory> {
     private final @NotNull Player player;
@@ -38,21 +30,7 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
         overwriteResultSlot = annotation.overwriteResultSlot();
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
-            Component title = getDeclarationOrDefault(gui, AnvilGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
-            if (title instanceof TranslatableComponent translatableComponent &&
-                    GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
-                title = GlobalTranslator.render(title, getLocale());
-            }
-
-            inventory = Kunectron.adapter().createAnvilInventory(player, title);
-
-            getDeclaration(gui, AnvilGui.DefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
-                setDefaultPolicy(declaration.getLeft());
-            });
-
-            getDeclaration(gui, AnvilGui.PlayerDefaultPolicy.class, ItemSlotPolicy.class).ifPresent(declaration -> {
-                setPlayerDefaultPolicy(declaration.getLeft());
-            });
+            inventory = Kunectron.adapter().createAnvilInventory(player, titleFromField(AnvilGui.Title.class));
 
             getDeclaration(gui, AnvilGui.FirstElement.class, ItemElement.class).ifPresent(declaration -> {
                 setFirstElement(declaration.getLeft());
@@ -66,17 +44,10 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
                 setResultElement(declaration.getLeft());
             });
 
-            for (Pair<ItemElement, AnvilGui.Element> declaration : getDeclarations(gui, AnvilGui.Element.class, ItemElement.class)) {
-                for (final int index : parseAnnotation(declaration.getRight())) {
-                    setElement(index, declaration.getLeft());
-                }
-            }
-
-            for (final Pair<ItemSlotPolicy, AnvilGui.Policy> declaration : getDeclarations(gui, AnvilGui.Policy.class, ItemSlotPolicy.class)) {
-                for (final int index : parseAnnotation(declaration.getRight())) {
-                    setPolicy(index, declaration.getLeft());
-                }
-            }
+            elementsFromFields(AnvilGui.Element.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups()));
+            policiesFromFields(AnvilGui.Policy.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups(), aAnnotation.player()));
+            defaultPolicyFromField(AnvilGui.DefaultPolicy.class);
+            playerDefaultPolicyFromField(AnvilGui.PlayerDefaultPolicy.class);
         });
     }
 
@@ -147,13 +118,5 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
         }
 
         return super.callEvent(event);
-    }
-
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull AnvilGui.Element annotation) {
-        return parseIndexGroup(annotation.index(), annotation.groups());
-    }
-
-    private @NotNull Set<Integer> parseAnnotation(final @NotNull AnvilGui.Policy annotation) {
-        return parseIndexGroup(annotation.index(), annotation.groups(), annotation.player());
     }
 }

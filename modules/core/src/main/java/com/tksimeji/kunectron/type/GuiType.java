@@ -23,6 +23,10 @@ public interface GuiType<A extends Annotation, C extends GuiController> extends 
         return DispenserGuiType.instance();
     }
 
+    static @NotNull GuiType<HopperGui, ?> hopper() {
+        return HopperGuiType.instance();
+    }
+
     static @NotNull GuiType<MerchantGui, ?> merchant() {
         return MerchantGuiType.instance();
     }

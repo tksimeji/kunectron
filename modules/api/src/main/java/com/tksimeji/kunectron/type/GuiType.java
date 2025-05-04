@@ -24,6 +24,10 @@ public interface GuiType<A extends Annotation, C extends GuiController> extends 
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
+    static @NotNull GuiType<HopperGui, ?> hopper() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
     static @NotNull GuiType<MerchantGui, ?> merchant() {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
