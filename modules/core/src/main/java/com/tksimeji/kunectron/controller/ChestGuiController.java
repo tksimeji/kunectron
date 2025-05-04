@@ -32,7 +32,8 @@ public final class ChestGuiController extends AbstractItemContainerGuiController
         player = getDeclarationOrThrow(gui, ChestGui.Player.class, Player.class).getLeft();
 
         Component title = getDeclarationOrDefault(gui, ChestGui.Title.class, ComponentLike.class, Component.empty()).getLeft().asComponent();
-        if (title instanceof TranslatableComponent translatableComponent &&
+        if (serverSideTranslation &&
+                title instanceof TranslatableComponent translatableComponent &&
                 GlobalTranslator.translator().canTranslate(translatableComponent.key(), getLocale())) {
             title = GlobalTranslator.render(title, getLocale());
         }

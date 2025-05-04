@@ -22,9 +22,9 @@ public abstract class AbstractItemContainerGuiController<I extends Inventory> ex
     private @NotNull ItemSlotPolicy defaultPolicy;
     private @NotNull ItemSlotPolicy playerDefaultPolicy;
 
-    private final boolean autoReload;
-    private final boolean serverSideTranslation;
-    private final boolean markupExtensions;
+    protected final boolean autoReload;
+    protected final boolean serverSideTranslation;
+    protected final boolean markupExtensions;
 
     public AbstractItemContainerGuiController(final @NotNull Object gui, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
         this(gui, Policy.itemSlot(false), Policy.itemSlot(false), autoReload, serverSideTranslation, markupExtensions);
