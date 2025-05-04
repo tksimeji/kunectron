@@ -84,19 +84,19 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     @Override
     public void setElement(final int index, final @Nullable ItemElement element) {
-        final ItemElement aElement = element != null ? element.clone() : null;
         final ItemStack oldItemStack = getInventory().getItem(index);
 
         if (!isValidIndex(index) || (element == null && oldItemStack == null)) {
             return;
         }
 
-        final ItemStack itemStack = createItemStack(aElement);
+        final ItemStack itemStack = createItemStack(element);
+
         if (element != null && Objects.equals(itemStack, oldItemStack)) {
             return;
         }
 
-        elements.put(index, aElement);
+        elements.put(index, element.clone());
         getInventory().setItem(index, itemStack);
     }
 
@@ -108,6 +108,7 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
             final ItemSlotPolicy elementPolicy = element.policy();
 
             if (elementPolicy != null) {
+                System.out.println("element(" + elementPolicy.isFixation() + ")");
                 return elementPolicy;
             }
         }

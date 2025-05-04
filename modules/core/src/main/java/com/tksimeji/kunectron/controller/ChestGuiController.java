@@ -29,7 +29,7 @@ public final class ChestGuiController extends ItemContainerGuiControllerImpl<Inv
         elementsFromFields(ChestGui.Element.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups()));
         policiesFromFields(ChestGui.Policy.class, (aAnnotation) -> parseIndexGroup(aAnnotation.index(), aAnnotation.groups(), aAnnotation.player()));
         defaultPolicyFromField(ChestGui.DefaultPolicy.class);
-        defaultPolicyFromField(ChestGui.PlayerDefaultPolicy.class);
+        playerDefaultPolicyFromField(ChestGui.PlayerDefaultPolicy.class);
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> player.openInventory(inventory));
     }
