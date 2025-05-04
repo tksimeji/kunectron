@@ -33,7 +33,7 @@ public final class DispenserGuiBuilderImpl extends ItemContainerGuiBuilderImpl<D
         Optional.ofNullable(playerDefaultPolicy).ifPresent(gui::usePlayerDefaultPolicy);        return null;
     }
 
-    @DispenserGui(autoReload = true, serverSideTranslation = true)
+    @DispenserGui(autoReload = true, serverSideTranslation = true, markupExtensions = true)
     private static final class Gui extends AbstractGui<DispenserGuiHooks> implements DispenserGuiHooks {
         @DispenserGui.Player
         private final @NotNull Player player;

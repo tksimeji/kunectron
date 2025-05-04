@@ -36,7 +36,7 @@ public final class MerchantGuiBuilderImpl extends ContainerGuiBuilderImpl<Mercha
         return gui;
     }
 
-    @MerchantGui
+    @MerchantGui(serverSideTranslation = true)
     private static final class Gui extends AbstractGui<AnvilGuiHooks> implements MerchantGuiHooks {
         @MerchantGui.Player
         private final @NotNull Player player;

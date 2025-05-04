@@ -5,12 +5,24 @@ import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.hooks.ItemContainerGuiHooks;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public interface ItemContainerGuiHooksImpl<T extends ItemContainerGuiController<?>> extends ContainerGuiHooksImpl<T>, ItemContainerGuiHooks {
+    @Override
+    default @NotNull Component useTitle() {
+        return controller().getTitle();
+    }
+
+    @Override
+    default void useTitle(final @NotNull Component title) {
+        Preconditions.checkArgument(title != null, "Title cannot be null.");
+        controller().setTitle(title);
+    }
+
     @Override
     default @Nullable ItemElement useElement(final int index) {
         return controller().getElement(index);

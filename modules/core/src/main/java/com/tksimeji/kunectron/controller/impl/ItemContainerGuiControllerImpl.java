@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.controller.impl;
 
 import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.IndexGroup;
+import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.ItemElement;
@@ -22,6 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extends ContainerGuiControllerImpl<I> implements ItemContainerGuiController<I> {
+    private @NotNull Component title = Component.empty();
+
     private final @NotNull Map<Integer, ItemElement> elements = new HashMap<>();
 
     private final @NotNull Map<Integer, ItemSlotPolicy> policies = new HashMap<>();
@@ -37,13 +40,36 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
         this(gui, Policy.itemSlot(false), Policy.itemSlot(false), autoReload, serverSideTranslation, markupExtensions);
     }
 
-    public ItemContainerGuiControllerImpl(final @NotNull Object gui, final @NotNull ItemSlotPolicy defaultPolicy, final @NotNull ItemSlotPolicy playerDefaultPolicy, final boolean autoReload, final boolean serverSideTranslation, final boolean markupExtensions) {
+    public ItemContainerGuiControllerImpl(
+            final @NotNull Object gui,
+            final @NotNull ItemSlotPolicy defaultPolicy,
+            final @NotNull ItemSlotPolicy playerDefaultPolicy,
+            final boolean autoReload,
+            final boolean serverSideTranslation,
+            final boolean markupExtensions
+    ) {
         super(gui);
         this.defaultPolicy = defaultPolicy;
         this.playerDefaultPolicy = playerDefaultPolicy;
         this.autoReload = autoReload;
         this.serverSideTranslation = serverSideTranslation;
         this.markupExtensions = markupExtensions;
+    }
+
+    @Override
+    public @NotNull Component getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(final @NotNull Component title) {
+        this.title = title;
+        sendTitle();
+    }
+
+    @Override
+    public void sendTitle() {
+        Kunectron.adapter().sendTitleUpdate(getPlayer().getOpenInventory(), markupExtensions ? Components.markupExtensions(title, markupExtensionContext) : title);
     }
 
     @Override
@@ -147,16 +173,18 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
     @Override
     public void tick() {
         if (!autoReload) return;
+        if (markupExtensions) {
+            sendTitle();
+        }
         for (final Map.Entry<Integer, ItemElement> entry : getElements().entrySet()) {
             setElement(entry.getKey(), entry.getValue());
         }
     }
 
     protected @NotNull Component titleFromField(final @NotNull Class<? extends Annotation> annotation) {
-        final @NotNull Component title = getDeclarationOrDefault(gui, annotation, ComponentLike.class, Component.empty()).getLeft().asComponent();
-        if (serverSideTranslation) {
-            return Components.translate(title, getLocale());
-        }
+        final Component value = getDeclarationOrDefault(gui, annotation, ComponentLike.class, Component.empty()).getLeft().asComponent();
+        final Component title = serverSideTranslation ? Components.translate(value, getLocale()) : value;
+        this.title = title;
         return title;
     }
 

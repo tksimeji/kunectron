@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
 import org.bukkit.entity.Player
 import org.bukkit.inventory.AnvilInventory
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -15,6 +16,8 @@ interface Adapter {
     fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit)
 
     fun createAnvilInventory(player: Player, title: Component): AnvilInventory
+
+    fun sendTitleUpdate(inventory: InventoryView, newTitle: Component)
 
     fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (lines: Array<String>) -> Unit)
 

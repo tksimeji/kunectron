@@ -4,6 +4,7 @@ import com.tksimeji.kunectron.Action;
 import com.tksimeji.kunectron.Mouse;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface ItemContainerGuiController<I extends Inventory> extends ContainerGuiController<I>, TickableGuiController {
+    @NotNull Component getTitle();
+
+    void setTitle(final @NotNull Component title);
+
+    void sendTitle();
+
     @Nullable ItemElement getElement(final int index);
 
     @NotNull Map<Integer, ItemElement> getElements();

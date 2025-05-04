@@ -42,7 +42,7 @@ public class ScoreboardGuiBuilderImpl extends IGuiBuilderImpl<ScoreboardGuiBuild
         return gui;
     }
 
-    @ScoreboardGui
+    @ScoreboardGui(autoUpdate = true, markupExtensions = true)
     private static final class Gui extends AbstractGui<ScoreboardGuiHooks> implements ScoreboardGuiHooks {
         public Gui(final @NotNull List<HandlerInfo> handlers) {
             super(handlers);

@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.hooks;
 
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public interface ItemContainerGuiHooks extends ContainerGuiHooks {
+    default @NotNull Component useTitle() {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
+    default void useTitle(final @NotNull Component title) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
     default @Nullable ItemElement useElement(final int index) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }

@@ -42,7 +42,7 @@ public final class AnvilGuiBuilderImpl extends ItemContainerGuiBuilderImpl<Anvil
         return Kunectron.create(new Gui(player, title, elements.get(0), elements.get(1), elements.get(2), defaultPolicy, playerDefaultPolicy, policies, handlers), AnvilGui.class);
     }
 
-    @AnvilGui(autoReload = true, serverSideTranslation = true)
+    @AnvilGui(autoReload = true, serverSideTranslation = true, markupExtensions = true)
     private static final class Gui extends AbstractGui<AnvilGuiHooks> implements AnvilGuiHooks {
         @AnvilGui.Player
         private final @NotNull Player player;

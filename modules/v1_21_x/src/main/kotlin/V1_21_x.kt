@@ -23,10 +23,12 @@ import org.bukkit.Bukkit
 import org.bukkit.DyeColor
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.event.CraftEventFactory
+import org.bukkit.craftbukkit.inventory.CraftContainer
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.AnvilInventory
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -84,6 +86,15 @@ abstract class V1_21_x: Adapter {
         nmsPlayer.initMenu(container)
 
         return inventory
+    }
+
+    override fun sendTitleUpdate(inventory: InventoryView, newTitle: Component) {
+        val player = inventory.player as? Player ?: return
+        val nmsPlayer = (player as CraftPlayer).handle
+        val containerId = nmsPlayer.containerMenu.containerId
+        val menuType = CraftContainer.getNotchInventoryType(player.openInventory.topInventory)
+        nmsPlayer.connection.sendPacket(ClientboundOpenScreenPacket(containerId, menuType, PaperAdventure.asVanilla(newTitle)))
+        player.updateInventory()
     }
 
     override fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (Array<String>) -> Unit) {
