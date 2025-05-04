@@ -16,6 +16,10 @@ public interface GuiBuilder<B extends GuiBuilderBase<B, H>, H extends Hooks> ext
         return new ChestGuiBuilderImpl();
     }
 
+    static @NotNull DispenserGuiBuilder dispenser() {
+        return new DispenserGuiBuilderImpl();
+    }
+
     static @NotNull MerchantGuiBuilder merchant() {
         return new MerchantGuiBuilderImpl();
     }
