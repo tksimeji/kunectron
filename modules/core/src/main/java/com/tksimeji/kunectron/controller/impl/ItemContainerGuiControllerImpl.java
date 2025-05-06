@@ -189,7 +189,7 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
     protected @NotNull Component titleFromField(final @NotNull Class<? extends Annotation> annotation) {
         final Component value = getDeclarationOrDefault(gui, annotation, ComponentLike.class, Component.empty()).getLeft().asComponent();
         final Component title = serverSideTranslation ? Components.translate(value, getLocale()) : value;
-        this.title = title;
+        setTitle(title);
         return title;
     }
 
