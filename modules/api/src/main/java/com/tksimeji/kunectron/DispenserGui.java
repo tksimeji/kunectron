@@ -25,6 +25,7 @@ public @interface DispenserGui {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
     @interface Element {
         int[] index() default {};
         IndexGroup[] groups() default {};

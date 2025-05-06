@@ -104,7 +104,7 @@ public final class Kunectron extends JavaPlugin {
     @SuppressWarnings("unchecked")
     public static <T extends Inventory> @Nullable ContainerGuiController<T> getGuiController(final @NotNull T inventory) {
         return (ContainerGuiController<T>) getGuiControllers().stream()
-                .filter(controller -> (controller instanceof ContainerGuiController<?> containerGuiController) && containerGuiController.getInventory().equals(inventory))
+                .filter(controller -> (controller instanceof ContainerGuiController<?> containerGuiController) && Objects.equals(containerGuiController.getInventory(), inventory))
                 .findFirst().orElse(null);
     }
 

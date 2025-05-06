@@ -14,7 +14,6 @@ import com.tksimeji.kunectron.util.Classes;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Cancellable;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,17 +124,14 @@ public abstract class GuiControllerImpl implements GuiController {
         return event instanceof Cancellable && ((Cancellable) event).isCancelled();
     }
 
-    @ApiStatus.Internal
     protected final  <A extends Annotation, T> @NotNull Optional<Pair<T, A>> getDeclaration(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
         return getDeclarations(gui, annotation, aClass).stream().findFirst();
     }
 
-    @ApiStatus.Internal
     protected final  <A extends Annotation, T> @NotNull Pair<T, A> getDeclarationOrDefault(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass, final @NotNull T defaultValue) {
         return getDeclaration(gui, annotation, aClass).orElseGet(() -> Pair.of(defaultValue, null));
     }
 
-    @ApiStatus.Internal
     protected final <A extends Annotation, T> @NotNull Pair<T, A> getDeclarationOrThrow(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
         final Pair<T, A> pair = getDeclaration(gui, annotation, aClass).orElse(null);
         if (pair == null) {
@@ -144,7 +140,7 @@ public abstract class GuiControllerImpl implements GuiController {
         return pair;
     }
 
-    @ApiStatus.Internal
+    @SuppressWarnings("unchecked")
     protected final <A extends Annotation, T> @NotNull List<Pair<T, A>> getDeclarations(final @NotNull Object gui, final @NotNull Class<A> annotation, final @NotNull Class<T> aClass) {
         return Classes.getFields(gui.getClass()).stream()
                 .filter(field -> field.isAnnotationPresent(annotation))
@@ -153,14 +149,14 @@ public abstract class GuiControllerImpl implements GuiController {
                     try {
                         final Object value = field.get(gui);
                         return value != null && aClass.isAssignableFrom(value.getClass());
-                    } catch (IllegalAccessException e) {
+                    } catch (final IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .map(field -> {
                     try {
                         return Pair.of((T) field.get(gui), field.getAnnotation(annotation));
-                    } catch (IllegalAccessException e) {
+                    } catch (final IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 })
