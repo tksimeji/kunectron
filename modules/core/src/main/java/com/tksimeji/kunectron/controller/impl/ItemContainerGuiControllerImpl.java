@@ -188,10 +188,9 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
 
     protected @NotNull Component titleFromField(final @NotNull Class<? extends Annotation> annotation) {
         final Component value = getDeclarationOrDefault(gui, annotation, ComponentLike.class, Component.empty()).getLeft().asComponent();
-        final Component title1 = serverSideTranslation ? Components.translate(value, getLocale()) : value;
-        final Component title2 = markupExtensions ? Components.markupExtensions(title1, markupExtensionContext) : title1;
+        final Component title1 = markupExtensions ? Components.markupExtensions(value, markupExtensionContext) : value;
         this.title = value;
-        return title2;
+        return title1;
     }
 
     protected <A extends Annotation> void elementsFromFields(final @NotNull Class<A> annotation, final Function<A, Set<Integer>> parser) {
