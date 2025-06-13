@@ -89,10 +89,10 @@ abstract class V1_21_x: Adapter {
             mapOf(nmsResourceLocation to nmsProgress))
         )
 
-        /* Bukkit.getScheduler().runTaskLater(plugin, { ->
+        Bukkit.getScheduler().runTaskLater(plugin, { ->
             nmsConnection.send(clientboundUpdateAdvancementsPacket(false, emptyList(), setOf(nmsResourceLocation), emptyMap()))
             onRemoved()
-        }, 1) */
+        }, 1)
     }
 
     override fun anvilInventory(player: Player, title: Component): AnvilInventory {
