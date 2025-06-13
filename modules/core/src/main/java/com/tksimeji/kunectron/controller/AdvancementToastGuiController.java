@@ -31,7 +31,7 @@ public class AdvancementToastGuiController extends GuiControllerImpl {
 
     @Override
     public void init() {
-        Optional.ofNullable(Kunectron.adapter()).ifPresent(adapter -> adapter.createAdvancementToast(player, type, icon, message, Kunectron.plugin(), () -> {
+        Optional.ofNullable(Kunectron.adapter()).ifPresent(adapter -> adapter.advancementToast(player, type, icon, message, Kunectron.plugin(), () -> {
             Kunectron.deleteGuiController(this);
             return null;
         }));

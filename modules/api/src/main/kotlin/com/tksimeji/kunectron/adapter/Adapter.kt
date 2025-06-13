@@ -13,13 +13,27 @@ import org.bukkit.plugin.java.JavaPlugin
 interface Adapter {
     val versions: Array<String>
 
-    fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit)
+    fun advancementToast(
+        player: Player,
+        type: AdvancementToastGui.AdvancementType,
+        icon: ItemStack,
+        message: Component,
+        plugin: JavaPlugin,
+        onRemoved: () -> Unit
+    )
 
-    fun createAnvilInventory(player: Player, title: Component): AnvilInventory
+    fun anvilInventory(player: Player, title: Component): AnvilInventory
 
-    fun sendTitleUpdate(inventory: InventoryView, newTitle: Component)
+    fun updateTitle(inventory: InventoryView, newTitle: Component)
 
-    fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (lines: Array<String>) -> Unit)
+    fun openSign(
+        player: Player,
+        signType: SignGui.SignType,
+        textColor: DyeColor,
+        glowing: Boolean,
+        lines: Array<String?>,
+        onClose: (lines: Array<String>) -> Unit
+    )
 
     fun closeSign(player: Player)
 

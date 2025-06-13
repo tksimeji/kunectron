@@ -9,10 +9,10 @@ import net.kyori.adventure.text.Component
 import net.minecraft.advancements.*
 import net.minecraft.advancements.critereon.ImpossibleTrigger
 import net.minecraft.core.BlockPos
+import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket
-import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket
 import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.inventory.AnvilMenu
@@ -34,10 +34,17 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 abstract class V1_21_x: Adapter {
-    private val signPositions = mutableMapOf<UUID, BlockPos>()
+    private val signPositions: MutableMap<UUID, BlockPos> = mutableMapOf()
 
-    override fun createAdvancementToast(player: Player, type: AdvancementToastGui.AdvancementType, icon: ItemStack, message: Component, plugin: JavaPlugin, onRemoved: () -> Unit) {
-        val resourceLocation = ResourceLocation.withDefaultNamespace(UUID.randomUUID().toString())
+    override fun advancementToast(
+        player: Player,
+        type: AdvancementToastGui.AdvancementType,
+        icon: ItemStack,
+        message: Component,
+        plugin: JavaPlugin,
+        onRemoved: () -> Unit
+    ) {
+        val nmsResourceLocation = ResourceLocation.withDefaultNamespace(UUID.randomUUID().toString())
 
         val nmsType = when (type) {
             AdvancementToastGui.AdvancementType.TASK -> AdvancementType.TASK
@@ -47,27 +54,48 @@ abstract class V1_21_x: Adapter {
         val nmsIcon = CraftItemStack.asNMSCopy(icon)
         val nmsMessage = PaperAdventure.asVanilla(message)
 
-        val criteria = mapOf(Pair("impossible", Criterion(ImpossibleTrigger(), ImpossibleTrigger.TriggerInstance())))
-        val requirements = AdvancementRequirements(listOf(listOf("impossible")))
+        val nmsCriteria = mapOf("impossible" to Criterion(ImpossibleTrigger(), ImpossibleTrigger.TriggerInstance()))
+        val nmsRequirements = AdvancementRequirements(listOf(listOf("impossible")))
 
-        val displayInfo = DisplayInfo(nmsIcon, nmsMessage, net.minecraft.network.chat.Component.empty(), Optional.empty(), nmsType, true, false, true)
-        val advancement = Advancement(Optional.empty(), Optional.of(displayInfo), AdvancementRewards(0, emptyList(), emptyList(), Optional.empty()), criteria, requirements, false)
+        val nmsDisplayInfo = DisplayInfo(
+            nmsIcon,
+            nmsMessage,
+            net.minecraft.network.chat.Component.empty(),
+            Optional.empty(),
+            nmsType,
+            true,
+            false,
+            true
+        )
+        val nmsAdvancement = Advancement(
+            Optional.empty(),
+            Optional.of(nmsDisplayInfo),
+            AdvancementRewards(0, emptyList(), emptyList(), Optional.empty()),
+            nmsCriteria,
+            nmsRequirements,
+            false
+        )
 
-        val progress = AdvancementProgress().apply {
-            update(requirements)
+        val nmsProgress = AdvancementProgress().apply {
+            update(nmsRequirements)
             getCriterion("impossible")!!.grant()
         }
 
-        val connection = (player as CraftPlayer).handle.connection
-        connection.send(ClientboundUpdateAdvancementsPacket(false, listOf(AdvancementHolder(resourceLocation, advancement)), emptySet(), mapOf(Pair(resourceLocation, progress))))
+        val nmsConnection = (player as CraftPlayer).handle.connection
+        nmsConnection.send(clientboundUpdateAdvancementsPacket(
+            false,
+            listOf(AdvancementHolder(nmsResourceLocation, nmsAdvancement)),
+            emptySet(),
+            mapOf(nmsResourceLocation to nmsProgress))
+        )
 
-        Bukkit.getScheduler().runTaskLater(plugin, { ->
-            connection.send(ClientboundUpdateAdvancementsPacket(false, emptyList(), setOf(resourceLocation), emptyMap()))
+        /* Bukkit.getScheduler().runTaskLater(plugin, { ->
+            nmsConnection.send(clientboundUpdateAdvancementsPacket(false, emptyList(), setOf(nmsResourceLocation), emptyMap()))
             onRemoved()
-        }, 1)
+        }, 1) */
     }
 
-    override fun createAnvilInventory(player: Player, title: Component): AnvilInventory {
+    override fun anvilInventory(player: Player, title: Component): AnvilInventory {
         val nmsPlayer = (player as CraftPlayer).handle
 
         CraftEventFactory.handleInventoryCloseEvent(nmsPlayer, InventoryCloseEvent.Reason.UNKNOWN)
@@ -88,7 +116,7 @@ abstract class V1_21_x: Adapter {
         return inventory
     }
 
-    override fun sendTitleUpdate(inventory: InventoryView, newTitle: Component) {
+    override fun updateTitle(inventory: InventoryView, newTitle: Component) {
         val player = inventory.player as? Player ?: return
         val nmsPlayer = (player as CraftPlayer).handle
         val containerId = nmsPlayer.containerMenu.containerId
@@ -97,7 +125,14 @@ abstract class V1_21_x: Adapter {
         player.updateInventory()
     }
 
-    override fun openSign(player: Player, signType: SignGui.SignType, textColor: DyeColor, glowing: Boolean, lines: Array<String?>, onClose: (Array<String>) -> Unit) {
+    override fun openSign(
+        player: Player,
+        signType: SignGui.SignType,
+        textColor: DyeColor,
+        glowing: Boolean,
+        lines: Array<String?>,
+        onClose: (Array<String>) -> Unit
+    ) {
         val nmsPlayer = (player as CraftPlayer).handle
 
         val playerLocation = player.location
@@ -178,4 +213,11 @@ abstract class V1_21_x: Adapter {
         val blockState = serverLevel.getBlockState(blockPos)
         nmsPlayer.connection.sendPacket(ClientboundBlockUpdatePacket(blockPos, blockState))
     }
+
+    abstract fun clientboundUpdateAdvancementsPacket(
+        reset: Boolean,
+        toAdd: Collection<AdvancementHolder>,
+        toRemove: Set<ResourceLocation>,
+        toSetProgress: Map<ResourceLocation, AdvancementProgress>
+    ): Packet<*>
 }

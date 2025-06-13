@@ -5,5 +5,5 @@ plugins {
 dependencies {
     compileOnly(project(":modules:api"))
     compileOnly(project(":modules:v1_21_x"))
-    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 }

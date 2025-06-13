@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.tksimeji.kunectron.adapter.Adapter;
 import com.tksimeji.kunectron.adapter.V1_21_1;
 import com.tksimeji.kunectron.adapter.V1_21_3;
+import com.tksimeji.kunectron.adapter.V1_21_5;
 import com.tksimeji.kunectron.controller.ContainerGuiController;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiCreateEvent;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
@@ -196,6 +197,7 @@ public final class Kunectron extends JavaPlugin {
 
         registerAdapter(V1_21_1.INSTANCE);
         registerAdapter(V1_21_3.INSTANCE);
+        registerAdapter(V1_21_5.INSTANCE);
 
         final LocalDate localDate = LocalDate.now();
 
