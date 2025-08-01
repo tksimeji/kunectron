@@ -5,7 +5,7 @@ import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsException;
 import com.tksimeji.kunectron.markupextensions.context.Context;
 import net.kyori.adventure.text.*;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.translation.GlobalTranslator;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,7 +97,8 @@ public final class Components {
 
         if (part1 != null) result.add(split[0]);
         if (part2 != null) {
-            if (PlainTextComponentSerializer.plainText().serialize(split[1]).length() > threshold) {
+            final int count = criterion.count(split[1]);
+            if (count > threshold) {
                 result.addAll(split(split[1], threshold, criterion));
             } else {
                 result.add(split[1]);
@@ -116,21 +117,26 @@ public final class Components {
 
         for (final Component partComponent : components) {
             if (partComponent instanceof TextComponent textComponent) {
-                final int count = criterion.count(textComponent);
                 final String content = textComponent.content();
+                final int remaining = threshold - cumulative;
 
                 if (!splitOccurred) {
+                    final int count = criterion.count(textComponent);
                     if (cumulative + count <= threshold) {
                         part1Components.add(partComponent);
                     } else if (cumulative >= threshold) {
                         part2Components.add(partComponent);
                         splitOccurred = true;
                     } else {
-                        final int intraIndex = threshold - cumulative;
-                        final String plainText1 = content.substring(0, intraIndex);
-                        final String plainText2 = content.substring(intraIndex);
-                        part1Components.add(Component.text(plainText1).style(partComponent.style()));
-                        part2Components.add(Component.text(plainText2).style(partComponent.style()));
+                        final int splitIndex = criterion.splitIndex(content, remaining);
+
+                        final String firstText = content.substring(0, splitIndex);
+                        final String secondText = content.substring(splitIndex);
+
+                        final Style style = partComponent.style();
+                        part1Components.add(Component.text(firstText).style(style));
+                        part2Components.add(Component.text(secondText).style(style));
+
                         splitOccurred = true;
                     }
                     cumulative += count;

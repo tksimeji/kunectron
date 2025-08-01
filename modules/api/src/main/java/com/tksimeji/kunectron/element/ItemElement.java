@@ -8,6 +8,7 @@ import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Range;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface ItemElement extends Element<ItemElement> {
@@ -160,10 +162,26 @@ public interface ItemElement extends Element<ItemElement> {
     }
 
     enum LoreWidthCriterion {
-        LENGTH((component) -> component.content().length()),
-        WIDTH((component) -> {
+        LENGTH(
+                (component) -> component.content().length(),
+                (content, threshold) -> Math.min(threshold, content.length())
+        ),
+        WIDTH(
+                (component) -> width(component.content()),
+                (content, threshold) -> {
+                    int acc = 0;
+                    int idx = 0;
+                    while (idx < content.length() && acc + width(String.valueOf(content.charAt(idx))) <= threshold) {
+                        acc += width(String.valueOf(content.charAt(idx)));
+                        idx++;
+                    }
+                    return idx;
+                }
+        );
+
+        public static int width(final @NotNull CharSequence charSequence) {
             int sum = 0;
-            for (final char aChar : component.content().toCharArray()) {
+            for (final char aChar : charSequence.toString().toCharArray()) {
                 if (aChar <= 0x7F) {
                     sum += 2;
                 } else {
@@ -171,16 +189,27 @@ public interface ItemElement extends Element<ItemElement> {
                 }
             }
             return sum;
-        });
+        }
 
         private final @NotNull Function<TextComponent, Integer> counter;
+        private final @NotNull BiFunction<String, Integer, Integer> splitter;
 
-        LoreWidthCriterion(final @NotNull Function<TextComponent, Integer> counter) {
+        LoreWidthCriterion(final @NotNull Function<TextComponent, Integer> counter, final @NotNull BiFunction<String, Integer, Integer> splitter) {
             this.counter = counter;
+            this.splitter = splitter;
+        }
+
+        public int count(final @NotNull Component component) {
+            final String plainText = PlainTextComponentSerializer.plainText().serialize(component);
+            return count(Component.text(plainText));
         }
 
         public int count(final @NotNull TextComponent component) {
             return counter.apply(component);
+        }
+
+        public int splitIndex(final @NotNull String content, final int threshold) {
+            return splitter.apply(content, threshold);
         }
     }
 }

@@ -236,7 +236,7 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public @NotNull ItemElement loreWidth(final int threshold) {
-        return loreWidth(threshold, LoreWidthCriterion.WIDTH);
+        return loreWidth(threshold, LoreWidthCriterion.LENGTH);
     }
 
     @Override
