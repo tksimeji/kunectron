@@ -299,15 +299,15 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public boolean hideAdditionalTooltip() {
-        return !Kunectron.adapter().hasAdditionalTooltip(itemStack, Kunectron.plugin());
+        return !Kunectron.adapterOrThrow().hasAdditionalTooltip(itemStack, Kunectron.plugin());
     }
 
     @Override
     public @NotNull ItemElement hideAdditionalTooltip(final boolean hideAdditionalTooltip) {
         if (hideAdditionalTooltip) {
-            Kunectron.adapter().hideAdditionalTooltip(itemStack, Kunectron.plugin());
+            Kunectron.adapterOrThrow().hideAdditionalTooltip(itemStack, Kunectron.plugin());
         } else {
-            Kunectron.adapter().showAdditionalTooltip(itemStack, Kunectron.plugin());
+            Kunectron.adapterOrThrow().showAdditionalTooltip(itemStack, Kunectron.plugin());
         }
         return this;
     }

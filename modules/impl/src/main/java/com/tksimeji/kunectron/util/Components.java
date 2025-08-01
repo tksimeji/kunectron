@@ -82,7 +82,7 @@ public final class Components {
         final List<Component> result = new ArrayList<>();
         result.add(component);
         for (final Component child : component.children()) {
-            result.addAll(flatten(child).stream().map(aChild -> aChild.style(component.style())).toList());
+            result.addAll(flatten(child).stream().map(aChild -> aChild.applyFallbackStyle(component.style())).toList());
         }
         return result;
     }

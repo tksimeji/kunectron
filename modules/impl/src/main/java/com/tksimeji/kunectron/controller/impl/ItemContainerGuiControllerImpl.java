@@ -72,7 +72,7 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
     public void sendTitle() {
         final Component title = markupExtensions ? Components.markupExtensions(this.title, markupExtensionContext) : this.title;
         if (title.equals(displayedTitle)) return;
-        Kunectron.adapter().updateTitle(getPlayer().getOpenInventory(), title);
+        Kunectron.adapterOrThrow().sendInventoryTitleUpdate(getPlayer().getOpenInventory(), title);
         displayedTitle = title;
     }
 

@@ -26,7 +26,7 @@ public class PlayerHeadElementImpl extends ItemElementImpl implements PlayerHead
 
     public PlayerHeadElementImpl() {
         super(ItemType.PLAYER_HEAD);
-        Kunectron.adapter().hideAdditionalTooltip(itemStack, Kunectron.plugin());
+        Kunectron.adapterOrThrow().hideAdditionalTooltip(itemStack, Kunectron.plugin());
     }
 
     @Override

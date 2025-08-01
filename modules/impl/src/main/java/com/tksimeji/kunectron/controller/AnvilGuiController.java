@@ -30,7 +30,7 @@ public final class AnvilGuiController extends ItemContainerGuiControllerImpl<Anv
         overwriteResultSlot = annotation.overwriteResultSlot();
 
         Bukkit.getScheduler().runTask(Kunectron.plugin(), () -> {
-            inventory = Kunectron.adapter().anvilInventory(player, titleFromField(AnvilGui.Title.class));
+            inventory = Kunectron.adapterOrThrow().sendOpenAnvilScreen(player, titleFromField(AnvilGui.Title.class));
 
             getDeclaration(gui, AnvilGui.FirstElement.class, ItemElement.class).ifPresent(declaration -> {
                 setFirstElement(declaration.getLeft());

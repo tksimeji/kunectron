@@ -5,6 +5,7 @@ import com.tksimeji.kunectron.SignGui;
 import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
 import com.tksimeji.kunectron.event.sign.SignCloseEventImpl;
 import com.tksimeji.kunectron.event.sign.SignInitEventImpl;
+import kotlin.Unit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -20,7 +21,7 @@ public final class SignGuiController extends GuiControllerImpl {
 
     private final @NotNull DyeColor textColor;
 
-    private final boolean glowing;
+    private final boolean isGlowing;
 
     public SignGuiController(final @NotNull Object gui) {
         super(gui);
@@ -28,7 +29,7 @@ public final class SignGuiController extends GuiControllerImpl {
         player = getDeclarationOrThrow(gui, SignGui.Player.class, Player.class).getLeft();
         type = getDeclarationOrDefault(gui, SignGui.Type.class, SignGui.SignType.class, SignGui.SignType.OAK).getLeft();
         textColor = getDeclarationOrDefault(gui, SignGui.TextColor.class, DyeColor.class, DyeColor.BLACK).getLeft();
-        glowing = getDeclarationOrDefault(gui, SignGui.Glowing.class, boolean.class, false).getLeft();
+        isGlowing = getDeclarationOrDefault(gui, SignGui.Glowing.class, boolean.class, false).getLeft();
 
         final String[] lines = {null, null, null, null};
 
@@ -53,11 +54,11 @@ public final class SignGuiController extends GuiControllerImpl {
             }
         }
 
-        Kunectron.adapter().openSign(player, type, textColor, glowing, lines, finalLines -> {
+        Kunectron.adapterOrThrow().sendOpenSignEditor(player, type, textColor, lines, isGlowing, finalLines -> {
             Bukkit.getScheduler().runTask(Kunectron.plugin(), task -> {
                 callEvent(new SignCloseEventImpl(gui, finalLines));
             });
-            return null;
+            return Unit.INSTANCE;
         });
     }
 
@@ -79,10 +80,10 @@ public final class SignGuiController extends GuiControllerImpl {
     }
 
     public boolean isGlowing() {
-        return glowing;
+        return isGlowing;
     }
 
     public void close() {
-        Kunectron.adapter().closeSign(player);
+        Kunectron.adapterOrThrow().sendCloseSignEditor(player);
     }
 }

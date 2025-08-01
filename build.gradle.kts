@@ -61,7 +61,7 @@ subprojects {
 
 dependencies {
     implementation(project(":modules:api"))
-    implementation(project(":modules:core"))
+    implementation(project(":modules:impl"))
 }
 
 publishing {

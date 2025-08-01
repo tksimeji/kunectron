@@ -3,13 +3,15 @@ package com.tksimeji.kunectron.controller;
 import com.tksimeji.kunectron.AdvancementToastGui;
 import com.tksimeji.kunectron.Kunectron;
 import com.tksimeji.kunectron.controller.impl.GuiControllerImpl;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.util.UUID;
 
 public class AdvancementToastGuiController extends GuiControllerImpl {
     private final @NotNull AdvancementToastGui.AdvancementType type;
@@ -19,6 +21,8 @@ public class AdvancementToastGuiController extends GuiControllerImpl {
     private final @NotNull ItemStack icon;
 
     private final @NotNull Component message;
+
+    private final @NotNull Key advancementKey = Key.key("kunectron", UUID.randomUUID().toString());
 
     public AdvancementToastGuiController(final @NotNull Object gui) {
         super(gui);
@@ -31,10 +35,11 @@ public class AdvancementToastGuiController extends GuiControllerImpl {
 
     @Override
     public void init() {
-        Optional.ofNullable(Kunectron.adapter()).ifPresent(adapter -> adapter.advancementToast(player, type, icon, message, Kunectron.plugin(), () -> {
+        Kunectron.adapterOrThrow().sendAdvancementGranted(player, advancementKey, type, icon, message);
+        Bukkit.getScheduler().runTaskLaterAsynchronously(Kunectron.plugin(), () -> {
+            Kunectron.adapterOrThrow().sendAdvancementCleanup(player, advancementKey);
             Kunectron.deleteGuiController(this);
-            return null;
-        }));
+        }, 10L);
     }
 
     public @NotNull Player getPlayer() {

@@ -1,10 +1,7 @@
 package com.tksimeji.kunectron;
 
 import com.google.common.base.Preconditions;
-import com.tksimeji.kunectron.adapter.Adapter;
-import com.tksimeji.kunectron.adapter.V1_21_1;
-import com.tksimeji.kunectron.adapter.V1_21_3;
-import com.tksimeji.kunectron.adapter.V1_21_5;
+import com.tksimeji.kunectron.adapter.*;
 import com.tksimeji.kunectron.controller.ContainerGuiController;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiCreateEvent;
 import com.tksimeji.kunectron.event.bukkit.KunectronGuiDeleteEvent;
@@ -12,6 +9,10 @@ import com.tksimeji.kunectron.listener.*;
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsParser;
 import com.tksimeji.kunectron.type.*;
+import com.tksimeji.kunectron.v1_21_1.V1_21_1;
+import com.tksimeji.kunectron.v1_21_3.V1_21_3;
+import com.tksimeji.kunectron.v1_21_5.V1_21_5;
+import com.tksimeji.kunectron.v1_21_8.V1_21_8;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,7 +42,7 @@ public final class Kunectron extends JavaPlugin {
 
     private static final @NotNull LinkedHashSet<Adapter> adapters = new LinkedHashSet<>();
 
-    private static @NotNull MarkupExtensionsParser markupExtensionsParse = MarkupExtensionsParser.markupExtensionsParser();
+    private static @NotNull MarkupExtensionsParser markupExtensionsParser = MarkupExtensionsParser.markupExtensionsParser();
 
     @ApiStatus.Internal
     public static @NotNull Kunectron plugin() {
@@ -56,6 +57,15 @@ public final class Kunectron extends JavaPlugin {
     @ApiStatus.Internal
     public static @Nullable Adapter adapter() {
         return getAdapter(Bukkit.getMinecraftVersion());
+    }
+
+    @ApiStatus.Internal
+    public static @NotNull Adapter adapterOrThrow() {
+        final Adapter adapter = adapter();
+        if (adapter != null) {
+            return adapter;
+        }
+        throw new NullPointerException("Adapter not found.");
     }
 
     public static <T> @NotNull T create(final @NotNull T gui) {
@@ -169,11 +179,11 @@ public final class Kunectron extends JavaPlugin {
     }
 
     public static @NotNull MarkupExtensionsParser getMarkupExtensionsParser() {
-        return markupExtensionsParse;
+        return markupExtensionsParser;
     }
 
     public static void setMarkupExtensionParser(final @NotNull MarkupExtensionsParser markupExtensionsParser) {
-        Kunectron.markupExtensionsParse = markupExtensionsParser;
+        Kunectron.markupExtensionsParser = markupExtensionsParser;
     }
 
     @Override
@@ -197,7 +207,8 @@ public final class Kunectron extends JavaPlugin {
 
         registerAdapter(V1_21_1.INSTANCE);
         registerAdapter(V1_21_3.INSTANCE);
-        registerAdapter(V1_21_5.INSTANCE);
+        registerAdapter(new V1_21_5());
+        registerAdapter(new V1_21_8());
 
         final LocalDate localDate = LocalDate.now();
 

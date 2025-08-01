@@ -2,6 +2,7 @@ package com.tksimeji.kunectron.adapter
 
 import com.tksimeji.kunectron.AdvancementToastGui
 import com.tksimeji.kunectron.SignGui
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import org.bukkit.DyeColor
 import org.bukkit.entity.Player
@@ -13,33 +14,28 @@ import org.bukkit.plugin.java.JavaPlugin
 interface Adapter {
     val versions: Array<String>
 
-    fun advancementToast(
+    fun sendAdvancementGranted(player: Player, key: Key, type: AdvancementToastGui.AdvancementType, icon: ItemStack, component: Component)
+
+    fun sendAdvancementCleanup(player: Player, key: Key)
+
+    fun sendInventoryTitleUpdate(view: InventoryView, title: Component)
+
+    fun sendOpenAnvilScreen(player: Player, title: Component): AnvilInventory
+
+    fun sendOpenSignEditor(
         player: Player,
-        type: AdvancementToastGui.AdvancementType,
-        icon: ItemStack,
-        message: Component,
-        plugin: JavaPlugin,
-        onRemoved: () -> Unit
-    )
-
-    fun anvilInventory(player: Player, title: Component): AnvilInventory
-
-    fun updateTitle(inventory: InventoryView, newTitle: Component)
-
-    fun openSign(
-        player: Player,
-        signType: SignGui.SignType,
-        textColor: DyeColor,
-        glowing: Boolean,
-        lines: Array<String?>,
+        type: SignGui.SignType,
+        color: DyeColor,
+        texts: Array<String?>,
+        isGlowing: Boolean,
         onClose: (lines: Array<String>) -> Unit
     )
 
-    fun closeSign(player: Player)
-
-    fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean
+    fun sendCloseSignEditor(player: Player)
 
     fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)
 
     fun showAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)
+
+    fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean
 }

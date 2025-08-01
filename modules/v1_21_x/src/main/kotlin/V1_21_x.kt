@@ -40,9 +40,9 @@ abstract class V1_21_x: Adapter {
         player: Player,
         type: AdvancementToastGui.AdvancementType,
         icon: ItemStack,
-        message: Component,
+        component: Component,
         plugin: JavaPlugin,
-        onRemoved: () -> Unit
+        then: () -> Unit
     ) {
         val nmsResourceLocation = ResourceLocation.withDefaultNamespace(UUID.randomUUID().toString())
 
@@ -52,7 +52,7 @@ abstract class V1_21_x: Adapter {
             AdvancementToastGui.AdvancementType.GOAL -> AdvancementType.GOAL
         }
         val nmsIcon = CraftItemStack.asNMSCopy(icon)
-        val nmsMessage = PaperAdventure.asVanilla(message)
+        val nmsMessage = PaperAdventure.asVanilla(component)
 
         val nmsCriteria = mapOf("impossible" to Criterion(ImpossibleTrigger(), ImpossibleTrigger.TriggerInstance()))
         val nmsRequirements = AdvancementRequirements(listOf(listOf("impossible")))
@@ -91,11 +91,11 @@ abstract class V1_21_x: Adapter {
 
         Bukkit.getScheduler().runTaskLater(plugin, { ->
             nmsConnection.send(clientboundUpdateAdvancementsPacket(false, emptyList(), setOf(nmsResourceLocation), emptyMap()))
-            onRemoved()
+            then()
         }, 1)
     }
 
-    override fun anvilInventory(player: Player, title: Component): AnvilInventory {
+    override fun sendOpenAnvilScreen(player: Player, title: Component): AnvilInventory {
         val nmsPlayer = (player as CraftPlayer).handle
 
         CraftEventFactory.handleInventoryCloseEvent(nmsPlayer, InventoryCloseEvent.Reason.UNKNOWN)
@@ -109,28 +109,28 @@ abstract class V1_21_x: Adapter {
 
         val inventory = container.bukkitView.topInventory
 
-        nmsPlayer.connection.sendPacket(ClientboundOpenScreenPacket(container.containerId, container.type, container.title))
+        nmsPlayer.connection.send(ClientboundOpenScreenPacket(container.containerId, container.type, container.title))
         nmsPlayer.containerMenu = container
         nmsPlayer.initMenu(container)
 
         return inventory
     }
 
-    override fun updateTitle(inventory: InventoryView, newTitle: Component) {
-        val player = inventory.player as? Player ?: return
+    override fun sendInventoryTitleUpdate(view: InventoryView, title: Component) {
+        val player = view.player as? Player ?: return
         val nmsPlayer = (player as CraftPlayer).handle
         val containerId = nmsPlayer.containerMenu.containerId
         val menuType = CraftContainer.getNotchInventoryType(player.openInventory.topInventory)
-        nmsPlayer.connection.sendPacket(ClientboundOpenScreenPacket(containerId, menuType, PaperAdventure.asVanilla(newTitle)))
+        nmsPlayer.connection.send(ClientboundOpenScreenPacket(containerId, menuType, PaperAdventure.asVanilla(title)))
         player.updateInventory()
     }
 
-    override fun openSign(
+    override fun sendOpenSignEditor(
         player: Player,
         signType: SignGui.SignType,
         textColor: DyeColor,
-        glowing: Boolean,
         lines: Array<String?>,
+        isGlowing: Boolean,
         onClose: (Array<String>) -> Unit
     ) {
         val nmsPlayer = (player as CraftPlayer).handle
@@ -177,7 +177,7 @@ abstract class V1_21_x: Adapter {
         val sign = SignBlockEntity(blockPos, block.defaultBlockState())
         var signText = sign.frontText
             .setColor(color)
-            .setHasGlowingText(glowing)
+            .setHasGlowingText(isGlowing)
 
         for ((index, line) in lines.withIndex()) {
             signText = signText.setMessage(index, net.minecraft.network.chat.Component.literal(line ?: ""))
@@ -188,9 +188,9 @@ abstract class V1_21_x: Adapter {
         sign.setText(signText, true)
         player.sendBlockChange(playerLocation, block.defaultBlockState().createCraftBlockData())
         sign.level = nmsPlayer.level()
-        connection.sendPacket(sign.updatePacket!!)
+        connection.send(sign.updatePacket!!)
         sign.level = null
-        connection.sendPacket(ClientboundOpenSignEditorPacket(blockPos, true))
+        connection.send(ClientboundOpenSignEditorPacket(blockPos, true))
 
         val channel = connection.connection.channel
 
@@ -211,7 +211,7 @@ abstract class V1_21_x: Adapter {
         val nmsPlayer = (player as CraftPlayer).handle
         val serverLevel = nmsPlayer.level()
         val blockState = serverLevel.getBlockState(blockPos)
-        nmsPlayer.connection.sendPacket(ClientboundBlockUpdatePacket(blockPos, blockState))
+        nmsPlayer.connection.send(ClientboundBlockUpdatePacket(blockPos, blockState))
     }
 
     abstract fun clientboundUpdateAdvancementsPacket(
