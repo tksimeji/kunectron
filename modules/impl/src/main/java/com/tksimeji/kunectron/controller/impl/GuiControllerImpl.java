@@ -119,7 +119,9 @@ public abstract class GuiControllerImpl implements GuiController {
             }
         }
 
-        new KunectronGuiEventCalledEvent(event, this).callEvent();
+        Bukkit.getScheduler().runTaskAsynchronously(Kunectron.plugin(), () -> {
+            new KunectronGuiEventCalledEvent(event, this).callEvent();
+        });
 
         return event instanceof Cancellable && ((Cancellable) event).isCancelled();
     }

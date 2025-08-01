@@ -20,6 +20,7 @@ public class KunectronGuiDeleteEvent extends Event implements Cancellable {
     private boolean cancelled;
 
     public KunectronGuiDeleteEvent(final @NotNull Object gui, final @NotNull GuiController controller) {
+        super(true);
         this.gui = gui;
         this.controller = controller;
     }

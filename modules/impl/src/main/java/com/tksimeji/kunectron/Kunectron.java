@@ -88,7 +88,9 @@ public final class Kunectron extends JavaPlugin {
         final GuiController controller = type.createController(gui, gui.getClass().getAnnotation(annotation));
         controllers.add(controller);
         controller.init();
-        new KunectronGuiCreateEvent(gui, controller).callEvent();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
+            new KunectronGuiCreateEvent(gui, controller).callEvent();
+        });
         return gui;
     }
 
@@ -139,11 +141,12 @@ public final class Kunectron extends JavaPlugin {
     }
 
     public static void deleteGuiController(final @NotNull GuiController controller) {
-        if (!new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
-            return;
-        }
-
-        controllers.remove(controller);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
+            if (!new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
+                return;
+            }
+            controllers.remove(controller);
+        });
     }
 
     public static <A extends Annotation> @Nullable GuiType<A, ?> getGuiType(final @NotNull Class<A> annotation) {
@@ -207,8 +210,8 @@ public final class Kunectron extends JavaPlugin {
 
         registerAdapter(V1_21_1.INSTANCE);
         registerAdapter(V1_21_3.INSTANCE);
-        registerAdapter(new V1_21_5());
-        registerAdapter(new V1_21_8());
+        registerAdapter(V1_21_5.INSTANCE);
+        registerAdapter(V1_21_8.INSTANCE);
 
         final LocalDate localDate = LocalDate.now();
 

@@ -17,6 +17,7 @@ public final class KunectronGuiEventCalledEvent extends org.bukkit.event.Event {
     private final @NotNull GuiController controller;
 
     public KunectronGuiEventCalledEvent(final @NotNull GuiEvent event, final @NotNull GuiController controller) {
+        super(true);
         this.event = event;
         this.controller = controller;
     }

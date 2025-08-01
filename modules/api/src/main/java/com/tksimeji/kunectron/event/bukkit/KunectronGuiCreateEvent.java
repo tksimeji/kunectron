@@ -17,6 +17,7 @@ public class KunectronGuiCreateEvent extends Event {
     private final @NotNull GuiController controller;
 
     public KunectronGuiCreateEvent(final @NotNull Object gui, final @NotNull GuiController controller) {
+        super(true);
         this.gui = gui;
         this.controller = controller;
     }
