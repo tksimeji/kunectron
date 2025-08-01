@@ -35,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
 object V1_21_8 : Adapter {
-    override val versions: Array<String> = arrayOf("1.21.5")
+    override val versions: Array<String> = arrayOf("1.21.8")
 
     private val fakeSignPositions: MutableMap<Int, BlockPos> = mutableMapOf()
 
