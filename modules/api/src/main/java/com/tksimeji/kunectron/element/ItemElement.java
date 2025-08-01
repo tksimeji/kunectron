@@ -7,6 +7,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Range;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 public interface ItemElement extends Element<ItemElement> {
     @NotNull ItemType type();
@@ -82,8 +84,13 @@ public interface ItemElement extends Element<ItemElement> {
 
     int loreWidth();
 
+    @NotNull LoreWidthCriterion loreWidthCriterion();
+
     @Contract("_ -> this")
-    @NotNull ItemElement loreWidth(final int loreWidth);
+    @NotNull ItemElement loreWidth(final int threshold);
+
+    @Contract("_ -> this")
+    @NotNull ItemElement loreWidth(final int threshold, final @NotNull ItemElement.LoreWidthCriterion criterion);
 
     @Range(from = 1, to = Integer.MAX_VALUE) int amount();
 
@@ -150,5 +157,30 @@ public interface ItemElement extends Element<ItemElement> {
     @FunctionalInterface
     interface Handler2 extends Handler {
         void onClick(@NotNull ItemContainerClickEvent event);
+    }
+
+    enum LoreWidthCriterion {
+        LENGTH((component) -> component.content().length()),
+        WIDTH((component) -> {
+            int sum = 0;
+            for (final char aChar : component.content().toCharArray()) {
+                if (aChar <= 0x7F) {
+                    sum += 2;
+                } else {
+                    sum += 4;
+                }
+            }
+            return sum;
+        });
+
+        private final @NotNull Function<TextComponent, Integer> counter;
+
+        LoreWidthCriterion(final @NotNull Function<TextComponent, Integer> counter) {
+            this.counter = counter;
+        }
+
+        public int count(final @NotNull TextComponent component) {
+            return counter.apply(component);
+        }
     }
 }

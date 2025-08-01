@@ -30,6 +30,7 @@ public class ItemElementImpl implements ItemElement {
     protected @Nullable Component title;
     protected @NotNull List<Component> lore = List.of();
     protected int loreWidth = -1;
+    protected @NotNull LoreWidthCriterion loreWidthCriterion;
 
     protected @Nullable ItemSlotPolicy policy;
 
@@ -229,8 +230,19 @@ public class ItemElementImpl implements ItemElement {
     }
 
     @Override
-    public @NotNull ItemElement loreWidth(final int loreWidth) {
-        this.loreWidth = loreWidth > 0 ? loreWidth : -1;
+    public @NotNull LoreWidthCriterion loreWidthCriterion() {
+        return loreWidthCriterion;
+    }
+
+    @Override
+    public @NotNull ItemElement loreWidth(final int threshold) {
+        return loreWidth(threshold, LoreWidthCriterion.WIDTH);
+    }
+
+    @Override
+    public @NotNull ItemElement loreWidth(int threshold, @NotNull LoreWidthCriterion criterion) {
+        this.loreWidth = threshold > 0 ? threshold : -1;
+        loreWidthCriterion = criterion;
         return this;
     }
 
@@ -406,7 +418,7 @@ public class ItemElementImpl implements ItemElement {
         if (loreWidth != -1) {
             final List<Component> lore2 = new ArrayList<>();
             for (final Component line : lore) {
-                lore2.addAll(Components.split(line, loreWidth));
+                lore2.addAll(Components.split(line, loreWidth, loreWidthCriterion));
             }
             lore = lore2;
         }

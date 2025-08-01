@@ -1,6 +1,7 @@
 package com.tksimeji.kunectron.util;
 
 import com.tksimeji.kunectron.Kunectron;
+import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.markupextensions.MarkupExtensionsException;
 import com.tksimeji.kunectron.markupextensions.context.Context;
 import net.kyori.adventure.text.*;
@@ -87,17 +88,17 @@ public final class Components {
         return result;
     }
 
-    public static List<Component> split(final @NotNull Component component, final int length) {
+    public static @NotNull List<Component> split(final @NotNull Component component, final int threshold, final @NotNull ItemElement.LoreWidthCriterion criterion) {
         final List<Component> result = new ArrayList<>();
 
-        final Component[] split = splitAt(component, length);
+        final Component[] split = splitAt(component, threshold, criterion);
         final Component part1 = split[0];
         final Component part2 = split[1];
 
         if (part1 != null) result.add(split[0]);
         if (part2 != null) {
-            if (PlainTextComponentSerializer.plainText().serialize(split[1]).length() > length) {
-                result.addAll(split(split[1], length));
+            if (PlainTextComponentSerializer.plainText().serialize(split[1]).length() > threshold) {
+                result.addAll(split(split[1], threshold, criterion));
             } else {
                 result.add(split[1]);
             }
@@ -105,7 +106,7 @@ public final class Components {
         return result;
     }
 
-    public static @NotNull Component[] splitAt(final @NotNull Component component, final int index) {
+    public static @NotNull Component[] splitAt(final @NotNull Component component, final int threshold, final @NotNull ItemElement.LoreWidthCriterion criterion) {
         final List<Component> components = flatten(component);
         final List<Component> part1Components = new ArrayList<>();
         final List<Component> part2Components = new ArrayList<>();
@@ -115,24 +116,24 @@ public final class Components {
 
         for (final Component partComponent : components) {
             if (partComponent instanceof TextComponent textComponent) {
+                final int count = criterion.count(textComponent);
                 final String content = textComponent.content();
-                final int length = content.length();
 
                 if (!splitOccurred) {
-                    if (cumulative + length <= index) {
+                    if (cumulative + count <= threshold) {
                         part1Components.add(partComponent);
-                    } else if (cumulative >= index) {
+                    } else if (cumulative >= threshold) {
                         part2Components.add(partComponent);
                         splitOccurred = true;
                     } else {
-                        final int intraIndex = index - cumulative;
+                        final int intraIndex = threshold - cumulative;
                         final String plainText1 = content.substring(0, intraIndex);
                         final String plainText2 = content.substring(intraIndex);
                         part1Components.add(Component.text(plainText1).style(partComponent.style()));
                         part2Components.add(Component.text(plainText2).style(partComponent.style()));
                         splitOccurred = true;
                     }
-                    cumulative += length;
+                    cumulative += count;
                 } else {
                     part2Components.add(partComponent);
                 }
