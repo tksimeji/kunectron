@@ -9,6 +9,7 @@ import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.policy.Policy;
 import com.tksimeji.kunectron.util.Components;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.apache.commons.lang3.tuple.Pair;
@@ -169,8 +170,12 @@ public abstract class ItemContainerGuiControllerImpl<I extends Inventory> extend
     @Override
     public void click(final int index, final @NotNull Action action, final @NotNull Mouse mouse) {
         final ItemElement element = getElement(index);
-        if (element != null && element.sound() != null) {
-            getPlayer().playSound(getPlayer(), Objects.requireNonNull(element.sound()), element.soundVolume(), element.soundPitch());
+        if (element == null) {
+            return;
+        }
+        final Sound sound = element.sound();
+        if (sound != null) {
+            getPlayer().playSound(sound);
         }
     }
 

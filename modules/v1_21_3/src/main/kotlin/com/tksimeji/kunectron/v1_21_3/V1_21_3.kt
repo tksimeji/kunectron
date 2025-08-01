@@ -243,8 +243,6 @@ object V1_21_3: Adapter {
         itemStack.itemMeta = itemMeta
     }
 
-    override fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean {
-        val itemMeta = itemStack.itemMeta
-        return itemMeta.attributeModifiers?.values()?.all { it.key().namespace() == plugin.name.lowercase() } ?: false
-    }
+    override fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean =
+        itemStack.itemMeta.attributeModifiers?.values()?.all { it.key().namespace() == plugin.name.lowercase() } ?: false
 }

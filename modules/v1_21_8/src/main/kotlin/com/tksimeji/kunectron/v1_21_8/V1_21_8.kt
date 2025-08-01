@@ -223,11 +223,6 @@ object V1_21_8 : Adapter {
 
     override fun hasEnchantmentGlint(itemStack: ItemStack): Boolean = itemStack.getData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) == true
 
-    override fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean {
-        val itemMeta = itemStack.itemMeta
-        return itemMeta.attributeModifiers?.values()?.all { it.key().namespace() == plugin.name.lowercase() } ?: false
-    }
-
     override fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin) {
         val itemMeta = itemStack.itemMeta
         itemMeta.addItemFlags(*ItemFlag.entries.toTypedArray())
@@ -246,4 +241,7 @@ object V1_21_8 : Adapter {
         }
         itemStack.itemMeta = itemMeta;
     }
+
+    override fun hasAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin): Boolean =
+        itemStack.itemMeta.attributeModifiers?.values()?.all { it.key().namespace() == plugin.name.lowercase() } ?: false
 }
