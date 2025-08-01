@@ -31,6 +31,10 @@ public final class Kunectron {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }
 
+    public static <T> @NotNull Set<T> getGuis(final @NotNull Class<T> javaClass) {
+        throw new NotImplementedException("The API module cannot be called at runtime.");
+    }
+
     public static @Nullable GuiController getGuiController(final @NotNull Object gui) {
         throw new NotImplementedException("The API module cannot be called at runtime.");
     }

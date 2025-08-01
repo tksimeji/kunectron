@@ -102,6 +102,14 @@ public final class Kunectron extends JavaPlugin {
         return getGuiControllers(type).stream().map(GuiController::getGui).collect(Collectors.toSet());
     }
 
+    public static <T> @NotNull Set<T> getGuis(final @NotNull Class<T> javaClass) {
+        return getGuiControllers().stream()
+                .filter(controller -> javaClass.isAssignableFrom(controller.getClass()))
+                .map(GuiController::getGui)
+                .map(javaClass::cast)
+                .collect(Collectors.toSet());
+    }
+
     public static @Nullable GuiController getGuiController(final @NotNull Object gui) {
         return controllers.stream().filter(controller -> controller.getGui() == gui).findFirst().orElse(null);
     }
