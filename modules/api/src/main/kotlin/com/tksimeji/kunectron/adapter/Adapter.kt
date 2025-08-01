@@ -33,6 +33,10 @@ interface Adapter {
 
     fun sendCloseSignEditor(player: Player)
 
+    fun enchantmentGlint(itemStack: ItemStack, isOverride: Boolean)
+
+    fun hasEnchantmentGlint(itemStack: ItemStack): Boolean
+
     fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)
 
     fun showAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin)

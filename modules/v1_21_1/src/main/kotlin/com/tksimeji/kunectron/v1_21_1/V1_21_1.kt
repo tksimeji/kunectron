@@ -29,6 +29,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.event.CraftEventFactory
 import org.bukkit.craftbukkit.inventory.CraftContainer
 import org.bukkit.craftbukkit.inventory.CraftItemStack
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.AnvilInventory
@@ -219,6 +220,20 @@ object V1_21_1 : Adapter {
         nmsPlayer.connection.send(packet)
         fakeSignPositions -= player.entityId
     }
+
+    override fun enchantmentGlint(itemStack: ItemStack, isOverride: Boolean) {
+        val itemMeta = itemStack.itemMeta
+
+        if (isOverride) {
+            itemMeta.addEnchant(Enchantment.INFINITY, 1, false)
+        } else {
+            itemMeta.removeEnchant(Enchantment.INFINITY)
+        }
+
+        itemStack.itemMeta = itemMeta
+    }
+
+    override fun hasEnchantmentGlint(itemStack: ItemStack): Boolean = itemStack.itemMeta.hasEnchant(Enchantment.INFINITY)
 
     override fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin) {
         itemStack.addItemFlags(*ItemFlag.entries.toTypedArray())

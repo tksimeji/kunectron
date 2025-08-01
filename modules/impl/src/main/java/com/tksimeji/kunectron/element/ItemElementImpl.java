@@ -290,20 +290,12 @@ public class ItemElementImpl implements ItemElement {
 
     @Override
     public boolean aura() {
-        return itemStack.getItemMeta().hasEnchants();
+        return Kunectron.adapterOrThrow().hasEnchantmentGlint(itemStack);
     }
 
     @Override
     public @NotNull ItemElement aura(final boolean aura) {
-        final ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (aura) {
-            itemMeta.addEnchant(Enchantment.INFINITY, 1, false);
-        } else {
-            itemMeta.removeEnchantments();
-        }
-
-        itemStack.setItemMeta(itemMeta);
+        Kunectron.adapterOrThrow().enchantmentGlint(itemStack, aura);
         return this;
     }
 

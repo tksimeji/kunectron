@@ -6,6 +6,8 @@ import com.tksimeji.kunectron.adapter.Adapter
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 import io.papermc.paper.adventure.PaperAdventure
+import io.papermc.paper.datacomponent.DataComponentType
+import io.papermc.paper.datacomponent.DataComponentTypes
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.minecraft.advancements.*
@@ -215,6 +217,12 @@ object V1_21_3: Adapter {
         nmsPlayer.connection.send(packet)
         fakeSignPositions -= player.entityId
     }
+
+    override fun enchantmentGlint(itemStack: ItemStack, isOverride: Boolean) {
+        itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, isOverride)
+    }
+
+    override fun hasEnchantmentGlint(itemStack: ItemStack): Boolean = itemStack.getData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE) == true
 
     override fun hideAdditionalTooltip(itemStack: ItemStack, plugin: JavaPlugin) {
         itemStack.addItemFlags(*ItemFlag.entries.toTypedArray())
