@@ -5,12 +5,12 @@ import com.tksimeji.kunectron.markupextensions.context.Context;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.Contract;
@@ -126,15 +126,14 @@ public interface ItemElement extends Element<ItemElement> {
 
     @Nullable Sound sound();
 
-    @Range(from = 0, to = Integer.MAX_VALUE) float soundVolume();
-
-    @Range(from = 0, to = Integer.MAX_VALUE) float soundPitch();
-
     @Contract("_ -> this")
     @NotNull ItemElement sound(final @Nullable Sound sound);
 
+    @Contract("_ -> this")
+    @NotNull ItemElement sound(final @Nullable Sound.Type sound);
+
     @Contract("_, _, _ -> this")
-    @NotNull ItemElement sound(final @Nullable Sound sound, final @Range(from = 0, to = Integer.MAX_VALUE) float volume, final @Range(from = 0, to = 2) float pitch);
+    @NotNull ItemElement sound(final @Nullable Sound.Type sound, final @Range(from = 0, to = Integer.MAX_VALUE) float volume, final @Range(from = 0, to = 2) float pitch);
 
     @Nullable Handler handler();
 
@@ -179,7 +178,7 @@ public interface ItemElement extends Element<ItemElement> {
                 }
         );
 
-        public static int width(final @NotNull CharSequence charSequence) {
+        private static int width(final @NotNull CharSequence charSequence) {
             int sum = 0;
             for (final char aChar : charSequence.toString().toCharArray()) {
                 if (aChar <= 0x7F) {

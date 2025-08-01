@@ -7,13 +7,13 @@ import com.tksimeji.kunectron.policy.ItemSlotPolicy;
 import com.tksimeji.kunectron.util.Components;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.key.Keyed;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
@@ -35,8 +35,6 @@ public class ItemElementImpl implements ItemElement {
     protected @Nullable ItemSlotPolicy policy;
 
     protected @Nullable Sound sound;
-    protected float soundVolume = 1.0F;
-    protected float soundPitch = 1.0F;
 
     protected @Nullable Handler handler;
 
@@ -341,28 +339,31 @@ public class ItemElementImpl implements ItemElement {
     }
 
     @Override
-    public @Range(from = 0, to = Integer.MAX_VALUE) float soundVolume() {
-        return soundVolume;
+    public @NotNull ItemElement sound(@Nullable Sound sound) {
+        this.sound = sound;
+        return this;
     }
 
     @Override
-    public @Range(from = 0, to = 2) float soundPitch() {
-        return soundPitch;
+    public @NotNull ItemElement sound(final @Nullable Sound.Type sound) {
+        if (this.sound != null) {
+            return sound(sound, this.sound.volume(), this.sound.pitch());
+        } else {
+            return sound(sound, 1F, 1F);
+        }
     }
 
     @Override
-    public @NotNull ItemElement sound(final @Nullable Sound sound) {
-        return sound(sound, soundVolume, soundPitch);
-    }
-
-    @Override
-    public @NotNull ItemElement sound(final @Nullable Sound sound, final @Range(from = 0, to = Integer.MAX_VALUE) float volume, final @Range(from = 0, to = 2) float pitch) {
+    public @NotNull ItemElement sound(final @Nullable Sound.Type sound, final @Range(from = 0, to = Integer.MAX_VALUE) float volume, final @Range(from = 0, to = 2) float pitch) {
         Preconditions.checkArgument(0 <= volume, "Volume cannot be less than 0.");
         Preconditions.checkArgument(0 <= pitch && pitch <= 2, "Pitch cannot be less than 0 or greater than 2.");
 
-        this.sound = sound;
-        soundVolume = volume;
-        soundPitch = pitch;
+        if (sound != null) {
+            this.sound = Sound.sound(sound, Sound.Source.MASTER, volume, pitch);
+        } else {
+            this.sound = null;
+        }
+
         return this;
     }
 
@@ -446,7 +447,7 @@ public class ItemElementImpl implements ItemElement {
         copy.lore(lore);
         copy.loreWidth(loreWidth);
         copy.policy(policy);
-        copy.sound(sound, soundVolume, soundPitch);
+        copy.sound(sound);
 
         if (handler instanceof Handler1 handler1) {
             copy.handler(handler1);
