@@ -144,16 +144,23 @@ public final class Kunectron extends JavaPlugin {
                 .collect(Collectors.toSet());
     }
 
+    public static <T extends GuiController> @NotNull Set<T> getGuiControllers(final @NotNull Class<T> javaClass) {
+        return controllers.stream()
+                .filter(controller -> javaClass.isAssignableFrom(controller.getClass()))
+                .map(controller -> javaClass.cast(controller))
+                .collect(Collectors.toSet());
+    }
+
     public static @NotNull Set<GuiController> getGuiControllers() {
         return new HashSet<>(controllers);
     }
 
     public static void deleteGuiController(final @NotNull GuiController controller) {
+        controllers.remove(controller);
         Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
             if (!new KunectronGuiDeleteEvent(controller.getGui(), controller).callEvent()) {
                 return;
             }
-            controllers.remove(controller);
         });
     }
 

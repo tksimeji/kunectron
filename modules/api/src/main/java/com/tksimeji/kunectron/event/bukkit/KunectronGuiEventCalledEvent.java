@@ -2,10 +2,11 @@ package com.tksimeji.kunectron.event.bukkit;
 
 import com.tksimeji.kunectron.controller.GuiController;
 import com.tksimeji.kunectron.event.GuiEvent;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public final class KunectronGuiEventCalledEvent extends org.bukkit.event.Event {
+public final class KunectronGuiEventCalledEvent extends Event {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     public static @NotNull HandlerList getHandlerList() {
