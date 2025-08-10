@@ -7,7 +7,6 @@ import com.tksimeji.kunectron.controller.ItemContainerGuiController;
 import com.tksimeji.kunectron.element.Element;
 import com.tksimeji.kunectron.element.ItemElement;
 import com.tksimeji.kunectron.policy.ItemSlotPolicy;
-import com.tksimeji.kunectron.policy.Policy;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +31,7 @@ public final class ItemContainerGuiListener implements Listener {
         event.setCancelled(true);
 
         final int index = event.getRawSlot();
-        final ItemSlotPolicy policy = index >= 0 ? itemContainerGuiController.getPolicy(index) : Policy.itemSlot(true);
+        final ItemSlotPolicy policy = itemContainerGuiController.getPolicy(index);
 
         if (itemContainerGuiController.isValidIndex(index)) {
             Action action = event.getClick() == ClickType.DOUBLE_CLICK ? Action.DOUBLE_CLICK : event.isShiftClick() ? Action.SHIFT_CLICK : Action.SINGLE_CLICK;
